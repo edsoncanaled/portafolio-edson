@@ -1,187 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio de Fotos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portafolio Fotográfico</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    text-align: center;
+  }
+  header {
+    background: #000;
+    color: #fff;
+    padding: 40px 20px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+  }
+  header p {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+  #slideshow {
+    position: relative;
+    width: 80%;
+    max-width: 700px;
+    margin: 40px auto;
+    overflow: hidden;
+  }
+  .session {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .session.active {
+    display: block;
+  }
+  .session img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+  }
+  .session img:hover {
+    transform: scale(1.03);
+  }
 
-        #slideshow {
-            position: relative;
-            width: 80%;
-            max-width: 600px;
-            margin: 50px auto;
-            overflow: hidden;
-        }
-
-        .session {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-        }
-
-        .session.active {
-            display: block;
-        }
-
-        .session img {
-            width: 100%;
-            height: auto;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-
-        .session p {
-            margin-top: 10px;
-            font-size: 1.2em;
-            color: #333;
-        }
-
-        /* Modal */
-        #modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #modal.show {
-            display: flex;
-        }
-
-        #modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        #modal img {
-            width: 100%;
-            max-width: 300px;
-            margin: 10px;
-            border-radius: 5px;
-        }
-
-        #close-modal {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 2em;
-            cursor: pointer;
-            color: white;
-        }
-
-        #close-modal:hover {
-            color: red;
-        }
-    </style>
+  /* Modal */
+  #modal {
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  #modal.show {
+    display: flex;
+  }
+  #modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #modal-content img {
+    width: 100%;
+    max-width: 300px;
+    margin: 10px;
+    border-radius: 5px;
+  }
+  #close-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2em;
+    cursor: pointer;
+    color: white;
+  }
+  #close-modal:hover {
+    color: red;
+  }
+  footer {
+    background: #000;
+    color: #fff;
+    padding: 20px;
+    margin-top: 40px;
+    font-size: 0.9rem;
+  }
+</style>
 </head>
 <body>
-    <h1>Portafolio de Fotos</h1>
 
-    <div id="slideshow">
-        <!-- Sesiones -->
-        <div class="session active" data-session="1">
-            <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
-            <p>Sesión 1</p>
-        </div>
-        <div class="session" data-session="2">
-            <img src="images/foto2.jpg" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
-            <p>Sesión 2</p>
-        </div>
-        <div class="session" data-session="3">
-            <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
-            <p>Sesión 3</p>
-        </div>
-    </div>
+<header>
+  <h1>Edson Frog — Portafolio</h1>
+  <p>Fotografía de producto · lifestyle · café · retrato</p>
+</header>
 
-    <!-- Modal -->
-    <div id="modal">
-        <span id="close-modal" onclick="closeModal()">&times;</span>
-        <div id="modal-content"></div>
-    </div>
+<div id="slideshow">
+  <!-- Sesiones -->
+  <div class="session active" data-session="1">
+    <img src="images/foto1.jpg" alt="Foto 1" loading="lazy" onclick="showGallery(1)">
+  </div>
+  <div class="session" data-session="2">
+    <img src="images/foto2.jpg" alt="Foto 2" loading="lazy" onclick="showGallery(2)">
+  </div>
+  <div class="session" data-session="3">
+    <img src="images/foto3.jpg" alt="Foto 3" loading="lazy" onclick="showGallery(3)">
+  </div>
+</div>
 
-    <script>
-        let currentIndex = 0;
-        const sessions = document.querySelectorAll('.session');
-        const totalSessions = sessions.length;
+<!-- Modal -->
+<div id="modal">
+  <span id="close-modal" onclick="closeModal()">&times;</span>
+  <div id="modal-content"></div>
+</div>
 
-        // Fotos de cada sesión
-        const galleries = {
-            1: ['images/foto1.jpg','images/foto4.jpg','images/foto5.jpg'],
-            2: ['images/foto2.jpg','images/foto6.jpg','images/foto7.jpg'],
-            3: ['images/foto3.jpg','images/foto8.jpg','images/foto9.jpg']
-        };
+<footer>
+  © 2025 Edson Frog · Portafolio Fotográfico
+</footer>
 
-        // Slideshow automático
-        let slideshowInterval = setInterval(changeSession, 3000);
+<script>
+  let currentIndex = 0;
+  const sessions = document.querySelectorAll('.session');
+  const totalSessions = sessions.length;
 
-        function changeSession() {
-            sessions[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % totalSessions;
-            sessions[currentIndex].classList.add('active');
-        }
+  // Define las fotos para cada sesión
+  const galleries = {
+    1: ['images/foto1.jpg','images/foto4.jpg','images/foto5.jpg'],
+    2: ['images/foto2.jpg','images/foto6.jpg','images/foto7.jpg'],
+    3: ['images/foto3.jpg','images/foto8.jpg','images/foto9.jpg']
+  };
 
-        // Mostrar galería
-        function showGallery(sessionId) {
-            const modal = document.getElementById('modal');
-            const modalContent = document.getElementById('modal-content');
+  // Slideshow automático
+  let slideshowInterval = setInterval(changeSession, 3000);
 
-            // Limpiar contenido anterior
-            modalContent.innerHTML = '';
+  function changeSession() {
+    sessions[currentIndex].classList.remove('active');
+    currentIndex = (currentIndex + 1) % totalSessions;
+    sessions[currentIndex].classList.add('active');
+  }
 
-            // Agregar fotos de la sesión
-            galleries[sessionId].forEach(src => {
-                const img = document.createElement('img');
-                img.src = src;
-                img.loading = 'lazy';
-                modalContent.appendChild(img);
-            });
+  // Mostrar modal con galería
+  function showGallery(sessionId) {
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    modalContent.innerHTML = '';
 
-            // Mostrar modal
-            modal.classList.add('show');
+    galleries[sessionId].forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.loading = 'lazy';
+      modalContent.appendChild(img);
+    });
 
-            // Pausar slideshow
-            clearInterval(slideshowInterval);
-        }
+    modal.classList.add('show');
 
-        // Cerrar modal
-        function closeModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.remove('show');
+    // Pausar slideshow
+    clearInterval(slideshowInterval);
+  }
 
-            // Reanudar slideshow
-            slideshowInterval = setInterval(changeSession, 3000);
-        }
+  // Cerrar modal
+  function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('show');
 
-        // Cerrar modal al hacer clic fuera
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        };
-    </script>
+    // Reanudar slideshow
+    slideshowInterval = setInterval(changeSession, 3000);
+  }
+
+  // Cerrar modal al hacer clic fuera
+  window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target === modal) closeModal();
+  }
+</script>
+
 </body>
 </html>
