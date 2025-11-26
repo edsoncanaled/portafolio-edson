@@ -81,17 +81,17 @@
     <div id="slideshow">
         <!-- Sesión 1 -->
         <div class="session active" data-session="1">
-            <img src="https://via.placeholder.com/600x400?text=Sesion+1+Foto+Principal" alt="Sesión 1" onclick="showGallery(1)">
+            <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
             <p>Sesión 1</p>
         </div>
         <!-- Sesión 2 -->
         <div class="session" data-session="2">
-            <img src="https://via.placeholder.com/600x400?text=Sesion+2+Foto+Principal" alt="Sesión 2" onclick="showGallery(2)">
+            <img src="images/foto2.jpg" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
             <p>Sesión 2</p>
         </div>
         <!-- Sesión 3 -->
         <div class="session" data-session="3">
-            <img src="https://via.placeholder.com/600x400?text=Sesion+3+Foto+Principal" alt="Sesión 3" onclick="showGallery(3)">
+            <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
             <p>Sesión 3</p>
         </div>
     </div>
@@ -127,22 +127,22 @@
             // Limpiar contenido anterior
             modalContent.innerHTML = '';
 
-            // Definir fotos para cada sesión (reemplaza con tus URLs reales)
+            // Definir fotos para cada sesión (reemplaza con tus rutas reales)
             const galleries = {
                 1: [
-                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+1',
-                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+2',
-                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+3'
+                    'images/foto1.jpg',
+                    'images/foto4.jpg',  // Asumiendo más fotos para la sesión 1
+                    'images/foto5.jpg'
                 ],
                 2: [
-                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+1',
-                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+2',
-                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+3'
+                    'images/foto2.jpg',
+                    'images/foto6.jpg',
+                    'images/foto7.jpg'
                 ],
                 3: [
-                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+1',
-                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+2',
-                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+3'
+                    'images/foto3.jpg',
+                    'images/foto8.jpg',
+                    'images/foto9.jpg'
                 ]
             };
 
@@ -150,6 +150,7 @@
             galleries[sessionId].forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
+                img.loading = 'lazy';  // Agregar lazy loading
                 modalContent.appendChild(img);
             });
 
