@@ -1,23 +1,167 @@
 <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio de Fotos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        #slideshow {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        .session {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        .session.active {
+            display: block;
+        }
+        .session img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .session p {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        #modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        #modal img {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        #close-modal {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Portafolio de Fotos</h1>
+    <div id="slideshow">
+        <!-- Sesión 1 -->
+        <div class="session active" data-session="1">
+            <img src="https://via.placeholder.com/600x400?text=Sesion+1+Foto+Principal" alt="Sesión 1" onclick="showGallery(1)">
+            <p>Sesión 1</p>
+        </div>
+        <!-- Sesión 2 -->
+        <div class="session" data-session="2">
+            <img src="https://via.placeholder.com/600x400?text=Sesion+2+Foto+Principal" alt="Sesión 2" onclick="showGallery(2)">
+            <p>Sesión 2</p>
+        </div>
+        <!-- Sesión 3 -->
+        <div class="session" data-session="3">
+            <img src="https://via.placeholder.com/600x400?text=Sesion+3+Foto+Principal" alt="Sesión 3" onclick="showGallery(3)">
+            <p>Sesión 3</p>
+        </div>
+    </div>
+
+    <!-- Modal para la galería -->
+    <div id="modal">
+        <span id="close-modal" onclick="closeModal()">&times;</span>
+        <div id="modal-content">
+            <!-- Las fotos se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        const sessions = document.querySelectorAll('.session');
+        const totalSessions = sessions.length;
+
+        // Función para cambiar automáticamente cada 3 segundos
+        function changeSession() {
+            sessions[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % totalSessions;
+            sessions[currentIndex].classList.add('active');
+        }
+
+        // Iniciar el slideshow automático
+        setInterval(changeSession, 3000);
+
+        // Función para mostrar la galería de una sesión
+        function showGallery(sessionId) {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            // Limpiar contenido anterior
+            modalContent.innerHTML = '';
+
+            // Definir fotos para cada sesión (reemplaza con tus URLs reales)
+            const galleries = {
+                1: [
+                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+1',
+                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+2',
+                    'https://via.placeholder.com/300x200?text=Sesion+1+Foto+3'
+                ],
+                2: [
+                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+1',
+                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+2',
+                    'https://via.placeholder.com/300x200?text=Sesion+2+Foto+3'
+                ],
                 3: [
                     'https://via.placeholder.com/300x200?text=Sesion+3+Foto+1',
                     'https://via.placeholder.com/300x200?text=Sesion+3+Foto+2',
                     'https://via.placeholder.com/300x200?text=Sesion+3+Foto+3'
                 ]
             };
+
             // Agregar fotos al modal
             galleries[sessionId].forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
                 modalContent.appendChild(img);
             });
+
             // Mostrar modal
             modal.style.display = 'flex';
         }
+
         // Función para cerrar el modal
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
+
         // Cerrar modal al hacer clic fuera
         window.onclick = function(event) {
             const modal = document.getElementById('modal');
