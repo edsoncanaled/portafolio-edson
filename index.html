@@ -12,6 +12,7 @@
             background-color: #f4f4f4;
             text-align: center;
         }
+
         #slideshow {
             position: relative;
             width: 80%;
@@ -19,6 +20,7 @@
             margin: 50px auto;
             overflow: hidden;
         }
+
         .session {
             display: none;
             position: absolute;
@@ -26,20 +28,25 @@
             left: 0;
             width: 100%;
         }
+
         .session.active {
             display: block;
         }
+
         .session img {
             width: 100%;
             height: auto;
             cursor: pointer;
             border-radius: 10px;
         }
+
         .session p {
             margin-top: 10px;
             font-size: 1.2em;
             color: #333;
         }
+
+        /* Modal */
         #modal {
             display: none;
             position: fixed;
@@ -47,11 +54,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0,0,0,0.8);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
+
+        #modal.show {
+            display: flex;
+        }
+
         #modal-content {
             background-color: white;
             padding: 20px;
@@ -59,13 +71,18 @@
             max-width: 90%;
             max-height: 90%;
             overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
+
         #modal img {
             width: 100%;
             max-width: 300px;
             margin: 10px;
             border-radius: 5px;
         }
+
         #close-modal {
             position: absolute;
             top: 10px;
@@ -74,34 +91,35 @@
             cursor: pointer;
             color: white;
         }
+
+        #close-modal:hover {
+            color: red;
+        }
     </style>
 </head>
 <body>
     <h1>Portafolio de Fotos</h1>
+
     <div id="slideshow">
-        <!-- Sesión 1 -->
+        <!-- Sesiones -->
         <div class="session active" data-session="1">
             <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
             <p>Sesión 1</p>
         </div>
-        <!-- Sesión 2 -->
         <div class="session" data-session="2">
             <img src="images/foto2.jpg" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
             <p>Sesión 2</p>
         </div>
-        <!-- Sesión 3 -->
         <div class="session" data-session="3">
             <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
             <p>Sesión 3</p>
         </div>
     </div>
 
-    <!-- Modal para la galería -->
+    <!-- Modal -->
     <div id="modal">
         <span id="close-modal" onclick="closeModal()">&times;</span>
-        <div id="modal-content">
-            <!-- Las fotos se cargarán aquí dinámicamente -->
-        </div>
+        <div id="modal-content"></div>
     </div>
 
     <script>
@@ -109,65 +127,59 @@
         const sessions = document.querySelectorAll('.session');
         const totalSessions = sessions.length;
 
-        // Función para cambiar automáticamente cada 3 segundos
+        // Fotos de cada sesión
+        const galleries = {
+            1: ['images/foto1.jpg','images/foto4.jpg','images/foto5.jpg'],
+            2: ['images/foto2.jpg','images/foto6.jpg','images/foto7.jpg'],
+            3: ['images/foto3.jpg','images/foto8.jpg','images/foto9.jpg']
+        };
+
+        // Slideshow automático
+        let slideshowInterval = setInterval(changeSession, 3000);
+
         function changeSession() {
             sessions[currentIndex].classList.remove('active');
             currentIndex = (currentIndex + 1) % totalSessions;
             sessions[currentIndex].classList.add('active');
         }
 
-        // Iniciar el slideshow automático
-        setInterval(changeSession, 3000);
-
-        // Función para mostrar la galería de una sesión
+        // Mostrar galería
         function showGallery(sessionId) {
             const modal = document.getElementById('modal');
             const modalContent = document.getElementById('modal-content');
-            
+
             // Limpiar contenido anterior
             modalContent.innerHTML = '';
 
-            // Definir fotos para cada sesión (reemplaza con tus rutas reales)
-            const galleries = {
-                1: [
-                    'images/foto1.jpg',
-                    'images/foto4.jpg',  // Asumiendo más fotos para la sesión 1
-                    'images/foto5.jpg'
-                ],
-                2: [
-                    'images/foto2.jpg',
-                    'images/foto6.jpg',
-                    'images/foto7.jpg'
-                ],
-                3: [
-                    'images/foto3.jpg',
-                    'images/foto8.jpg',
-                    'images/foto9.jpg'
-                ]
-            };
-
-            // Agregar fotos al modal
+            // Agregar fotos de la sesión
             galleries[sessionId].forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
-                img.loading = 'lazy';  // Agregar lazy loading
+                img.loading = 'lazy';
                 modalContent.appendChild(img);
             });
 
             // Mostrar modal
-            modal.style.display = 'flex';
+            modal.classList.add('show');
+
+            // Pausar slideshow
+            clearInterval(slideshowInterval);
         }
 
-        // Función para cerrar el modal
+        // Cerrar modal
         function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+            const modal = document.getElementById('modal');
+            modal.classList.remove('show');
+
+            // Reanudar slideshow
+            slideshowInterval = setInterval(changeSession, 3000);
         }
 
         // Cerrar modal al hacer clic fuera
         window.onclick = function(event) {
             const modal = document.getElementById('modal');
             if (event.target === modal) {
-                modal.style.display = 'none';
+                closeModal();
             }
         };
     </script>
