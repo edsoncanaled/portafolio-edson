@@ -1,76 +1,30 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portafolio Fotográfico</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
-    header {
-      background: #000;
-      color: #fff;
-      padding: 40px 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.8rem;
-      letter-spacing: 3px;
-    }
-    header p {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      opacity: 0.8;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 40px;
-    }
-    .gallery img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease;
-    }
-    .gallery img:hover {
-      transform: scale(1.03);
-    }
-    footer {
-      background: #000;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Edson Frog — Portafolio</h1>
-    <p>Fotografía de producto · lifestyle · café · retrato</p>
-  </header>
-
-  <section class="gallery">
-    <img src="images/foto1.jpg" alt="Foto 1" loading="lazy" />
-    <img src="foto2.jpg" alt="Foto 2" />
-    <img src="foto3.jpg" alt="Foto 3" />
-    <img src="foto4.jpg" alt="Foto 4" />
-    <img src="foto5.jpg" alt="Foto 5" />
-    <img src="foto6.jpg" alt="Foto 6" />
-  </section>
-
-  <footer>
-    © 2025 Edson Frog · Portafolio Fotográfico
-  </footer>
+                3: [
+                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+1',
+                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+2',
+                    'https://via.placeholder.com/300x200?text=Sesion+3+Foto+3'
+                ]
+            };
+            // Agregar fotos al modal
+            galleries[sessionId].forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                modalContent.appendChild(img);
+            });
+            // Mostrar modal
+            modal.style.display = 'flex';
+        }
+        // Función para cerrar el modal
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
 </body>
 </html>
