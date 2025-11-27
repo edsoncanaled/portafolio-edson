@@ -10,12 +10,12 @@
       font-family: Arial, sans-serif;
       background: #f5f5f5;
       color: #333;
-      height: 100vh; /* Para que ocupe toda la altura de la página */
+      height: 100vh;
       display: flex;
       flex-direction: column;
     }
     #slideshow {
-      flex: 1; /* Hace que el slideshow ocupe el espacio restante */
+      flex: 1;
       width: 100%;
       background: #f5f5f5;
       text-align: center;
@@ -32,26 +32,30 @@
     .session.active {
       display: block;
     }
-    .session p {
+    .session .title {
       position: absolute;
-      top: 20px; /* Texto arriba de la imagen */
-      left: 50%;
-      transform: translateX(-50%);
+      top: 20px;
+      left: 20px; /* Alineado a la izquierda */
       font-size: 1.5em;
-      color: white; /* Cambié a blanco para que se vea sobre la imagen */
-      background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para legibilidad */
-      padding: 10px;
-      border-radius: 5px;
+      color: white;
+      z-index: 1;
+    }
+    .session .name {
+      position: absolute;
+      bottom: 20px;
+      right: 20px; /* Alineado a la derecha abajo */
+      font-size: 1.2em;
+      color: white;
       z-index: 1;
     }
     .session img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Para que cubra toda el área */
+      object-fit: cover;
       cursor: pointer;
     }
     .session img:hover {
-      transform: scale(1.02); /* Ligero zoom en hover */
+      transform: scale(1.02);
     }
     #modal {
       display: none;
@@ -93,21 +97,24 @@
   </style>
 </head>
 <body>
-  <!-- Slideshow automático (ahora ocupa toda la página) -->
+  <!-- Slideshow automático -->
   <div id="slideshow">
     <!-- Sesión 1 -->
     <div class="session active" data-session="1">
-      <p>Birthday shoot</p>
+      <p class="title">Birthday shoot</p>
+      <p class="name">Edson Canales</p>
       <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
     </div>
     <!-- Sesión 2 -->
     <div class="session" data-session="2">
-      <p>Cafetería</p>
+      <p class="title">Cafetería</p>
+      <p class="name">Edson Canales</p>
       <img src="images/cafeteria/foto1c.JPG" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
     </div>
     <!-- Sesión 3 -->
     <div class="session" data-session="3">
-      <p>Sesión 3</p>
+      <p class="title">Sesión 3</p>
+      <p class="name">Edson Canales</p>
       <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
     </div>
   </div>
@@ -143,7 +150,7 @@
       // Limpiar contenido anterior
       modalContent.innerHTML = '';
 
-      // Definir fotos para cada sesión (ajusta con tus rutas reales)
+      // Definir fotos para cada sesión
       const galleries = {
         1: [
           'images/foto1.jpg',
@@ -165,7 +172,7 @@
           'images/cafeteria/foto9c.JPG',
           'images/cafeteria/foto10c.JPG',
           'images/cafeteria/foto11c.JPG',
-          'images/cafeteria/foto12c.JPG',
+          'images/cafeteria/foto12c.JPG'
         ],
         3: [
           'images/foto3.jpg',
