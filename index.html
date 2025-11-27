@@ -10,52 +10,48 @@
       font-family: Arial, sans-serif;
       background: #f5f5f5;
       color: #333;
-    }
-    header {
-      background: #000;
-      color: #fff;
-      padding: 40px 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.8rem;
-      letter-spacing: 3px;
-    }
-    header p {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      opacity: 0.8;
+      height: 100vh; /* Para que ocupe toda la altura de la página */
+      display: flex;
+      flex-direction: column;
     }
     #slideshow {
+      flex: 1; /* Hace que el slideshow ocupe el espacio restante */
       width: 100%;
-      padding: 20px;
       background: #f5f5f5;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .session {
       display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
     }
     .session.active {
       display: block;
     }
+    .session p {
+      position: absolute;
+      top: 20px; /* Texto arriba de la imagen */
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.5em;
+      color: white; /* Cambié a blanco para que se vea sobre la imagen */
+      background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para legibilidad */
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1;
+    }
     .session img {
       width: 100%;
-      max-width: none; /* Quitar límite para que ocupe el ancho disponible */
-      height: auto;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease;
+      height: 100%;
+      object-fit: cover; /* Para que cubra toda el área */
       cursor: pointer;
     }
     .session img:hover {
-      transform: scale(1.03);
-    }
-    .session p {
-      margin-top: 10px;
-      font-size: 1.2em;
-      color: #333;
+      transform: scale(1.02); /* Ligero zoom en hover */
     }
     #modal {
       display: none;
@@ -94,38 +90,25 @@
       cursor: pointer;
       color: white;
     }
-    footer {
-      background: #000;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.9rem;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Edson Frog — Portafolio</h1>
-    <p>Fotografía de producto · lifestyle · café · retrato</p>
-  </header>
-
-  <!-- Slideshow automático -->
+  <!-- Slideshow automático (ahora ocupa toda la página) -->
   <div id="slideshow">
     <!-- Sesión 1 -->
     <div class="session active" data-session="1">
-      <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
       <p>Birthday shoot</p>
+      <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
     </div>
     <!-- Sesión 2 -->
     <div class="session" data-session="2">
-      <img src="images/foto2.jpg" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
       <p>Sesión 2</p>
+      <img src="images/foto2.jpg" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
     </div>
     <!-- Sesión 3 -->
     <div class="session" data-session="3">
-      <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
       <p>Sesión 3</p>
+      <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
     </div>
   </div>
 
@@ -136,10 +119,6 @@
       <!-- Las fotos se cargarán aquí dinámicamente -->
     </div>
   </div>
-
-  <footer>
-    © 2025 Edson Frog · Portafolio Fotográfico
-  </footer>
 
   <script>
     let currentIndex = 0;
@@ -168,11 +147,11 @@
       const galleries = {
         1: [
           'images/foto1.jpg',
-          'images/foto2.jpg',  // Asumiendo más fotos para la sesión 1
+          'images/foto2.jpg',
           'images/foto3.jpg',
           'images/foto4.jpg',
           'images/foto5.jpg',
-          'images/foto6.jpg',
+          'images/foto6.jpg'
         ],
         2: [
           'images/foto2.jpg',
