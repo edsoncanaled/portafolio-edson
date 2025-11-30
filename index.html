@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portafolio Fotográfico</title>
+
+  <!-- Fuente Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
@@ -14,49 +18,83 @@
       display: flex;
       flex-direction: column;
     }
+
+    /* Slideshow */
     #slideshow {
       flex: 1;
       width: 100%;
-      background: #f5f5f5;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
+
     .session {
       display: none;
       width: 100%;
       height: 100%;
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease;
     }
+
     .session.active {
       display: block;
+      opacity: 1;
     }
+
     .session .title {
       position: absolute;
       top: 20px;
-      left: 20px; /* Alineado a la izquierda */
+      left: 20px;
       font-size: 1.5em;
       color: white;
       z-index: 1;
     }
+
     .session .name {
       position: absolute;
       bottom: 20px;
-      right: 20px; /* Alineado a la derecha abajo */
+      right: 20px;
       font-size: 1.2em;
       color: white;
       z-index: 1;
     }
+
     .session img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       cursor: pointer;
     }
-    .session img:hover {
-      transform: scale(1.02);
+
+    /* Flechas */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 3rem;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+      padding: 10px;
+      user-select: none;
+      transition: 0.3s;
     }
+
+    .arrow:hover {
+      transform: translateY(-50%) scale(1.15);
+    }
+
+    #left-arrow {
+      left: 20px;
+    }
+
+    #right-arrow {
+      right: 20px;
+    }
+
+    /* Modal */
     #modal {
       display: none;
       position: fixed;
@@ -64,67 +102,68 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.9);
       z-index: 1000;
       justify-content: center;
       align-items: center;
     }
+
     #modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 95%;
-      max-height: 95%;
-      overflow-y: auto;
+      max-width: 100%;
+      max-height: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 0; /* Sin separación entre fotos */
     }
+
     #modal img {
       width: 100%;
       height: auto;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      object-fit: cover;
     }
+
     #close-modal {
       position: absolute;
       top: 10px;
       right: 20px;
-      font-size: 2em;
+      font-size: 2.5em;
       cursor: pointer;
       color: white;
     }
   </style>
 </head>
+
 <body>
-  <!-- Slideshow automático -->
+
+  <!-- Flechas -->
+  <div id="left-arrow" class="arrow" onclick="prevSession()">❮</div>
+  <div id="right-arrow" class="arrow" onclick="nextSession()">❯</div>
+
+  <!-- Slideshow -->
   <div id="slideshow">
-    <!-- Sesión 1 -->
     <div class="session active" data-session="1">
       <p class="title">Birthday shoot</p>
       <p class="name">Edson Canales</p>
-      <img src="images/foto1.jpg" alt="Sesión 1" loading="lazy" onclick="showGallery(1)">
+      <img src="images/foto1.jpg" onclick="showGallery(1)">
     </div>
-    <!-- Sesión 2 -->
+
     <div class="session" data-session="2">
       <p class="title">Cafetería</p>
       <p class="name">Edson Canales</p>
-      <img src="images/cafeteria/foto1c.JPG" alt="Sesión 2" loading="lazy" onclick="showGallery(2)">
+      <img src="images/cafeteria/foto1c.JPG" onclick="showGallery(2)">
     </div>
-    <!-- Sesión 3 -->
+
     <div class="session" data-session="3">
       <p class="title">Sesión 3</p>
       <p class="name">Edson Canales</p>
-      <img src="images/foto3.jpg" alt="Sesión 3" loading="lazy" onclick="showGallery(3)">
+      <img src="images/foto3.jpg" onclick="showGallery(3)">
     </div>
   </div>
 
-  <!-- Modal para la galería -->
+  <!-- Modal -->
   <div id="modal">
     <span id="close-modal" onclick="closeModal()">&times;</span>
-    <div id="modal-content">
-      <!-- Las fotos se cargarán aquí dinámicamente -->
-    </div>
+    <div id="modal-content"></div>
   </div>
 
   <script>
@@ -132,79 +171,58 @@
     const sessions = document.querySelectorAll('.session');
     const totalSessions = sessions.length;
 
-    // Función para cambiar automáticamente cada 3 segundos
-    function changeSession() {
-      sessions[currentIndex].classList.remove('active');
-      currentIndex = (currentIndex + 1) % totalSessions;
-      sessions[currentIndex].classList.add('active');
+    // Autoplay
+    setInterval(() => {
+      nextSession();
+    }, 3500);
+
+    function showSession(index) {
+      sessions.forEach(s => s.classList.remove('active'));
+      sessions[index].classList.add('active');
     }
 
-    // Iniciar el slideshow automático
-    setInterval(changeSession, 3000);
+    function nextSession() {
+      currentIndex = (currentIndex + 1) % totalSessions;
+      showSession(currentIndex);
+    }
 
-    // Función para mostrar la galería de una sesión
+    function prevSession() {
+      currentIndex = (currentIndex - 1 + totalSessions) % totalSessions;
+      showSession(currentIndex);
+    }
+
+    /* -------- GALERÍA -------- */
     function showGallery(sessionId) {
       const modal = document.getElementById('modal');
       const modalContent = document.getElementById('modal-content');
-      
-      // Limpiar contenido anterior
       modalContent.innerHTML = '';
 
-      // Definir fotos para cada sesión
       const galleries = {
-        1: [
-          'images/foto1.jpg',
-          'images/foto2.jpg',
-          'images/foto3.jpg',
-          'images/foto4.jpg',
-          'images/foto5.jpg',
-          'images/foto6.jpg'
-        ],
+        1: ['images/foto1.jpg','images/foto2.jpg','images/foto3.jpg','images/foto4.jpg','images/foto5.jpg','images/foto6.jpg'],
+
         2: [
-          'images/cafeteria/foto1c.JPG',
-          'images/cafeteria/foto2c.JPG',
-          'images/cafeteria/foto3c.JPG',
-          'images/cafeteria/foto4c.JPG',
-          'images/cafeteria/foto5c.JPG',
-          'images/cafeteria/foto6c.JPG',
-          'images/cafeteria/foto7c.JPG',
-          'images/cafeteria/foto8c.JPG',
-          'images/cafeteria/foto9c.JPG',
-          'images/cafeteria/foto10c.JPG',
-          'images/cafeteria/foto11c.JPG',
-          'images/cafeteria/foto12c.JPG'
+          'images/cafeteria/foto1c.JPG','images/cafeteria/foto2c.JPG','images/cafeteria/foto3c.JPG',
+          'images/cafeteria/foto4c.JPG','images/cafeteria/foto5c.JPG','images/cafeteria/foto6c.JPG',
+          'images/cafeteria/foto7c.JPG','images/cafeteria/foto8c.JPG','images/cafeteria/foto9c.JPG',
+          'images/cafeteria/foto10c.JPG','images/cafeteria/foto11c.JPG','images/cafeteria/foto12c.JPG'
         ],
-        3: [
-          'images/foto3.jpg',
-          'images/foto8.jpg',
-          'images/foto9.jpg'
-        ]
+
+        3: ['images/foto3.jpg','images/foto8.jpg','images/foto9.jpg']
       };
 
-      // Agregar fotos al modal
       galleries[sessionId].forEach(src => {
         const img = document.createElement('img');
         img.src = src;
-        img.loading = 'lazy';
         modalContent.appendChild(img);
       });
 
-      // Mostrar modal
-      modal.style.display = 'flex';
+      modal.style.display = "flex";
     }
 
-    // Función para cerrar el modal
     function closeModal() {
-      document.getElementById('modal').style.display = 'none';
+      document.getElementById('modal').style.display = "none";
     }
-
-    // Cerrar modal al hacer clic fuera
-    window.onclick = function(event) {
-      const modal = document.getElementById('modal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    };
   </script>
+
 </body>
 </html>
