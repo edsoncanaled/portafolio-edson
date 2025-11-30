@@ -70,9 +70,9 @@
       cursor: pointer;
     }
 
-    /* ----- MODAL SIN ESPACIOS ENTRE IMÁGENES ----- */
+    /* ----- LIGHTBOX MODAL ----- */
 
-    #modal {
+    #lightbox {
       display: none;
       position: fixed;
       top: 0;
@@ -83,32 +83,39 @@
       z-index: 1000;
       justify-content: center;
       align-items: center;
-      overflow-y: auto;
-      padding: 0;
     }
 
-    #modal-content {
-      width: 100%;
-      max-width: 1200px;
-      padding: 0;
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
     }
 
-    /* IMAGENES SIN ESPACIOS */
-    #modal-content img {
-      width: 100%;
-      display: block;
-      margin: 0;
-      padding: 0;
+    #lightbox .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2em;
+      color: white;
+      cursor: pointer;
+      user-select: none;
     }
 
-    #close-modal {
-      position: fixed;
+    #lightbox .prev {
+      left: 20px;
+    }
+
+    #lightbox .next {
+      right: 20px;
+    }
+
+    #lightbox .close {
+      position: absolute;
       top: 15px;
       right: 30px;
       font-size: 2.5em;
-      cursor: pointer;
       color: white;
-      z-index: 2000;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -138,16 +145,20 @@
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="modal">
-    <span id="close-modal" onclick="closeModal()">&times;</span>
-    <div id="modal-content"></div>
+  <!-- Lightbox Modal -->
+  <div id="lightbox">
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <span class="nav prev" onclick="changeImage(-1)">&#10094;</span>
+    <img id="lightbox-img" src="" alt="">
+    <span class="nav next" onclick="changeImage(1)">&#10095;</span>
   </div>
 
   <script>
     let currentIndex = 0;
     const sessions = document.querySelectorAll(".session");
     const totalSessions = sessions.length;
+    let currentGallery = [];
+    let currentImageIndex = 0;
 
     // Cambio automático con fade
     function changeSession() {
@@ -158,13 +169,8 @@
 
     setInterval(changeSession, 4000);
 
-    // Mostrar galería
+    // Mostrar galería en lightbox
     function showGallery(sessionId) {
-      const modal = document.getElementById("modal");
-      const modalContent = document.getElementById("modal-content");
-
-      modalContent.innerHTML = "";  // Limpiar contenido
-
       const galleries = {
         1: [
           "images/foto1.jpg",
@@ -195,29 +201,41 @@
         ]
       };
 
-      // Agregar imágenes al modal
-      galleries[sessionId].forEach(src => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.loading = "lazy";
-        img.onerror = function() { console.error("Error cargando imagen: " + src); };  // Depuración
-        modalContent.appendChild(img);
-      });
-
-      modal.style.display = "flex";
-      console.log("Modal abierto para sesión " + sessionId);  // Depuración
+      currentGallery = galleries[sessionId];
+      currentImageIndex = 0;
+      updateLightbox();
+      document.getElementById("lightbox").style.display = "flex";
+      console.log("Lightbox abierto para sesión " + sessionId);  // Depuración
     }
 
-    function closeModal() {
-      document.getElementById("modal").style.display = "none";
+    function updateLightbox() {
+      const img = document.getElementById("lightbox-img");
+      img.src = currentGallery[currentImageIndex];
+      img.onerror = function() { console.error("Error cargando imagen: " + currentGallery[currentImageIndex]); };
     }
 
-    window.onclick = function(event) {
-      const modal = document.getElementById("modal");
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    };
+    function changeImage(direction) {
+      currentImageIndex += direction;
+      if (currentImageIndex < 0) currentImageIndex = currentGallery.length - 1;
+      if (currentImageIndex >= currentGallery.length) currentImageIndex = 0;
+      updateLightbox();
+    }
+
+    function closeLightbox() {
+      document.getElementById("lightbox").style.display = "none";
+    }
+
+    // Cerrar con ESC
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") changeImage(-1);
+      if (event.key === "ArrowRight") changeImage(1);
+    });
+
+    // Cerrar al hacer clic fuera
+    document.getElementById("lightbox").addEventListener("click", function(event) {
+      if (event.target === this) closeLightbox();
+    });
   </script>
 
 </body>
