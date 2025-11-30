@@ -4,10 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portafolio Fotográfico</title>
-
-  <!-- FUENTE MONTSERRAT -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-
   <style>
     body {
       margin: 0;
@@ -26,23 +22,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      position: relative;
     }
     .session {
-      position: absolute;
+      display: none;
       width: 100%;
       height: 100%;
-      opacity: 0;
-      transition: opacity 1.2s ease-in-out;
+      position: relative;
     }
     .session.active {
-      opacity: 1;
+      display: block;
     }
     .session .title {
       position: absolute;
       top: 20px;
-      left: 20px;
+      left: 20px; /* Alineado a la izquierda */
       font-size: 1.5em;
       color: white;
       z-index: 1;
@@ -50,7 +43,7 @@
     .session .name {
       position: absolute;
       bottom: 20px;
-      right: 20px;
+      right: 20px; /* Alineado a la derecha abajo */
       font-size: 1.2em;
       color: white;
       z-index: 1;
@@ -64,60 +57,42 @@
     .session img:hover {
       transform: scale(1.02);
     }
-    #lightbox {
+    #modal {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(0, 0, 0, 0.8);
       z-index: 1000;
       justify-content: center;
       align-items: center;
+    }
+    #modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 95%;
+      max-height: 95%;
       overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
     }
-    #lightbox-content {
+    #modal img {
       width: 100%;
-      max-width: 800px;
-      padding: 0;
+      height: auto;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    #lightbox img {
-      width: 100%;
-      display: block;
-      margin: 0;
-      padding: 0;
-    }
-    #lightbox .nav {
+    #close-modal {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2em;
-      color: white;
-      cursor: pointer;
-      user-select: none;
-    }
-    #lightbox .prev {
-      left: 20px;
-    }
-    #lightbox .next {
+      top: 10px;
       right: 20px;
-    }
-    #lightbox .close {
-      position: absolute;
-      top: 15px;
-      right: 30px;
-      font-size: 2.5em;
-      color: white;
-      cursor: pointer;
-    }
-    #lightbox .back-arrow {
-      position: absolute;
-      top: 15px;
-      left: 20px;
       font-size: 2em;
-      color: white;
       cursor: pointer;
+      color: white;
     }
   </style>
 </head>
@@ -144,33 +119,38 @@
     </div>
   </div>
 
-  <!-- Lightbox Modal -->
-  <div id="lightbox">
-    <span class="back-arrow" onclick="closeLightbox()">&#8592;</span>
-    <span class="close" onclick="closeLightbox()">&times;</span>
-    <span class="nav prev" onclick="changeImage(-1)">&#10094;</span>
-    <div id="lightbox-content"></div>
-    <span class="nav next" onclick="changeImage(1)">&#10095;</span>
+  <!-- Modal para la galería -->
+  <div id="modal">
+    <span id="close-modal" onclick="closeModal()">&times;</span>
+    <div id="modal-content">
+      <!-- Las fotos se cargarán aquí dinámicamente -->
+    </div>
   </div>
 
   <script>
     let currentIndex = 0;
     const sessions = document.querySelectorAll('.session');
     const totalSessions = sessions.length;
-    let currentGallery = [];
-    let currentImageIndex = 0;
 
-    // Cambio automático con fade
+    // Función para cambiar automáticamente cada 3 segundos
     function changeSession() {
       sessions[currentIndex].classList.remove('active');
       currentIndex = (currentIndex + 1) % totalSessions;
       sessions[currentIndex].classList.add('active');
     }
 
+    // Iniciar el slideshow automático
     setInterval(changeSession, 3000);
 
-    // Mostrar galería en lightbox
+    // Función para mostrar la galería de una sesión
     function showGallery(sessionId) {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modal-content');
+      
+      // Limpiar contenido anterior
+      modalContent.innerHTML = '';
+
+      // Definir fotos para cada sesión
       const galleries = {
         1: [
           'images/foto1.jpg',
@@ -201,49 +181,30 @@
         ]
       };
 
-      currentGallery = galleries[sessionId];
-      currentImageIndex = 0;
-      updateLightbox();
-      document.getElementById('lightbox').style.display = 'flex';
-      console.log('Lightbox abierto para sesión ' + sessionId);
-    }
-
-    function updateLightbox() {
-      const content = document.getElementById('lightbox-content');
-      content.innerHTML = '';
-      currentGallery.forEach((src, index) => {
+      // Agregar fotos al modal
+      galleries[sessionId].forEach(src => {
         const img = document.createElement('img');
         img.src = src;
         img.loading = 'lazy';
-        img.style.display = index === currentImageIndex ? 'block' : 'none'; // Mostrar solo la actual
-        content.appendChild(img);
+        modalContent.appendChild(img);
       });
+
+      // Mostrar modal
+      modal.style.display = 'flex';
     }
 
-    function changeImage(direction) {
-      const images = document.querySelectorAll('#lightbox-content img');
-      images[currentImageIndex].style.display = 'none';
-      currentImageIndex += direction;
-      if (currentImageIndex < 0) currentImageIndex = currentGallery.length - 1;
-      if (currentImageIndex >= currentGallery.length) currentImageIndex = 0;
-      images[currentImageIndex].style.display = 'block';
+    // Función para cerrar el modal
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
     }
 
-    function closeLightbox() {
-      document.getElementById('lightbox').style.display = 'none';
-    }
-
-    // Cerrar con ESC
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape') closeLightbox();
-      if (event.key === 'ArrowLeft') changeImage(-1);
-      if (event.key === 'ArrowRight') changeImage(1);
-    });
-
-    // Cerrar al hacer clic fuera
-    document.getElementById('lightbox').addEventListener('click', function(event) {
-      if (event.target === this) closeLightbox();
-    });
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
   </script>
 </body>
 </html>
