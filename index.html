@@ -4,10 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portafolio Fotográfico</title>
+
+  <!-- FUENTE MONTSERRAT -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: "Montserrat", sans-serif; /* Fuente cambiada a Montserrat */
       background: #f5f5f5;
       color: #333;
       height: 100vh;
@@ -22,20 +26,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .session {
-      display: none;
-      width: 100%;
-      height: 100%;
+      overflow: hidden;
       position: relative;
     }
+    .session {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out; /* Transición fade suave */
+    }
     .session.active {
-      display: block;
+      opacity: 1;
     }
     .session .title {
       position: absolute;
       top: 20px;
-      left: 20px; /* Alineado a la izquierda */
+      left: 20px;
       font-size: 1.5em;
       color: white;
       z-index: 1;
@@ -43,7 +50,7 @@
     .session .name {
       position: absolute;
       bottom: 20px;
-      right: 20px; /* Alineado a la derecha abajo */
+      right: 20px;
       font-size: 1.2em;
       color: white;
       z-index: 1;
@@ -68,23 +75,19 @@
       z-index: 1000;
       justify-content: center;
       align-items: center;
+      overflow-y: auto;
     }
     #modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 95%;
-      max-height: 95%;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
+      width: 100%;
+      max-width: 800px;
+      padding: 0;
+      background: none;
     }
     #modal img {
       width: 100%;
-      height: auto;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: block; /* Imágenes seguidas sin marcos ni espacios */
+      margin: 0;
+      padding: 0;
     }
     #close-modal {
       position: absolute;
@@ -93,6 +96,15 @@
       font-size: 2em;
       cursor: pointer;
       color: white;
+    }
+    #back-arrow {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 2em;
+      cursor: pointer;
+      color: white;
+      z-index: 1001;
     }
   </style>
 </head>
@@ -121,6 +133,7 @@
 
   <!-- Modal para la galería -->
   <div id="modal">
+    <span id="back-arrow" onclick="closeModal()">&#8592;</span> <!-- Flecha para volver al menú principal -->
     <span id="close-modal" onclick="closeModal()">&times;</span>
     <div id="modal-content">
       <!-- Las fotos se cargarán aquí dinámicamente -->
@@ -132,7 +145,7 @@
     const sessions = document.querySelectorAll('.session');
     const totalSessions = sessions.length;
 
-    // Función para cambiar automáticamente cada 3 segundos
+    // Función para cambiar automáticamente con fade
     function changeSession() {
       sessions[currentIndex].classList.remove('active');
       currentIndex = (currentIndex + 1) % totalSessions;
