@@ -35,6 +35,7 @@
       top: 0;
       left: 0;
       opacity: 0;
+      overflow-y: auto;
       transition: opacity 0.8s ease;
     }
 
@@ -63,8 +64,9 @@
 
     .session img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
+      max-height: 100vh;  /* se ajusta a la pantalla */
+      object-fit: contain; /* muestra la foto completa */
       cursor: pointer;
     }
 
@@ -152,7 +154,7 @@
     <div class="session" data-session="2">
       <p class="title">Abú Coffee</p>
       <p class="name">Edson Canales</p>
-      <img src="images/cafeteria/foto1c.JPG" onclick="showGallery(2)">
+      <img src="images/cafeteria/foto4c.JPG" onclick="showGallery(2)">
     </div>
 
     <div class="session" data-session="3">
