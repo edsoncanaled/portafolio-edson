@@ -111,19 +111,24 @@
     }
 
 
-    #modal-content {
-      max-width: 100%;
-      max-height: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 0; /* Sin separación entre fotos */
-    }
+   #modal-content {
+  background-color: transparent;
+  padding: 0;
+  max-width: 95%;
+  max-height: 95%;
+  overflow-y: auto;
+  column-count: 3;
+  column-gap: 15px;
+}
 
-    #modal img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-    }
+#modal img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  display: block;
+  break-inside: avoid;
+}
 
     #close-modal {
       position: absolute;
