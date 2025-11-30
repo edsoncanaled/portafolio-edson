@@ -163,7 +163,7 @@
       const modal = document.getElementById("modal");
       const modalContent = document.getElementById("modal-content");
 
-      modalContent.innerHTML = "";
+      modalContent.innerHTML = "";  // Limpiar contenido
 
       const galleries = {
         1: [
@@ -195,13 +195,17 @@
         ]
       };
 
+      // Agregar imágenes al modal
       galleries[sessionId].forEach(src => {
         const img = document.createElement("img");
         img.src = src;
+        img.loading = "lazy";
+        img.onerror = function() { console.error("Error cargando imagen: " + src); };  // Depuración
         modalContent.appendChild(img);
       });
 
       modal.style.display = "flex";
+      console.log("Modal abierto para sesión " + sessionId);  // Depuración
     }
 
     function closeModal() {
