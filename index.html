@@ -21,10 +21,8 @@ body {
 
 /* --- SLIDESHOW --- */
 #slideshow {
+  flex: 1;
   width: 100%;
-  max-height: 90vh; /* ↓ No ocupa toda la pantalla */
-  padding: 40px;    /* ↓ Espacio alrededor */
-  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,18 +62,10 @@ body {
 
 .session img {
   width: 100%;
-  height: auto;
-  max-height: 80vh;
-  object-fit: contain;
-  border-radius: 14px;
-
-  /* --- MARCO SUAVE --- */
-  border: 6px solid rgba(255, 255, 255, 0.8);
-    /* --- SOMBRA --- */
-  box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
 }
-
-
 
 .session img:hover {
   transform: scale(1.02);
@@ -244,3 +234,5 @@ modal.onclick = e => { if(e.target===modal) modal.style.display='none'; }
 </script>
 </body>
 </html>
+
+quiero que las imagenes no ocupen toda la pantalla, que deje un espacio pero que se vea bien
