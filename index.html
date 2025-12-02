@@ -1,164 +1,246 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edson Frog – Portafolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portafolio Fotográfico</title>
 
-  <!-- Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet"/>
+<!-- Montserrat -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-    /* ---- HERO ---- */
-    .hero {
-      height: 85vh; /* Ocupa el 85% de la pantalla */
-      width: 100%;
-      overflow: hidden;
-    }
+/* --- SLIDESHOW --- */
+#slideshow {
+  width: 100%;
+  max-height: 90vh; /* ↓ No ocupa toda la pantalla */
+  padding: 40px;    /* ↓ Espacio alrededor */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
 
-    .hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+.session {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: opacity 1s ease;
+}
 
-    header {
-      text-align: center;
-      padding: 30px 20px;
-    }
+.session.active {
+  display: block;
+  opacity: 1;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      font-weight: 600;
-      letter-spacing: 3px;
-    }
+.session .title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 1.5em;
+  color: white;
+  z-index: 1;
+}
 
-    header p {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      opacity: 0.8;
-    }
+.session .name {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 1.2em;
+  color: white;
+  z-index: 1;
+}
 
-    /* ---- MASONRY GALLERY ---- */
-    .gallery {
-      column-count: 3;
-      column-gap: 15px;
-      padding: 20px;
-    }
+.session img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 14px;
 
-    @media (max-width: 900px) {
-      .gallery {
-        column-count: 2;
-      }
-    }
+  /* --- MARCO SUAVE --- */
+  border: 6px solid rgba(255, 255, 255, 0.8);
+    /* --- SOMBRA --- */
+  box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+}
 
-    @media (max-width: 600px) {
-      .gallery {
-        column-count: 1;
-      }
-    }
 
-    .gallery img {
-      width: 100%;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      transition: transform .3s ease;
-      cursor: pointer;
-    }
 
-    .gallery img:hover {
-      transform: scale(1.02);
-    }
+.session img:hover {
+  transform: scale(1.02);
+  transition: transform 0.3s ease;
+}
 
-    /* ---- MODAL FULLSCREEN ---- */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.9);
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 1000;
-    }
+/* --- MODAL FULLSCREEN --- */
+#modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0,0,0,0.95);
+  padding: 20px;
+}
 
-    .modal img {
-      width: 100%;
-      max-width: 1200px;
-      height: auto;
-      border-radius: 10px;
-    }
+/* Masonry */
+#modal-content {
+  column-count: 3;
+  column-gap: 15px;
+}
 
-    .modal.close-area {
-      cursor: pointer;
-    }
+#modal-content img {
+  width: 100%;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  display: block;
+  break-inside: avoid;
+  cursor: pointer;
+}
 
-    footer {
-      text-align: center;
-      padding: 30px 0;
-      font-size: 0.9rem;
-      color: #666;
-    }
-  </style>
+/* Responsive */
+@media (max-width: 900px) {
+  #modal-content { column-count: 2; }
+}
+@media (max-width: 600px) {
+  #modal-content { column-count: 1; }
+}
+
+/* Cerrar */
+#close-modal {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+/* Flechas para slideshow */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3rem;
+  color: white;
+  cursor: pointer;
+  z-index: 100;
+  user-select: none;
+}
+
+#prev { left: 20px; }
+#next { right: 20px; }
+
+</style>
 </head>
 <body>
 
-  <!-- HERO portada -->
-  <div class="hero">
-    <img src="images/foto1.jpg" alt="Portada" />
+<!-- SLIDESHOW -->
+<div id="slideshow">
+  <div class="arrow" id="prev">&#10094;</div>
+  <div class="arrow" id="next">&#10095;</div>
+
+  <!-- Sesión 1 -->
+  <div class="session active" data-session="1">
+    <p class="title">Birthday shoot</p>
+    <p class="name">Edson Canales</p>
+    <img src="images/foto1.jpg" alt="Sesión 1" onclick="showGallery(1)">
   </div>
 
-  <header>
-    <h1>Edson Frog — Portafolio</h1>
-    <p>Fotografía de producto · lifestyle · café · retrato</p>
-  </header>
-
-  <!-- GALERÍA MASONRY -->
-  <section class="gallery">
-    <img src="images/foto2.jpg" alt="" />
-    <img src="images/foto3.jpg" alt="" />
-    <img src="images/foto4.jpg" alt="" />
-    <img src="images/foto5.jpg" alt="" />
-    <img src="images/foto6.jpg" alt="" />
-    <img src="images/foto7.jpg" alt="" />
-    <img src="images/foto8.jpg" alt="" />
-    <img src="images/foto9.jpg" alt="" />
-  </section>
-
-  <!-- MODAL -->
-  <div class="modal" id="modal">
-    <span class="close-area"></span>
-    <img id="modal-img" src="" alt="" />
+  <!-- Sesión 2 -->
+  <div class="session" data-session="2">
+    <p class="title">Abú Coffee</p>
+    <p class="name">Edson Canales</p>
+    <img src="images/cafeteria/foto2c.JPG" alt="Sesión 2" onclick="showGallery(2)">
   </div>
 
-  <footer>
-    © 2025 Edson Frog · Portafolio Fotográfico
-  </footer>
+  <!-- Sesión 3 -->
+  <div class="session" data-session="3">
+    <p class="title">Sesión 3</p>
+    <p class="name">Edson Canales</p>
+    <img src="images/foto3.jpg" alt="Sesión 3" onclick="showGallery(3)">
+  </div>
+</div>
 
-  <script>
-    const images = document.querySelectorAll(".gallery img");
-    const modal = document.getElementById("modal");
-    const modalImg = document.getElementById("modal-img");
+<!-- MODAL FULLSCREEN -->
+<div id="modal">
+  <span id="close-modal">&times;</span>
+  <div id="modal-content"></div>
+</div>
 
-    images.forEach(img => {
-      img.addEventListener("click", () => {
-        modal.style.display = "flex";
-        modalImg.src = img.src;
-      });
-    });
+<script>
+// --- SLIDESHOW ---
+let currentIndex = 0;
+const sessions = document.querySelectorAll('.session');
+const totalSessions = sessions.length;
 
-    modal.addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-  </script>
+function showSession(index) {
+  sessions.forEach(s => s.classList.remove('active'));
+  sessions[index].classList.add('active');
+  currentIndex = index;
+}
 
+// Flechas
+document.getElementById('prev').onclick = () => {
+  showSession((currentIndex - 1 + totalSessions) % totalSessions);
+}
+document.getElementById('next').onclick = () => {
+  showSession((currentIndex + 1) % totalSessions);
+}
+
+// Auto slideshow (más lento)
+setInterval(() => {
+  showSession((currentIndex + 1) % totalSessions);
+}, 5000); // cada 5 segundos
+
+// --- MODAL FULLSCREEN + MASONRY ---
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modal-content');
+const closeModalBtn = document.getElementById('close-modal');
+
+const galleries = {
+  1: [
+    'images/foto1.jpg','images/foto2.jpg','images/foto3.jpg',
+    'images/foto4.jpg','images/foto5.jpg','images/foto6.jpg'
+  ],
+  2: [
+    'images/cafeteria/foto1c.JPG','images/cafeteria/foto2c.JPG','images/cafeteria/foto3c.JPG',
+    'images/cafeteria/foto4c.JPG','images/cafeteria/foto5c.JPG','images/cafeteria/foto6c.JPG',
+    'images/cafeteria/foto7c.JPG','images/cafeteria/foto8c.JPG','images/cafeteria/foto9c.JPG',
+    'images/cafeteria/foto10c.JPG','images/cafeteria/foto11c.JPG','images/cafeteria/foto12c.JPG'
+  ],
+  3: [
+    'images/foto3.jpg','images/foto8.jpg','images/foto9.jpg'
+  ]
+};
+
+function showGallery(sessionId){
+  modalContent.innerHTML = '';
+  galleries[sessionId].forEach(src=>{
+    const img = document.createElement('img');
+    img.src = src;
+    modalContent.appendChild(img);
+  });
+  modal.style.display = 'block';
+}
+
+// Cerrar modal
+closeModalBtn.onclick = () => modal.style.display = 'none';
+modal.onclick = e => { if(e.target===modal) modal.style.display='none'; }
+</script>
 </body>
 </html>
