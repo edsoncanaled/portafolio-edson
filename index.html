@@ -51,11 +51,41 @@
 
     /* ===== CATEGORY MENU ===== */
     .categories {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-bottom: 48px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+
+    .category-card {
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .category-card img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      margin-bottom: 16px;
+      transition: opacity 0.3s ease;
+    }
+
+    .category-card:hover img {
+      opacity: 0.85;
+    }
+
+    .category-card span {
+      display: block;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .category-card.active span {
+      color: var(--text);
     }
 
     .categories button {
@@ -146,8 +176,14 @@
 
   <!-- CATEGORY MENU -->
   <nav class="categories">
-    <button id="btn-editorial" class="active">Editorial</button>
-    <button id="btn-food">Alimentos & Bebidas</button>
+    <div class="category-card active" id="btn-editorial">
+      <img src="Images/foto1.jpg" alt="Editorial">
+      <span>Editorial</span>
+    </div>
+    <div class="category-card" id="btn-food">
+      <img src="images/cafeteria/foto2c.jpg" alt="Alimentos y Bebidas">
+      <span>Alimentos & Bebidas</span>
+    </div>
   </nav>
 
   <!-- EDITORIAL SECTION -->
@@ -191,6 +227,22 @@
   <script>
     const btnEditorial = document.getElementById('btn-editorial');
     const btnFood = document.getElementById('btn-food');
+    const editorial = document.getElementById('editorial');
+    const food = document.getElementById('food');
+
+    btnEditorial.addEventListener('click', () => {
+      btnEditorial.classList.add('active');
+      btnFood.classList.remove('active');
+      editorial.classList.remove('hidden');
+      food.classList.add('hidden');
+    });
+
+    btnFood.addEventListener('click', () => {
+      btnFood.classList.add('active');
+      btnEditorial.classList.remove('active');
+      food.classList.remove('hidden');
+      editorial.classList.add('hidden');
+    });
     const editorial = document.getElementById('editorial');
     const food = document.getElementById('food');
 
