@@ -154,10 +154,14 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.9);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 999;
+    }
+
+    #lightbox.active {
+      display: flex;
     }
 
     #lightbox img {
@@ -169,9 +173,11 @@
       position: absolute;
       top: 24px;
       right: 32px;
-      font-size: 32px;
+      font-size: 40px;
       color: white;
       cursor: pointer;
+      z-index: 1000;
+      user-select: none;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -249,7 +255,7 @@
   </footer>
 
   <!-- LIGHTBOX -->
-  <div id="lightbox" class="hidden">
+  <div id="lightbox">
     <span id="lightbox-close">×</span>
     <img id="lightbox-img" src="" alt="Imagen ampliada">
   </div>
@@ -275,7 +281,7 @@
       });
     });
 
-    // LIGHTBOX
+    // LIGHTBOX (CORREGIDO)
     const images = document.querySelectorAll('.grid img');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
@@ -284,20 +290,19 @@
     images.forEach(img => {
       img.addEventListener('click', () => {
         lightboxImg.src = img.src;
-        lightbox.classList.remove('hidden');
+        lightbox.classList.add('active');
       });
     });
 
-    lightboxClose.addEventListener('click', () => {
-      lightbox.classList.add('hidden');
+    lightboxClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      lightbox.classList.remove('active');
       lightboxImg.src = '';
     });
 
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.classList.add('hidden');
-        lightboxImg.src = '';
-      }
+    lightbox.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+      lightboxImg.src = '';
     });
   </script>
 
