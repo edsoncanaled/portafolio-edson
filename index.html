@@ -5,38 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Edson Canales | Portafolio</title>
 
-  <!-- Google Font: Montserrat -->
+  <!-- Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #ffffff;
-      --text: #111111;
-      --muted: #777777;
+      --text: #111;
+      --muted: #777;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: var(--bg);
       color: var(--text);
-      line-height: 1.4;
+      background: #fff;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
-    }
-
-    /* ===== HEADER ===== */
     header {
       text-align: center;
       padding: 48px 24px 32px;
@@ -45,8 +32,8 @@
 
     header h1 {
       font-size: 24px;
-      font-weight: 500;
       letter-spacing: 4px;
+      font-weight: 500;
       text-transform: uppercase;
     }
 
@@ -57,74 +44,55 @@
       transform: translateY(-50%);
       background: none;
       border: none;
-      font-family: 'Montserrat', sans-serif;
       font-size: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
       color: var(--muted);
+      display: none;
     }
 
-    #back-home:hover {
-      color: var(--text);
-    }
+    #back-home:hover { color: var(--text); }
 
-    /* ===== CATEGORY MENU ===== */
     .categories {
+      max-width: 900px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 32px;
-      max-width: 900px;
-      margin: 0 auto 64px;
-      padding: 0 24px;
     }
 
-    .category-card {
-      cursor: pointer;
-      text-align: center;
-    }
+    .category-card { cursor: pointer; text-align: center; }
 
     .category-card img {
       width: 100%;
       aspect-ratio: 3 / 4;
       object-fit: cover;
       margin-bottom: 16px;
-      transition: opacity 0.3s ease;
+      transition: opacity .3s ease;
     }
 
-    .category-card:hover img {
-      opacity: 0.85;
-    }
+    .category-card:hover img { opacity: .85; }
 
     .category-card span {
-      display: block;
       font-size: 14px;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--muted);
     }
 
-    .category-card.active span {
-      color: var(--text);
-    }
+    section { display: none; }
 
-    .categories button {
-      background: none;
-      border: none;
-      font-family: 'Montserrat', sans-serif;
+    .shoot-title {
+      text-align: center;
+      margin: 24px 0 40px;
       font-size: 14px;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--muted);
-      transition: color 0.3s ease;
     }
 
-    .categories button:hover,
-    .categories button.active {
-      color: var(--text);
-    }
-
-    /* ===== GRID ===== */
     .grid {
       max-width: 1200px;
       margin: 0 auto 80px;
@@ -138,9 +106,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
       cursor: pointer;
-      animation: fadeIn 0.6s ease both;
+      animation: fadeIn .6s ease both;
     }
 
     @keyframes fadeIn {
@@ -148,21 +115,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .grid img:hover {
-      opacity: 0.85;
-    }
-
-    /* ===== SHOOT TITLE ===== */
-    .shoot-title {
-      text-align: center;
-      font-size: 14px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin: 24px 0 40px;
-      color: var(--muted);
-    }
-
-    /* ===== FOOTER ===== */
     footer {
       text-align: center;
       padding: 40px 24px 48px;
@@ -171,33 +123,27 @@
       color: var(--muted);
     }
 
-    footer p {
-      margin-bottom: 8px;
-    }
-
-    /* ===== LIGHTBOX ===== */
+    /* LIGHTBOX */
     #lightbox {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,.9);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 999;
     }
 
-    #lightbox.active {
-      display: flex;
-    }
+    #lightbox.active { display: flex; }
 
     #lightbox img {
       max-width: 90%;
       max-height: 90vh;
-      animation: zoomIn 0.3s ease both;
+      animation: zoom .3s ease both;
     }
 
-    @keyframes zoomIn {
-      from { transform: scale(0.95); opacity: 0; }
+    @keyframes zoom {
+      from { transform: scale(.95); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
@@ -206,167 +152,103 @@
       top: 24px;
       right: 32px;
       font-size: 40px;
-      color: white;
+      color: #fff;
       cursor: pointer;
-      z-index: 1000;
       user-select: none;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 18px;
-        letter-spacing: 3px;
-      }
-
-      .categories {
-        gap: 24px;
-      }
-    }
-
-    /* ===== HIDDEN SECTIONS ===== */
-    .hidden {
-      display: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <h1>Edson Canales</h1>
-    <button id="back-home" class="hidden">← Back</button>
-  </header>
+<header>
+  <h1>Edson Canales</h1>
+  <button id="back-home">← Back</button>
+</header>
 
-  <!-- CATEGORY MENU -->
-  <nav class="categories">
-    <div class="category-card active" data-target="editorial">
-      <img src="Images/foto1.jpg" alt="Editorial">
-      <span>Editorial</span>
-    </div>
-    <div class="category-card" data-target="food">
-      <img src="images/cafeteria/foto2c.jpg" alt="Alimentos y Bebidas">
-      <span>Alimentos & Bebidas</span>
-    </div>
-  </nav>
-
-  <!-- EDITORIAL SECTION -->
-  <section id="editorial" class="hidden">
-    <div class="shoot-title">Birthday Shot</div>
-    <div class="grid">
-      <img src="Images/foto1.jpg" alt="Birthday Shot 1">
-      <img src="Images/foto2.jpg" alt="Birthday Shot 2">
-      <img src="Images/foto3.jpg" alt="Birthday Shot 3">
-      <img src="Images/foto4.jpg" alt="Birthday Shot 4">
-      <img src="Images/foto5.jpg" alt="Birthday Shot 5">
-      <img src="Images/foto6.jpg" alt="Birthday Shot 6">
-    </div>
-  </section>
-
-  <!-- FOOD & DRINK SECTION -->
-  <section id="food" class="hidden">
-    <div class="shoot-title">Abú Coffee</div>
-    <div class="grid">
-      <img src="images/cafeteria/foto1c.jpg" alt="Abú Coffee 1">
-      <img src="images/cafeteria/foto2c.jpg" alt="Abú Coffee 2">
-      <img src="images/cafeteria/foto3c.jpg" alt="Abú Coffee 3">
-      <img src="images/cafeteria/foto4c.jpg" alt="Abú Coffee 4">
-      <img src="images/cafeteria/foto5c.jpg" alt="Abú Coffee 5">
-      <img src="images/cafeteria/foto6c.jpg" alt="Abú Coffee 6">
-      <img src="images/cafeteria/foto7c.jpg" alt="Abú Coffee 7">
-      <img src="images/cafeteria/foto8c.jpg" alt="Abú Coffee 8">
-      <img src="images/cafeteria/foto9c.jpg" alt="Abú Coffee 9">
-      <img src="images/cafeteria/foto10c.jpg" alt="Abú Coffee 10">
-      <img src="images/cafeteria/foto11c.jpg" alt="Abú Coffee 11">
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>Tel. 812 568 0681</p>
-    <p>canalesed4@gmail.com</p>
-  </footer>
-
-  <!-- LIGHTBOX -->
-  <div id="lightbox">
-    <span id="lightbox-close">×</span>
-    <img id="lightbox-img" src="" alt="Imagen ampliada">
+<nav class="categories">
+  <div class="category-card" data-target="editorial">
+    <img src="images/foto1.jpg" alt="Editorial">
+    <span>Editorial</span>
   </div>
+  <div class="category-card" data-target="food">
+    <img src="images/cafeteria/foto2c.JPG" alt="Alimentos y Bebidas">
+    <span>Alimentos & Bebidas</span>
+  </div>
+</nav>
 
-  <!-- SCRIPT -->
-  <script>
-    const cards = document.querySelectorAll('.category-card');
-    const editorial = document.getElementById('editorial');
-    const food = document.getElementById('food');
-    const backHome = document.getElementById('back-home');
-    const categories = document.querySelector('.categories');
+<section id="editorial">
+  <div class="shoot-title">Birthday Shot</div>
+  <div class="grid">
+    <img src="images/foto1.jpg"><img src="images/foto2.jpg"><img src="images/foto3.jpg">
+    <img src="images/foto4.jpg"><img src="images/foto5.jpg"><img src="images/foto6.jpg">
+  </div>
+</section>
 
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        categories.classList.add('hidden');
-        backHome.classList.remove('hidden');
+<section id="food">
+  <div class="shoot-title">Abú Coffee</div>
+  <div class="grid">
+    <img src="images/cafeteria/foto1c.JPG"><img src="images/cafeteria/foto2c.JPG">
+    <img src="images/cafeteria/foto3c.JPG"><img src="images/cafeteria/foto4c.JPG">
+    <img src="images/cafeteria/foto5c.JPG"><img src="images/cafeteria/foto6c.JPG">
+    <img src="images/cafeteria/foto7c.JPG"><img src="images/cafeteria/foto8c.JPG">
+    <img src="images/cafeteria/foto9c.JPG"><img src="images/cafeteria/foto10c.JPG">
+    <img src="images/cafeteria/foto11c.JPG">
+  </div>
+</section>
 
-        if (card.dataset.target === 'editorial') {
-          editorial.classList.remove('hidden');
-          food.classList.add('hidden');
-        } else {
-          food.classList.remove('hidden');
-          editorial.classList.add('hidden');
-        }
-      });
+<footer>
+  <p>Tel. 812 568 0681</p>
+  <p>canalesed4@gmail.com</p>
+</footer>
+
+<div id="lightbox">
+  <span id="lightbox-close">×</span>
+  <img id="lightbox-img">
+</div>
+
+<script>
+  const cards = document.querySelectorAll('.category-card');
+  const categories = document.querySelector('.categories');
+  const editorial = document.getElementById('editorial');
+  const food = document.getElementById('food');
+  const back = document.getElementById('back-home');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      categories.style.display = 'none';
+      back.style.display = 'block';
+      card.dataset.target === 'editorial'
+        ? (editorial.style.display = 'block', food.style.display = 'none')
+        : (food.style.display = 'block', editorial.style.display = 'none');
     });
+  });
 
-    backHome.addEventListener('click', () => {
-      editorial.classList.add('hidden');
-      food.classList.add('hidden');
-      categories.classList.remove('hidden');
-      backHome.classList.add('hidden');
-    });
+  back.addEventListener('click', () => {
+    editorial.style.display = 'none';
+    food.style.display = 'none';
+    categories.style.display = 'grid';
+    back.style.display = 'none';
+  });
 
-    // LIGHTBOX + NAVEGACIÓN
-    const images = Array.from(document.querySelectorAll('.grid img'));
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxClose = document.getElementById('lightbox-close');
-    let currentIndex = 0;
+  const imgs = document.querySelectorAll('.grid img');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const close = document.getElementById('lightbox-close');
 
-    function showImage(index) {
-      currentIndex = index;
-      lightboxImg.src = images[currentIndex].src;
+  imgs.forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
       lightbox.classList.add('active');
-    }
-
-    images.forEach((img, index) => {
-      img.addEventListener('click', () => showImage(index));
     });
+  });
 
-    lightboxClose.addEventListener('click', e => {
-      e.stopPropagation();
-      lightbox.classList.remove('active');
-    });
+  close.addEventListener('click', e => {
+    e.stopPropagation();
+    lightbox.classList.remove('active');
+  });
 
-    lightbox.addEventListener('click', () => {
-      lightbox.classList.remove('active');
-    });
-
-    document.addEventListener('keydown', e => {
-      if (!lightbox.classList.contains('active')) return;
-
-      if (e.key === 'ArrowRight') {
-        currentIndex = (currentIndex + 1) % images.length;
-        showImage(currentIndex);
-      }
-
-      if (e.key === 'ArrowLeft') {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        showImage(currentIndex);
-      }
-
-      if (e.key === 'Escape') {
-        lightbox.classList.remove('active');
-      }
-    });
-  </script>
+  lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+</script>
 
 </body>
 </html>
