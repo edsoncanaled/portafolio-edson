@@ -40,6 +40,7 @@
     header {
       text-align: center;
       padding: 48px 24px 32px;
+      position: relative;
     }
 
     header h1 {
@@ -47,6 +48,25 @@
       font-weight: 500;
       letter-spacing: 4px;
       text-transform: uppercase;
+    }
+
+    #back-home {
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    #back-home:hover {
+      color: var(--text);
     }
 
     /* ===== CATEGORY MENU ===== */
@@ -119,7 +139,13 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: opacity 0.3s ease;
+      cursor: pointer;
+      animation: fadeIn 0.6s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .grid img:hover {
@@ -167,6 +193,12 @@
     #lightbox img {
       max-width: 90%;
       max-height: 90vh;
+      animation: zoomIn 0.3s ease both;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     #lightbox-close {
@@ -203,6 +235,7 @@
   <!-- HEADER -->
   <header>
     <h1>Edson Canales</h1>
+    <button id="back-home" class="hidden">← Back</button>
   </header>
 
   <!-- CATEGORY MENU -->
@@ -221,12 +254,12 @@
   <section id="editorial" class="hidden">
     <div class="shoot-title">Birthday Shot</div>
     <div class="grid">
-      <img src="images/foto1.jpg" alt="Birthday Shot 1">
-      <img src="images/foto2.jpg" alt="Birthday Shot 2">
-      <img src="images/foto3.jpg" alt="Birthday Shot 3">
-      <img src="images/foto4.jpg" alt="Birthday Shot 4">
-      <img src="images/foto5.jpg" alt="Birthday Shot 5">
-      <img src="images/foto6.jpg" alt="Birthday Shot 6">
+      <img src="Images/foto1.jpg" alt="Birthday Shot 1">
+      <img src="Images/foto2.jpg" alt="Birthday Shot 2">
+      <img src="Images/foto3.jpg" alt="Birthday Shot 3">
+      <img src="Images/foto4.jpg" alt="Birthday Shot 4">
+      <img src="Images/foto5.jpg" alt="Birthday Shot 5">
+      <img src="Images/foto6.jpg" alt="Birthday Shot 6">
     </div>
   </section>
 
@@ -234,17 +267,17 @@
   <section id="food" class="hidden">
     <div class="shoot-title">Abú Coffee</div>
     <div class="grid">
-      <img src="images/cafeteria/foto1c.JPG" alt="Abú Coffee 1">
-      <img src="images/cafeteria/foto2c.JPG" alt="Abú Coffee 2">
-      <img src="images/cafeteria/foto3c.JPG" alt="Abú Coffee 3">
-      <img src="images/cafeteria/foto4c.JPG" alt="Abú Coffee 4">
-      <img src="images/cafeteria/foto5c.JPG" alt="Abú Coffee 5">
-      <img src="images/cafeteria/foto6c.JPG" alt="Abú Coffee 6">
-      <img src="images/cafeteria/foto7c.JPG" alt="Abú Coffee 7">
-      <img src="images/cafeteria/foto8c.JPG" alt="Abú Coffee 8">
-      <img src="images/cafeteria/foto9c.JPG" alt="Abú Coffee 9">
-      <img src="images/cafeteria/foto10c.JPG" alt="Abú Coffee 10">
-      <img src="images/cafeteria/foto11c.JPG" alt="Abú Coffee 11">
+      <img src="images/cafeteria/foto1c.jpg" alt="Abú Coffee 1">
+      <img src="images/cafeteria/foto2c.jpg" alt="Abú Coffee 2">
+      <img src="images/cafeteria/foto3c.jpg" alt="Abú Coffee 3">
+      <img src="images/cafeteria/foto4c.jpg" alt="Abú Coffee 4">
+      <img src="images/cafeteria/foto5c.jpg" alt="Abú Coffee 5">
+      <img src="images/cafeteria/foto6c.jpg" alt="Abú Coffee 6">
+      <img src="images/cafeteria/foto7c.jpg" alt="Abú Coffee 7">
+      <img src="images/cafeteria/foto8c.jpg" alt="Abú Coffee 8">
+      <img src="images/cafeteria/foto9c.jpg" alt="Abú Coffee 9">
+      <img src="images/cafeteria/foto10c.jpg" alt="Abú Coffee 10">
+      <img src="images/cafeteria/foto11c.jpg" alt="Abú Coffee 11">
     </div>
   </section>
 
@@ -265,11 +298,13 @@
     const cards = document.querySelectorAll('.category-card');
     const editorial = document.getElementById('editorial');
     const food = document.getElementById('food');
+    const backHome = document.getElementById('back-home');
+    const categories = document.querySelector('.categories');
 
     cards.forEach(card => {
       card.addEventListener('click', () => {
-        cards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
+        categories.classList.add('hidden');
+        backHome.classList.remove('hidden');
 
         if (card.dataset.target === 'editorial') {
           editorial.classList.remove('hidden');
@@ -281,28 +316,55 @@
       });
     });
 
-    // LIGHTBOX (CORREGIDO)
-    const images = document.querySelectorAll('.grid img');
+    backHome.addEventListener('click', () => {
+      editorial.classList.add('hidden');
+      food.classList.add('hidden');
+      categories.classList.remove('hidden');
+      backHome.classList.add('hidden');
+    });
+
+    // LIGHTBOX + NAVEGACIÓN
+    const images = Array.from(document.querySelectorAll('.grid img'));
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxClose = document.getElementById('lightbox-close');
+    let currentIndex = 0;
 
-    images.forEach(img => {
-      img.addEventListener('click', () => {
-        lightboxImg.src = img.src;
-        lightbox.classList.add('active');
-      });
+    function showImage(index) {
+      currentIndex = index;
+      lightboxImg.src = images[currentIndex].src;
+      lightbox.classList.add('active');
+    }
+
+    images.forEach((img, index) => {
+      img.addEventListener('click', () => showImage(index));
     });
 
-    lightboxClose.addEventListener('click', (e) => {
+    lightboxClose.addEventListener('click', e => {
       e.stopPropagation();
       lightbox.classList.remove('active');
-      lightboxImg.src = '';
     });
 
     lightbox.addEventListener('click', () => {
       lightbox.classList.remove('active');
-      lightboxImg.src = '';
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('active')) return;
+
+      if (e.key === 'ArrowRight') {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+      }
+
+      if (e.key === 'ArrowLeft') {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage(currentIndex);
+      }
+
+      if (e.key === 'Escape') {
+        lightbox.classList.remove('active');
+      }
     });
   </script>
 
