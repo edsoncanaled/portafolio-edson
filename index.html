@@ -1,300 +1,216 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales | Portafolio</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Canela:opsz,wght@8..72,400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Fjalla+One&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --text:#111;
-  --muted:#777;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
   font-family:'Montserrat',sans-serif;
-  background:#fff;
-  color:var(--text);
+  overflow-x:hidden;
 }
 
 /* HEADER */
 header{
-  position:sticky;
+  position:fixed;
   top:0;
+  left:0;
+  width:100%;
+  padding:24px 32px;
   background:#fff;
   z-index:10;
-  text-align:center;
-  padding:32px 24px;
-  border-bottom:1px solid #eee;
 }
 
 header h1{
-  font-family:'Canela',serif;
-  font-size:32px;
+  font-family:'Fjalla One',sans-serif;
+  font-size:28px;
   letter-spacing:2px;
-  font-weight:500;
-  animation:fadeDown 1s ease both;
+  animation:fadeName 1.2s ease both;
 }
 
-@keyframes fadeDown{
+@keyframes fadeName{
   from{opacity:0;transform:translateY(-10px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-#back-home{
-  position:absolute;
-  left:24px;
-  top:50%;
-  transform:translateY(-50%);
-  background:none;
-  border:none;
-  font-size:14px;
-  letter-spacing:2px;
-  cursor:pointer;
-  color:var(--muted);
-  display:none;
+/* MAGAZINE SCROLL */
+.magazine{
+  display:flex;
+  height:100vh;
+  width:200vw;
+  margin-top:80px;
 }
 
-/* CATEGORIES */
-.categories{
-  max-width:1000px;
-  margin:80px auto;
-  padding:0 24px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:40px;
+.panel{
+  width:100vw;
+  padding:80px 48px 120px;
 }
 
-.category-card{
-  cursor:pointer;
-}
-
-.category-card img{
-  width:100%;
-  aspect-ratio:3/4;
-  object-fit:cover;
-  transition:transform .4s ease,opacity .3s ease;
-}
-
-.category-card:hover img{
-  transform:scale(1.02);
-  opacity:.9;
-}
-
-.category-card span{
-  display:block;
-  margin-top:16px;
-  text-align:center;
-  font-size:16px;
-  letter-spacing:3px;
+.panel h2{
+  position:sticky;
+  top:100px;
+  font-size:18px;
+  letter-spacing:4px;
   text-transform:uppercase;
-  color:var(--muted);
+  margin-bottom:48px;
 }
 
-/* SECTIONS */
-section{display:none}
-
-.shoot-title{
-  text-align:center;
-  margin:48px 0 8px;
-  font-size:16px;
-  letter-spacing:3px;
-  text-transform:uppercase;
+/* MOSAIC */
+.mosaic{
+  column-count:3;
+  column-gap:24px;
 }
 
-.shoot-desc{
-  text-align:center;
-  max-width:600px;
-  margin:0 auto 48px;
-  font-size:14px;
-  color:var(--muted);
-  line-height:1.6;
-}
-
-/* GRID */
-.grid{
-  max-width:1200px;
-  margin:0 auto 120px;
-  padding:0 24px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:24px;
-}
-
-.grid img{
+.mosaic img{
   width:100%;
+  margin-bottom:24px;
   cursor:pointer;
-  animation:fadeIn .6s ease both;
+  break-inside:avoid;
+  animation:fadeImg .6s ease both;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(8px)}
+@keyframes fadeImg{
+  from{opacity:0;transform:translateY(6px)}
   to{opacity:1;transform:translateY(0)}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .mosaic{column-count:2}
+}
+@media(max-width:600px){
+  .mosaic{column-count:1}
 }
 
 /* LIGHTBOX */
 #lightbox{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.92);
+  background:rgba(0,0,0,.9);
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:999;
+  z-index:99;
 }
-
 #lightbox.active{display:flex}
-
 #lightbox img{
   max-width:90%;
   max-height:90vh;
 }
-
-#lightbox-close{
+#lightbox span{
   position:absolute;
   top:24px;
   right:32px;
-  font-size:42px;
+  font-size:40px;
   color:#fff;
   cursor:pointer;
 }
 
 /* FOOTER */
 footer{
-  position:fixed;
-  bottom:24px;
-  left:24px;
-  font-size:13px;
-  color:var(--muted);
+  padding:80px 32px;
+  border-top:1px solid #eee;
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
 }
-
-.footer-right{
-  position:fixed;
-  bottom:24px;
-  right:24px;
-  font-size:13px;
-  text-align:right;
-}
-
-footer span,
-.footer-right span{
+footer span{
   display:block;
-  text-transform:uppercase;
-  letter-spacing:2px;
   font-size:11px;
-  margin-bottom:4px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:6px;
 }
-
-/* MOBILE */
-@media(max-width:768px){
-  header h1{font-size:26px}
-  .category-card span{font-size:14px}
-  .grid{gap:16px}
+footer a{
+  color:#000;
+  text-decoration:none;
 }
+footer a:hover{text-decoration:underline}
 </style>
 </head>
 
 <body>
 
 <header>
-  <button id="back-home">← Back</button>
   <h1>Edson Canales</h1>
 </header>
 
-<nav class="categories">
-  <div class="category-card" data-target="editorial">
-    <img src="images/foto1.jpg">
-    <span>Editorial</span>
-  </div>
-  <div class="category-card" data-target="food">
-    <img src="images/cafeteria/foto2c.JPG">
-    <span>Alimentos & Bebidas</span>
-  </div>
-</nav>
+<div class="magazine" id="magazine">
 
-<section id="editorial">
-  <div class="shoot-title">Birthday Shot</div>
-  <div class="shoot-desc">
-    Sesión editorial con enfoque íntimo y narrativo, explorando celebración y atmósfera.
-  </div>
-  <div class="grid">
-    <img src="images/foto1.jpg"><img src="images/foto2.jpg"><img src="images/foto3.jpg">
-    <img src="images/foto4.jpg"><img src="images/foto5.jpg"><img src="images/foto6.jpg">
-  </div>
-</section>
+  <!-- EDITORIAL -->
+  <section class="panel">
+    <h2>Editorial</h2>
+    <div class="mosaic">
+      <img src="images/foto1.jpg">
+      <img src="images/foto2.jpg">
+      <img src="images/foto3.jpg">
+      <img src="images/foto4.jpg">
+      <img src="images/foto5.jpg">
+      <img src="images/foto6.jpg">
+    </div>
+  </section>
 
-<section id="food">
-  <div class="shoot-title">Abú Coffee</div>
-  <div class="shoot-desc">
-    Fotografía de alimentos y bebidas enfocada en textura, luz natural y experiencia sensorial.
-  </div>
-  <div class="grid">
-    <img src="images/cafeteria/foto1c.JPG"><img src="images/cafeteria/foto2c.JPG">
-    <img src="images/cafeteria/foto3c.JPG"><img src="images/cafeteria/foto4c.JPG">
-    <img src="images/cafeteria/foto5c.JPG"><img src="images/cafeteria/foto6c.JPG">
-    <img src="images/cafeteria/foto7c.JPG"><img src="images/cafeteria/foto8c.JPG">
-    <img src="images/cafeteria/foto9c.JPG"><img src="images/cafeteria/foto10c.JPG">
-    <img src="images/cafeteria/foto11c.JPG">
-  </div>
-</section>
+  <!-- FOOD -->
+  <section class="panel">
+    <h2>Alimentos & Bebidas</h2>
+    <div class="mosaic">
+      <img src="images/cafeteria/foto1c.JPG">
+      <img src="images/cafeteria/foto2c.JPG">
+      <img src="images/cafeteria/foto3c.JPG">
+      <img src="images/cafeteria/foto4c.JPG">
+      <img src="images/cafeteria/foto5c.JPG">
+      <img src="images/cafeteria/foto6c.JPG">
+      <img src="images/cafeteria/foto7c.JPG">
+      <img src="images/cafeteria/foto8c.JPG">
+      <img src="images/cafeteria/foto9c.JPG">
+      <img src="images/cafeteria/foto10c.JPG">
+      <img src="images/cafeteria/foto11c.JPG">
+    </div>
+  </section>
 
-<footer>
-  <span>Correo</span>
-  canalesed4@gmail.com
-</footer>
-
-<div class="footer-right">
-  <span>Instagram</span>
-  @edsoncanaled
 </div>
 
+<footer>
+  <div>
+    <span>Correo</span>
+    canalesed4@gmail.com
+  </div>
+  <div>
+    <span>Instagram</span>
+    <a href="https://www.instagram.com/edsoncanaled/" target="_blank">@edsoncanaled</a>
+  </div>
+</footer>
+
 <div id="lightbox">
-  <span id="lightbox-close">×</span>
-  <img id="lightbox-img">
+  <span>×</span>
+  <img>
 </div>
 
 <script>
-const cards=document.querySelectorAll('.category-card');
-const categories=document.querySelector('.categories');
-const editorial=document.getElementById('editorial');
-const food=document.getElementById('food');
-const back=document.getElementById('back-home');
-
-cards.forEach(card=>{
-  card.onclick=()=>{
-    categories.style.display='none';
-    back.style.display='block';
-    card.dataset.target==='editorial'
-      ? (editorial.style.display='block',food.style.display='none')
-      : (food.style.display='block',editorial.style.display='none');
-  }
+/* HORIZONTAL SCROLL */
+window.addEventListener('scroll',()=>{
+  document.getElementById('magazine').scrollLeft = window.scrollY;
 });
 
-back.onclick=()=>{
-  editorial.style.display='none';
-  food.style.display='none';
-  categories.style.display='grid';
-  back.style.display='none';
-};
-
-const imgs=document.querySelectorAll('.grid img');
+/* LIGHTBOX */
+const imgs=document.querySelectorAll('.mosaic img');
 const lightbox=document.getElementById('lightbox');
-const lightboxImg=document.getElementById('lightbox-img');
+const lbImg=lightbox.querySelector('img');
 
 imgs.forEach(img=>{
   img.onclick=()=>{
-    lightboxImg.src=img.src;
+    lbImg.src=img.src;
     lightbox.classList.add('active');
   }
 });
-
 lightbox.onclick=()=>lightbox.classList.remove('active');
 </script>
 
