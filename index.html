@@ -1,242 +1,165 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales | Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edson Canales | Portfolio</title>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Fjalla+One&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
-<!-- GSAP -->
-<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fff;
+      color: #111;
+      overflow-x: hidden;
+    }
 
-body{
-  font-family:'Montserrat',sans-serif;
-  color:#111;
-  overflow-x:hidden;
-}
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 32px 48px;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(255,255,255,.9), rgba(255,255,255,0));
+    }
 
-/* HEADER */
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  padding:28px 40px;
-  background:#fff;
-  z-index:10;
-}
+    header h1 {
+      font-family: 'Fjalla One', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: titleIn 1s ease forwards;
+    }
 
-header h1{
-  font-family:'Fjalla One',sans-serif;
-  font-size:28px;
-  letter-spacing:2px;
-  opacity:0;
-  transform:translateY(-10px);
-}
+    @keyframes titleIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-/* HORIZONTAL SECTION */
-.horizontal-wrapper{
-  display:flex;
-  width:200vw;
-  height:100vh;
-}
+    /* MAIN SECTIONS */
+    main {
+      display: flex;
+      width: 200vw;
+      height: 100vh;
+      transition: transform 1s cubic-bezier(.77,0,.18,1);
+    }
 
-.panel{
-  width:100vw;
-  padding-top:120px;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  padding-left:60px;
-}
+    section {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
 
-.panel h2{
-  font-size:16px;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
+    section img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(.85);
+      transition: transform 1.2s ease;
+    }
 
-/* HERO IMAGE */
-.hero{
-  width:calc(100vw - 120px);
-  height:calc(100vh - 200px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
+    section:hover img {
+      transform: scale(1.05);
+    }
 
-.hero img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
+    .label {
+      position: absolute;
+      top: 140px;
+      left: 64px;
+      font-size: 14px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #fff;
+    }
 
-/* OVERLAY GALLERY */
-#gallery{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:none;
-  overflow-y:auto;
-  z-index:99;
-  padding:120px 48px 80px;
-}
+    /* MOBILE */
+    @media (max-width: 768px) {
+      header {
+        padding: 24px;
+      }
 
-#gallery.active{display:block}
+      header h1 {
+        font-size: 22px;
+      }
 
-.gallery-grid{
-  column-count:3;
-  column-gap:24px;
-}
-
-.gallery-grid img{
-  width:100%;
-  margin-bottom:24px;
-  break-inside:avoid;
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .gallery-grid{column-count:2}
-  .panel{padding-left:24px}
-  .hero{width:calc(100vw - 48px)}
-}
-@media(max-width:600px){
-  .gallery-grid{column-count:1}
-}
-
-/* CLOSE */
-#closeGallery{
-  position:fixed;
-  top:24px;
-  right:32px;
-  font-size:32px;
-  cursor:pointer;
-}
-
-/* FOOTER */
-footer{
-  padding:120px 40px 80px;
-  border-top:1px solid #eee;
-  display:flex;
-  justify-content:space-between;
-  font-size:14px;
-}
-footer span{
-  display:block;
-  font-size:11px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  margin-bottom:6px;
-}
-footer a{
-  color:#111;
-  text-decoration:none;
-}
-footer a:hover{text-decoration:underline}
-</style>
+      .label {
+        top: 120px;
+        left: 32px;
+        font-size: 12px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
 <header>
-  <h1 id="name">Edson Canales</h1>
+  <h1>Edson Canales</h1>
 </header>
 
-<section class="scroll-section">
-  <div class="horizontal-wrapper" id="horizontal">
+<main id="slider">
 
-    <!-- EDITORIAL -->
-    <section class="panel">
-      <h2>Editorial</h2>
-      <div class="hero" onclick="openGallery('editorial')">
-        <img src="images/foto1.jpg">
-      </div>
-    </section>
+  <!-- EDITORIAL -->
+  <section onclick="goTo('editorial')">
+    <span class="label">Editorial</span>
+    <img src="images/foto1.jpg" alt="Editorial">
+  </section>
 
-    <!-- FOOD -->
-    <section class="panel">
-      <h2>Alimentos & Bebidas</h2>
-      <div class="hero" onclick="openGallery('food')">
-        <img src="images/cafeteria/foto1c.JPG">
-      </div>
-    </section>
+  <!-- FOOD & BEVERAGES -->
+  <section onclick="goTo('food')">
+    <span class="label">Alimentos & Bebidas</span>
+    <img src="images/cafeteria/foto2c.JPG" alt="Food and Beverages">
+  </section>
 
-  </div>
-</section>
-
-<footer>
-  <div>
-    <span>Correo</span>
-    canalesed4@gmail.com
-  </div>
-  <div>
-    <span>Instagram</span>
-    <a href="https://www.instagram.com/edsoncanaled/" target="_blank">@edsoncanaled</a>
-  </div>
-</footer>
-
-<!-- GALLERY OVERLAY -->
-<div id="gallery">
-  <div id="closeGallery" onclick="closeGallery()">×</div>
-  <div class="gallery-grid" id="galleryContent"></div>
-</div>
+</main>
 
 <script>
-gsap.to("#name",{opacity:1,y:0,duration:1.2,ease:"power3.out"});
+  const slider = document.getElementById('slider');
 
-gsap.registerPlugin(ScrollTrigger);
-gsap.to("#horizontal",{
-  x:()=>-(document.querySelector("#horizontal").scrollWidth - window.innerWidth),
-  ease:"none",
-  scrollTrigger:{
-    trigger:".scroll-section",
-    start:"top top",
-    end:()=>"+="+document.querySelector("#horizontal").scrollWidth,
-    scrub:1,
-    pin:true
+  function goTo(section) {
+    if (section === 'food') {
+      slider.style.transform = 'translateX(-100vw)';
+    } else {
+      window.location.href = 'editorial/index.html';
+    }
   }
-});
 
-const editorialImgs=[
-  "images/foto1.jpg","images/foto2.jpg","images/foto3.jpg",
-  "images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"
-];
+  // Swipe para móvil
+  let startX = 0;
 
-const foodImgs=[
-  "images/cafeteria/foto1c.JPG","images/cafeteria/foto2c.JPG",
-  "images/cafeteria/foto3c.JPG","images/cafeteria/foto4c.JPG",
-  "images/cafeteria/foto5c.JPG","images/cafeteria/foto6c.JPG",
-  "images/cafeteria/foto7c.JPG","images/cafeteria/foto8c.JPG",
-  "images/cafeteria/foto9c.JPG","images/cafeteria/foto10c.JPG",
-  "images/cafeteria/foto11c.JPG"
-];
-
-function openGallery(type){
-  const container=document.getElementById('galleryContent');
-  container.innerHTML='';
-  const imgs=type==='editorial'?editorialImgs:foodImgs;
-  imgs.forEach(src=>{
-    const img=document.createElement('img');
-    img.src=src;
-    container.appendChild(img);
+  window.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
   });
-  document.getElementById('gallery').classList.add('active');
-}
 
-function closeGallery(){
-  document.getElementById('gallery').classList.remove('active');
-}
+  window.addEventListener('touchend', e => {
+    const endX = e.changedTouches[0].clientX;
+    if (startX - endX > 60) {
+      slider.style.transform = 'translateX(-100vw)';
+    }
+    if (endX - startX > 60) {
+      slider.style.transform = 'translateX(0)';
+    }
+  });
 </script>
 
 </body>
