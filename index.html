@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales | Portfolio</title>
 
 <!-- Fonts -->
@@ -51,62 +51,76 @@ header h1{
 
 .panel{
   width:100vw;
-  padding:140px 60px 100px;
+  padding-top:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding-left:60px;
 }
 
 .panel h2{
-  position:sticky;
-  top:140px;
-  font-size:18px;
+  font-size:16px;
   letter-spacing:4px;
   text-transform:uppercase;
-  margin-bottom:48px;
+  margin-bottom:24px;
 }
 
-/* MASONRY */
-.mosaic{
+/* HERO IMAGE */
+.hero{
+  width:calc(100vw - 120px);
+  height:calc(100vh - 200px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.hero img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
+
+/* OVERLAY GALLERY */
+#gallery{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:none;
+  overflow-y:auto;
+  z-index:99;
+  padding:120px 48px 80px;
+}
+
+#gallery.active{display:block}
+
+.gallery-grid{
   column-count:3;
   column-gap:24px;
 }
 
-.mosaic img{
+.gallery-grid img{
   width:100%;
   margin-bottom:24px;
   break-inside:avoid;
-  cursor:pointer;
 }
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  .mosaic{column-count:2}
+  .gallery-grid{column-count:2}
+  .panel{padding-left:24px}
+  .hero{width:calc(100vw - 48px)}
 }
 @media(max-width:600px){
-  header{padding:20px}
-  .panel{padding:120px 24px 80px}
-  .mosaic{column-count:1}
+  .gallery-grid{column-count:1}
 }
 
-/* LIGHTBOX */
-#lightbox{
+/* CLOSE */
+#closeGallery{
   position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.9);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:99;
-}
-#lightbox.active{display:flex}
-#lightbox img{
-  max-width:90%;
-  max-height:90vh;
-}
-#lightbox span{
-  position:absolute;
   top:24px;
   right:32px;
-  font-size:40px;
-  color:#fff;
+  font-size:32px;
   cursor:pointer;
 }
 
@@ -139,38 +153,22 @@ footer a:hover{text-decoration:underline}
   <h1 id="name">Edson Canales</h1>
 </header>
 
-<!-- SCROLL CONTAINER -->
 <section class="scroll-section">
   <div class="horizontal-wrapper" id="horizontal">
 
     <!-- EDITORIAL -->
     <section class="panel">
       <h2>Editorial</h2>
-      <div class="mosaic">
+      <div class="hero" onclick="openGallery('editorial')">
         <img src="images/foto1.jpg">
-        <img src="images/foto2.jpg">
-        <img src="images/foto3.jpg">
-        <img src="images/foto4.jpg">
-        <img src="images/foto5.jpg">
-        <img src="images/foto6.jpg">
       </div>
     </section>
 
     <!-- FOOD -->
     <section class="panel">
       <h2>Alimentos & Bebidas</h2>
-      <div class="mosaic">
+      <div class="hero" onclick="openGallery('food')">
         <img src="images/cafeteria/foto1c.JPG">
-        <img src="images/cafeteria/foto2c.JPG">
-        <img src="images/cafeteria/foto3c.JPG">
-        <img src="images/cafeteria/foto4c.JPG">
-        <img src="images/cafeteria/foto5c.JPG">
-        <img src="images/cafeteria/foto6c.JPG">
-        <img src="images/cafeteria/foto7c.JPG">
-        <img src="images/cafeteria/foto8c.JPG">
-        <img src="images/cafeteria/foto9c.JPG">
-        <img src="images/cafeteria/foto10c.JPG">
-        <img src="images/cafeteria/foto11c.JPG">
       </div>
     </section>
 
@@ -188,19 +186,16 @@ footer a:hover{text-decoration:underline}
   </div>
 </footer>
 
-<!-- LIGHTBOX -->
-<div id="lightbox">
-  <span>×</span>
-  <img>
+<!-- GALLERY OVERLAY -->
+<div id="gallery">
+  <div id="closeGallery" onclick="closeGallery()">×</div>
+  <div class="gallery-grid" id="galleryContent"></div>
 </div>
 
 <script>
-/* NAME ANIMATION */
 gsap.to("#name",{opacity:1,y:0,duration:1.2,ease:"power3.out"});
 
-/* HORIZONTAL SCROLL */
 gsap.registerPlugin(ScrollTrigger);
-
 gsap.to("#horizontal",{
   x:()=>-(document.querySelector("#horizontal").scrollWidth - window.innerWidth),
   ease:"none",
@@ -209,25 +204,40 @@ gsap.to("#horizontal",{
     start:"top top",
     end:()=>"+="+document.querySelector("#horizontal").scrollWidth,
     scrub:1,
-    pin:true,
-    anticipatePin:1
+    pin:true
   }
 });
 
-/* LIGHTBOX */
-const imgs=document.querySelectorAll('.mosaic img');
-const lightbox=document.getElementById('lightbox');
-const lbImg=lightbox.querySelector('img');
+const editorialImgs=[
+  "images/foto1.jpg","images/foto2.jpg","images/foto3.jpg",
+  "images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"
+];
 
-imgs.forEach(img=>{
-  img.onclick=()=>{
-    lbImg.src=img.src;
-    lightbox.classList.add('active');
-  }
-});
-lightbox.onclick=()=>lightbox.classList.remove('active');
+const foodImgs=[
+  "images/cafeteria/foto1c.JPG","images/cafeteria/foto2c.JPG",
+  "images/cafeteria/foto3c.JPG","images/cafeteria/foto4c.JPG",
+  "images/cafeteria/foto5c.JPG","images/cafeteria/foto6c.JPG",
+  "images/cafeteria/foto7c.JPG","images/cafeteria/foto8c.JPG",
+  "images/cafeteria/foto9c.JPG","images/cafeteria/foto10c.JPG",
+  "images/cafeteria/foto11c.JPG"
+];
+
+function openGallery(type){
+  const container=document.getElementById('galleryContent');
+  container.innerHTML='';
+  const imgs=type==='editorial'?editorialImgs:foodImgs;
+  imgs.forEach(src=>{
+    const img=document.createElement('img');
+    img.src=src;
+    container.appendChild(img);
+  });
+  document.getElementById('gallery').classList.add('active');
+}
+
+function closeGallery(){
+  document.getElementById('gallery').classList.remove('active');
+}
 </script>
 
 </body>
 </html>
-
