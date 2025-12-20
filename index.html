@@ -1,183 +1,229 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edson Canales | Portafolio</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edson Canales | Portafolio</title>
 
-  <!-- Montserrat -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Canela:opsz,wght@8..72,400;500&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --text: #111;
-      --muted: #777;
-    }
+<style>
+:root{
+  --text:#111;
+  --muted:#777;
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-    body {
-      font-family: 'Montserrat', sans-serif;
-      color: var(--text);
-      background: #fff;
-    }
+body{
+  font-family:'Montserrat',sans-serif;
+  background:#fff;
+  color:var(--text);
+}
 
-    header {
-      text-align: center;
-      padding: 48px 24px 32px;
-      position: relative;
-    }
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:10;
+  text-align:center;
+  padding:32px 24px;
+  border-bottom:1px solid #eee;
+}
 
-    header h1 {
-      font-size: 24px;
-      letter-spacing: 4px;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
+header h1{
+  font-family:'Canela',serif;
+  font-size:32px;
+  letter-spacing:2px;
+  font-weight:500;
+  animation:fadeDown 1s ease both;
+}
 
-    #back-home {
-      position: absolute;
-      left: 24px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      color: var(--muted);
-      display: none;
-    }
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
-    #back-home:hover { color: var(--text); }
+#back-home{
+  position:absolute;
+  left:24px;
+  top:50%;
+  transform:translateY(-50%);
+  background:none;
+  border:none;
+  font-size:14px;
+  letter-spacing:2px;
+  cursor:pointer;
+  color:var(--muted);
+  display:none;
+}
 
-    .categories {
-      max-width: 900px;
-      margin: 0 auto 80px;
-      padding: 0 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 32px;
-    }
+/* CATEGORIES */
+.categories{
+  max-width:1000px;
+  margin:80px auto;
+  padding:0 24px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:40px;
+}
 
-    .category-card { cursor: pointer; text-align: center; }
+.category-card{
+  cursor:pointer;
+}
 
-    .category-card img {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      object-fit: cover;
-      margin-bottom: 16px;
-      transition: opacity .3s ease;
-    }
+.category-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  transition:transform .4s ease,opacity .3s ease;
+}
 
-    .category-card:hover img { opacity: .85; }
+.category-card:hover img{
+  transform:scale(1.02);
+  opacity:.9;
+}
 
-    .category-card span {
-      font-size: 14px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+.category-card span{
+  display:block;
+  margin-top:16px;
+  text-align:center;
+  font-size:16px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
 
-    section { display: none; }
+/* SECTIONS */
+section{display:none}
 
-    .shoot-title {
-      text-align: center;
-      margin: 24px 0 40px;
-      font-size: 14px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+.shoot-title{
+  text-align:center;
+  margin:48px 0 8px;
+  font-size:16px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+}
 
-    .grid {
-      max-width: 1200px;
-      margin: 0 auto 80px;
-      padding: 0 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-    }
+.shoot-desc{
+  text-align:center;
+  max-width:600px;
+  margin:0 auto 48px;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.6;
+}
 
-    .grid img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      cursor: pointer;
-      animation: fadeIn .6s ease both;
-    }
+/* GRID */
+.grid{
+  max-width:1200px;
+  margin:0 auto 120px;
+  padding:0 24px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:24px;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+.grid img{
+  width:100%;
+  cursor:pointer;
+  animation:fadeIn .6s ease both;
+}
 
-    footer {
-      text-align: center;
-      padding: 40px 24px 48px;
-      border-top: 1px solid #eee;
-      font-size: 13px;
-      color: var(--muted);
-    }
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
-    /* LIGHTBOX */
-    #lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
+/* LIGHTBOX */
+#lightbox{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.92);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
 
-    #lightbox.active { display: flex; }
+#lightbox.active{display:flex}
 
-    #lightbox img {
-      max-width: 90%;
-      max-height: 90vh;
-      animation: zoom .3s ease both;
-    }
+#lightbox img{
+  max-width:90%;
+  max-height:90vh;
+}
 
-    @keyframes zoom {
-      from { transform: scale(.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+#lightbox-close{
+  position:absolute;
+  top:24px;
+  right:32px;
+  font-size:42px;
+  color:#fff;
+  cursor:pointer;
+}
 
-    #lightbox-close {
-      position: absolute;
-      top: 24px;
-      right: 32px;
-      font-size: 40px;
-      color: #fff;
-      cursor: pointer;
-      user-select: none;
-    }
-  </style>
+/* FOOTER */
+footer{
+  position:fixed;
+  bottom:24px;
+  left:24px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.footer-right{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  font-size:13px;
+  text-align:right;
+}
+
+footer span,
+.footer-right span{
+  display:block;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-size:11px;
+  margin-bottom:4px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  header h1{font-size:26px}
+  .category-card span{font-size:14px}
+  .grid{gap:16px}
+}
+</style>
 </head>
+
 <body>
 
 <header>
-  <h1>Edson Canales</h1>
   <button id="back-home">← Back</button>
+  <h1>Edson Canales</h1>
 </header>
 
 <nav class="categories">
   <div class="category-card" data-target="editorial">
-    <img src="images/foto1.jpg" alt="Editorial">
+    <img src="images/foto1.jpg">
     <span>Editorial</span>
   </div>
   <div class="category-card" data-target="food">
-    <img src="images/cafeteria/foto2c.JPG" alt="Alimentos y Bebidas">
+    <img src="images/cafeteria/foto2c.JPG">
     <span>Alimentos & Bebidas</span>
   </div>
 </nav>
 
 <section id="editorial">
   <div class="shoot-title">Birthday Shot</div>
+  <div class="shoot-desc">
+    Sesión editorial con enfoque íntimo y narrativo, explorando celebración y atmósfera.
+  </div>
   <div class="grid">
     <img src="images/foto1.jpg"><img src="images/foto2.jpg"><img src="images/foto3.jpg">
     <img src="images/foto4.jpg"><img src="images/foto5.jpg"><img src="images/foto6.jpg">
@@ -186,6 +232,9 @@
 
 <section id="food">
   <div class="shoot-title">Abú Coffee</div>
+  <div class="shoot-desc">
+    Fotografía de alimentos y bebidas enfocada en textura, luz natural y experiencia sensorial.
+  </div>
   <div class="grid">
     <img src="images/cafeteria/foto1c.JPG"><img src="images/cafeteria/foto2c.JPG">
     <img src="images/cafeteria/foto3c.JPG"><img src="images/cafeteria/foto4c.JPG">
@@ -197,9 +246,14 @@
 </section>
 
 <footer>
-  <p>Tel. 812 568 0681</p>
-  <p>canalesed4@gmail.com</p>
+  <span>Correo</span>
+  canalesed4@gmail.com
 </footer>
+
+<div class="footer-right">
+  <span>Instagram</span>
+  @edsoncanaled
+</div>
 
 <div id="lightbox">
   <span id="lightbox-close">×</span>
@@ -207,48 +261,43 @@
 </div>
 
 <script>
-  const cards = document.querySelectorAll('.category-card');
-  const categories = document.querySelector('.categories');
-  const editorial = document.getElementById('editorial');
-  const food = document.getElementById('food');
-  const back = document.getElementById('back-home');
+const cards=document.querySelectorAll('.category-card');
+const categories=document.querySelector('.categories');
+const editorial=document.getElementById('editorial');
+const food=document.getElementById('food');
+const back=document.getElementById('back-home');
 
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      categories.style.display = 'none';
-      back.style.display = 'block';
-      card.dataset.target === 'editorial'
-        ? (editorial.style.display = 'block', food.style.display = 'none')
-        : (food.style.display = 'block', editorial.style.display = 'none');
-    });
-  });
+cards.forEach(card=>{
+  card.onclick=()=>{
+    categories.style.display='none';
+    back.style.display='block';
+    card.dataset.target==='editorial'
+      ? (editorial.style.display='block',food.style.display='none')
+      : (food.style.display='block',editorial.style.display='none');
+  }
+});
 
-  back.addEventListener('click', () => {
-    editorial.style.display = 'none';
-    food.style.display = 'none';
-    categories.style.display = 'grid';
-    back.style.display = 'none';
-  });
+back.onclick=()=>{
+  editorial.style.display='none';
+  food.style.display='none';
+  categories.style.display='grid';
+  back.style.display='none';
+};
 
-  const imgs = document.querySelectorAll('.grid img');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const close = document.getElementById('lightbox-close');
+const imgs=document.querySelectorAll('.grid img');
+const lightbox=document.getElementById('lightbox');
+const lightboxImg=document.getElementById('lightbox-img');
 
-  imgs.forEach(img => {
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      lightbox.classList.add('active');
-    });
-  });
+imgs.forEach(img=>{
+  img.onclick=()=>{
+    lightboxImg.src=img.src;
+    lightbox.classList.add('active');
+  }
+});
 
-  close.addEventListener('click', e => {
-    e.stopPropagation();
-    lightbox.classList.remove('active');
-  });
-
-  lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+lightbox.onclick=()=>lightbox.classList.remove('active');
 </script>
 
 </body>
 </html>
+
