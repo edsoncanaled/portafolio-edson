@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales | Portafolio</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edson Canales | Portfolio</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Fjalla+One&display=swap" rel="stylesheet">
 
+<!-- GSAP -->
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
   font-family:'Montserrat',sans-serif;
+  color:#111;
   overflow-x:hidden;
 }
 
@@ -24,7 +29,7 @@ header{
   top:0;
   left:0;
   width:100%;
-  padding:24px 32px;
+  padding:28px 40px;
   background:#fff;
   z-index:10;
 }
@@ -33,37 +38,32 @@ header h1{
   font-family:'Fjalla One',sans-serif;
   font-size:28px;
   letter-spacing:2px;
-  animation:fadeName 1.2s ease both;
+  opacity:0;
+  transform:translateY(-10px);
 }
 
-@keyframes fadeName{
-  from{opacity:0;transform:translateY(-10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-/* MAGAZINE SCROLL */
-.magazine{
+/* HORIZONTAL SECTION */
+.horizontal-wrapper{
   display:flex;
-  height:100vh;
   width:200vw;
-  margin-top:80px;
+  height:100vh;
 }
 
 .panel{
   width:100vw;
-  padding:80px 48px 120px;
+  padding:140px 60px 100px;
 }
 
 .panel h2{
   position:sticky;
-  top:100px;
+  top:140px;
   font-size:18px;
   letter-spacing:4px;
   text-transform:uppercase;
   margin-bottom:48px;
 }
 
-/* MOSAIC */
+/* MASONRY */
 .mosaic{
   column-count:3;
   column-gap:24px;
@@ -72,14 +72,8 @@ header h1{
 .mosaic img{
   width:100%;
   margin-bottom:24px;
-  cursor:pointer;
   break-inside:avoid;
-  animation:fadeImg .6s ease both;
-}
-
-@keyframes fadeImg{
-  from{opacity:0;transform:translateY(6px)}
-  to{opacity:1;transform:translateY(0)}
+  cursor:pointer;
 }
 
 /* RESPONSIVE */
@@ -87,6 +81,8 @@ header h1{
   .mosaic{column-count:2}
 }
 @media(max-width:600px){
+  header{padding:20px}
+  .panel{padding:120px 24px 80px}
   .mosaic{column-count:1}
 }
 
@@ -116,7 +112,7 @@ header h1{
 
 /* FOOTER */
 footer{
-  padding:80px 32px;
+  padding:120px 40px 80px;
   border-top:1px solid #eee;
   display:flex;
   justify-content:space-between;
@@ -130,7 +126,7 @@ footer span{
   margin-bottom:6px;
 }
 footer a{
-  color:#000;
+  color:#111;
   text-decoration:none;
 }
 footer a:hover{text-decoration:underline}
@@ -140,43 +136,46 @@ footer a:hover{text-decoration:underline}
 <body>
 
 <header>
-  <h1>Edson Canales</h1>
+  <h1 id="name">Edson Canales</h1>
 </header>
 
-<div class="magazine" id="magazine">
+<!-- SCROLL CONTAINER -->
+<section class="scroll-section">
+  <div class="horizontal-wrapper" id="horizontal">
 
-  <!-- EDITORIAL -->
-  <section class="panel">
-    <h2>Editorial</h2>
-    <div class="mosaic">
-      <img src="images/foto1.jpg">
-      <img src="images/foto2.jpg">
-      <img src="images/foto3.jpg">
-      <img src="images/foto4.jpg">
-      <img src="images/foto5.jpg">
-      <img src="images/foto6.jpg">
-    </div>
-  </section>
+    <!-- EDITORIAL -->
+    <section class="panel">
+      <h2>Editorial</h2>
+      <div class="mosaic">
+        <img src="images/foto1.jpg">
+        <img src="images/foto2.jpg">
+        <img src="images/foto3.jpg">
+        <img src="images/foto4.jpg">
+        <img src="images/foto5.jpg">
+        <img src="images/foto6.jpg">
+      </div>
+    </section>
 
-  <!-- FOOD -->
-  <section class="panel">
-    <h2>Alimentos & Bebidas</h2>
-    <div class="mosaic">
-      <img src="images/cafeteria/foto1c.JPG">
-      <img src="images/cafeteria/foto2c.JPG">
-      <img src="images/cafeteria/foto3c.JPG">
-      <img src="images/cafeteria/foto4c.JPG">
-      <img src="images/cafeteria/foto5c.JPG">
-      <img src="images/cafeteria/foto6c.JPG">
-      <img src="images/cafeteria/foto7c.JPG">
-      <img src="images/cafeteria/foto8c.JPG">
-      <img src="images/cafeteria/foto9c.JPG">
-      <img src="images/cafeteria/foto10c.JPG">
-      <img src="images/cafeteria/foto11c.JPG">
-    </div>
-  </section>
+    <!-- FOOD -->
+    <section class="panel">
+      <h2>Alimentos & Bebidas</h2>
+      <div class="mosaic">
+        <img src="images/cafeteria/foto1c.JPG">
+        <img src="images/cafeteria/foto2c.JPG">
+        <img src="images/cafeteria/foto3c.JPG">
+        <img src="images/cafeteria/foto4c.JPG">
+        <img src="images/cafeteria/foto5c.JPG">
+        <img src="images/cafeteria/foto6c.JPG">
+        <img src="images/cafeteria/foto7c.JPG">
+        <img src="images/cafeteria/foto8c.JPG">
+        <img src="images/cafeteria/foto9c.JPG">
+        <img src="images/cafeteria/foto10c.JPG">
+        <img src="images/cafeteria/foto11c.JPG">
+      </div>
+    </section>
 
-</div>
+  </div>
+</section>
 
 <footer>
   <div>
@@ -189,15 +188,30 @@ footer a:hover{text-decoration:underline}
   </div>
 </footer>
 
+<!-- LIGHTBOX -->
 <div id="lightbox">
   <span>×</span>
   <img>
 </div>
 
 <script>
+/* NAME ANIMATION */
+gsap.to("#name",{opacity:1,y:0,duration:1.2,ease:"power3.out"});
+
 /* HORIZONTAL SCROLL */
-window.addEventListener('scroll',()=>{
-  document.getElementById('magazine').scrollLeft = window.scrollY;
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.to("#horizontal",{
+  x:()=>-(document.querySelector("#horizontal").scrollWidth - window.innerWidth),
+  ease:"none",
+  scrollTrigger:{
+    trigger:".scroll-section",
+    start:"top top",
+    end:()=>"+="+document.querySelector("#horizontal").scrollWidth,
+    scrub:1,
+    pin:true,
+    anticipatePin:1
+  }
 });
 
 /* LIGHTBOX */
