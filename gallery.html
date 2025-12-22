@@ -29,34 +29,33 @@ header a{
   color:#111;
 }
 
-/* MAIN WRAPPER */
+/* WRAPPER */
 .wrapper{
-  display:flex;
-  align-items:center;
   height:80vh;
-  padding:0 80px;
-  gap:80px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:40px;
 }
 
 /* INFO */
 .info{
-  width:260px;
+  text-align:center;
 }
 .info h2{
   font-family:'Fjalla One',sans-serif;
-  font-size:26px;
-  margin-bottom:12px;
+  font-size:28px;
+  margin-bottom:8px;
   opacity:0;
-  transform:translateY(8px);
-  transition:.4s ease;
+  transform:translateY(6px);
+  transition:.6s ease;
 }
 .info p{
   font-size:14px;
-  line-height:1.6;
   color:#555;
   opacity:0;
-  transform:translateY(8px);
-  transition:.4s ease .05s;
+  transform:translateY(6px);
+  transition:.6s ease .05s;
 }
 .info.active h2,
 .info.active p{
@@ -65,49 +64,77 @@ header a{
 }
 
 /* SLIDER */
+.slider-container{
+  position:relative;
+}
+
 .slider{
   display:flex;
   align-items:center;
-  gap:60px;
+  gap:64px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
+  padding:40px 120px;
 }
 .slider::-webkit-scrollbar{display:none}
 
 .slide{
   flex:0 0 auto;
-  height:240px;
+  height:260px;
   scroll-snap-align:center;
-  display:flex;
-  align-items:center;
-  transition:.4s ease;
+  transition:.6s ease;
 }
 .slide img{
   height:100%;
   width:auto;
   object-fit:contain;
-  opacity:.4;
-  transition:.4s ease;
+  opacity:.35;
+  transition:.6s ease;
 }
 
-/* ACTIVE */
 .slide.active img{
-  transform:scale(1.4);
+  transform:scale(1.45);
   opacity:1;
+}
+
+/* ARROWS */
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:28px;
+  cursor:pointer;
+  opacity:.3;
+  transition:.3s ease;
+  user-select:none;
+}
+.arrow:hover{opacity:.7}
+.arrow.left{left:32px}
+.arrow.right{right:32px}
+
+/* DOTS */
+.dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+}
+.dots span{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#aaa;
+  transition:.3s ease;
+}
+.dots span.active{
+  background:#111;
+  transform:scale(1.4);
 }
 
 /* RESPONSIVE */
 @media(max-width:900px){
   body{overflow:auto}
-  .wrapper{
-    flex-direction:column;
-    height:auto;
-    padding:0 24px;
-    gap:40px;
-  }
-  .info{
-    width:100%;
-    text-align:center;
+  .slider{
+    padding:40px 24px;
   }
 }
 </style>
@@ -128,68 +155,112 @@ header a{
   </div>
 
   <!-- SLIDER -->
-  <div class="slider" id="slider">
+  <div class="slider-container">
 
-    <div class="slide active"
-      data-title="Birthday Shot"
-      data-desc="Editorial session exploring identity, celebration and intimacy.">
-      <img src="images/foto1.jpg">
+    <div class="arrow left" onclick="move(-1)">‹</div>
+    <div class="arrow right" onclick="move(1)">›</div>
+
+    <div class="slider" id="slider">
+
+      <!-- SHOOT 1 -->
+      <div class="slide active"
+        data-title="Birthday Shot"
+        data-desc="Editorial session exploring identity, celebration and intimacy.">
+        <img src="images/foto1.jpg">
+      </div>
+
+      <div class="slide"
+        data-title="Birthday Shot"
+        data-desc="Editorial session exploring identity, celebration and intimacy.">
+        <img src="images/foto2.jpg">
+      </div>
+
+      <div class="slide"
+        data-title="Birthday Shot"
+        data-desc="Editorial session exploring identity, celebration and intimacy.">
+        <img src="images/foto3.jpg">
+      </div>
+
+      <!-- SHOOT 2 (ejemplo futuro) -->
+      <div class="slide"
+        data-title="Second Editorial"
+        data-desc="A visual exploration of form and movement.">
+        <img src="images/foto4.jpg">
+      </div>
+
+      <div class="slide"
+        data-title="Second Editorial"
+        data-desc="A visual exploration of form and movement.">
+        <img src="images/foto5.jpg">
+      </div>
+
     </div>
-
-    <div class="slide"
-      data-title="Birthday Shot"
-      data-desc="Editorial session exploring identity, celebration and intimacy.">
-      <img src="images/foto2.jpg">
-    </div>
-
-    <div class="slide"
-      data-title="Birthday Shot"
-      data-desc="Editorial session exploring identity, celebration and intimacy.">
-      <img src="images/foto3.jpg">
-    </div>
-
-    <div class="slide"
-      data-title="Birthday Shot"
-      data-desc="Editorial session exploring identity, celebration and intimacy.">
-      <img src="images/foto4.jpg">
-    </div>
-
-    <div class="slide"
-      data-title="Birthday Shot"
-      data-desc="Editorial session exploring identity, celebration and intimacy.">
-      <img src="images/foto5.jpg">
-    </div>
-
   </div>
+
+  <!-- DOTS -->
+  <div class="dots" id="dots"></div>
+
 </div>
 
 <script>
-const slider = document.getElementById('slider');
-const slides = [...document.querySelectorAll('.slide')];
-const info = document.getElementById('info');
+const slider=document.getElementById('slider');
+const slides=[...document.querySelectorAll('.slide')];
+const info=document.getElementById('info');
+const dotsContainer=document.getElementById('dots');
 
-function updateActive(){
-  const center = slider.scrollLeft + slider.offsetWidth / 2;
+let activeIndex=0;
 
-  slides.forEach(slide => {
-    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
-    const isActive = Math.abs(center - slideCenter) < slide.offsetWidth / 2;
+/* DOTS */
+slides.forEach((_,i)=>{
+  const dot=document.createElement('span');
+  if(i===0) dot.classList.add('active');
+  dotsContainer.appendChild(dot);
+});
+const dots=[...dotsContainer.children];
 
-    slide.classList.toggle('active', isActive);
-
-    if(isActive){
-      info.classList.remove('active');
-      setTimeout(() => {
-        info.querySelector('h2').textContent = slide.dataset.title;
-        info.querySelector('p').textContent = slide.dataset.desc;
-        info.classList.add('active');
-      },150);
-    }
+function setActive(index){
+  activeIndex=index;
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active',i===index);
+    dots[i].classList.toggle('active',i===index);
   });
+
+  info.classList.remove('active');
+  setTimeout(()=>{
+    info.querySelector('h2').textContent=slides[index].dataset.title;
+    info.querySelector('p').textContent=slides[index].dataset.desc;
+    info.classList.add('active');
+  },200);
+
+  slides[index].scrollIntoView({behavior:'smooth',inline:'center'});
 }
 
-slider.addEventListener('scroll', () => requestAnimationFrame(updateActive));
-updateActive();
+/* ARROWS */
+function move(dir){
+  let next=activeIndex+dir;
+  if(next<0) next=0;
+  if(next>=slides.length) next=slides.length-1;
+  setActive(next);
+}
+
+/* KEYBOARD */
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight') move(1);
+  if(e.key==='ArrowLeft') move(-1);
+});
+
+/* SCROLL DETECT */
+slider.addEventListener('scroll',()=>{
+  const center=slider.scrollLeft+slider.offsetWidth/2;
+  slides.forEach((slide,i)=>{
+    const slideCenter=slide.offsetLeft+slide.offsetWidth/2;
+    if(Math.abs(center-slideCenter)<slide.offsetWidth/2){
+      if(activeIndex!==i) setActive(i);
+    }
+  });
+});
+
+setActive(0);
 </script>
 
 </body>
