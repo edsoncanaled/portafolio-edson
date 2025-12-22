@@ -14,6 +14,7 @@ body{
   font-family:'Montserrat',sans-serif;
   background:#f4f4f4;
   color:#111;
+  overflow:hidden;
 }
 
 /* HEADER */
@@ -28,13 +29,13 @@ header a{
   color:#111;
 }
 
-/* LAYOUT */
+/* MAIN WRAPPER */
 .wrapper{
   display:flex;
   align-items:center;
   height:80vh;
-  gap:80px;
   padding:0 80px;
+  gap:80px;
 }
 
 /* INFO */
@@ -47,7 +48,7 @@ header a{
   margin-bottom:12px;
   opacity:0;
   transform:translateY(8px);
-  transition:.5s ease;
+  transition:.4s ease;
 }
 .info p{
   font-size:14px;
@@ -55,7 +56,7 @@ header a{
   color:#555;
   opacity:0;
   transform:translateY(8px);
-  transition:.5s ease .05s;
+  transition:.4s ease .05s;
 }
 .info.active h2,
 .info.active p{
@@ -66,47 +67,47 @@ header a{
 /* SLIDER */
 .slider{
   display:flex;
+  align-items:center;
   gap:60px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
-  padding:40px 0;
 }
 .slider::-webkit-scrollbar{display:none}
 
 .slide{
-  scroll-snap-align:center;
   flex:0 0 auto;
-  height:260px;
+  height:240px;
+  scroll-snap-align:center;
   display:flex;
   align-items:center;
   transition:.4s ease;
 }
 .slide img{
   height:100%;
+  width:auto;
   object-fit:contain;
+  opacity:.4;
   transition:.4s ease;
-  opacity:.5;
 }
 
 /* ACTIVE */
 .slide.active img{
-  transform:scale(1.35);
+  transform:scale(1.4);
   opacity:1;
 }
 
 /* RESPONSIVE */
 @media(max-width:900px){
+  body{overflow:auto}
   .wrapper{
     flex-direction:column;
     height:auto;
     padding:0 24px;
+    gap:40px;
   }
   .info{
     width:100%;
     text-align:center;
-  }
-  .slider{
-    width:100%;
   }
 }
 </style>
@@ -129,28 +130,33 @@ header a{
   <!-- SLIDER -->
   <div class="slider" id="slider">
 
-    <div class="slide active" data-title="Birthday Shot"
-         data-desc="Editorial session exploring identity, celebration and intimacy.">
+    <div class="slide active"
+      data-title="Birthday Shot"
+      data-desc="Editorial session exploring identity, celebration and intimacy.">
       <img src="images/foto1.jpg">
     </div>
 
-    <div class="slide" data-title="Birthday Shot"
-         data-desc="Editorial session exploring identity, celebration and intimacy.">
+    <div class="slide"
+      data-title="Birthday Shot"
+      data-desc="Editorial session exploring identity, celebration and intimacy.">
       <img src="images/foto2.jpg">
     </div>
 
-    <div class="slide" data-title="Birthday Shot"
-         data-desc="Editorial session exploring identity, celebration and intimacy.">
+    <div class="slide"
+      data-title="Birthday Shot"
+      data-desc="Editorial session exploring identity, celebration and intimacy.">
       <img src="images/foto3.jpg">
     </div>
 
-    <div class="slide" data-title="Birthday Shot"
-         data-desc="Editorial session exploring identity, celebration and intimacy.">
+    <div class="slide"
+      data-title="Birthday Shot"
+      data-desc="Editorial session exploring identity, celebration and intimacy.">
       <img src="images/foto4.jpg">
     </div>
 
-    <div class="slide" data-title="Birthday Shot"
-         data-desc="Editorial session exploring identity, celebration and intimacy.">
+    <div class="slide"
+      data-title="Birthday Shot"
+      data-desc="Editorial session exploring identity, celebration and intimacy.">
       <img src="images/foto5.jpg">
     </div>
 
@@ -158,31 +164,33 @@ header a{
 </div>
 
 <script>
-const slider=document.getElementById('slider');
-const slides=[...document.querySelectorAll('.slide')];
-const info=document.getElementById('info');
+const slider = document.getElementById('slider');
+const slides = [...document.querySelectorAll('.slide')];
+const info = document.getElementById('info');
 
 function updateActive(){
-  const center=slider.scrollLeft + slider.offsetWidth/2;
+  const center = slider.scrollLeft + slider.offsetWidth / 2;
 
-  slides.forEach(slide=>{
-    const box=slide.offsetLeft + slide.offsetWidth/2;
-    slide.classList.toggle('active', Math.abs(center - box) < slide.offsetWidth/2);
-    if(slide.classList.contains('active')){
+  slides.forEach(slide => {
+    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
+    const isActive = Math.abs(center - slideCenter) < slide.offsetWidth / 2;
+
+    slide.classList.toggle('active', isActive);
+
+    if(isActive){
       info.classList.remove('active');
-      setTimeout(()=>{
+      setTimeout(() => {
         info.querySelector('h2').textContent = slide.dataset.title;
         info.querySelector('p').textContent = slide.dataset.desc;
         info.classList.add('active');
-      },200);
+      },150);
     }
   });
 }
 
-slider.addEventListener('scroll',()=>requestAnimationFrame(updateActive));
+slider.addEventListener('scroll', () => requestAnimationFrame(updateActive));
 updateActive();
 </script>
 
 </body>
 </html>
-
