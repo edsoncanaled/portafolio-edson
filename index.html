@@ -5,240 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales | Portfolio</title>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Fjalla+One&display=swap" rel="stylesheet">
-
-<!-- GSAP -->
-<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
-<script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
   font-family:'Montserrat',sans-serif;
-  color:#111;
-  overflow-x:hidden;
-}
-
-/* HEADER */
-header{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  padding:28px 40px;
   background:#fff;
-  z-index:10;
+  color:#111;
 }
 
-header h1{
-  font-family:'Fjalla One',sans-serif;
-  font-size:28px;
-  letter-spacing:2px;
-  opacity:0;
-  transform:translateY(-10px);
-}
-
-/* HORIZONTAL SECTION */
-.horizontal-wrapper{
-  display:flex;
-  width:200vw;
-  height:100vh;
-}
-
-.panel{
-  width:100vw;
-  padding-top:120px;
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  padding-left:60px;
-}
-
-.panel h2{
-  font-size:16px;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-
-/* HERO IMAGE */
-.hero{
-  width:calc(100vw - 120px);
-  height:calc(100vh - 200px);
+.container{
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor:pointer;
 }
 
-.hero img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
-
-/* OVERLAY GALLERY */
-#gallery{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:none;
-  overflow-y:auto;
-  z-index:99;
-  padding:120px 48px 80px;
-}
-
-#gallery.active{display:block}
-
-.gallery-grid{
-  column-count:3;
-  column-gap:24px;
-}
-
-.gallery-grid img{
+.card{
+  max-width:900px;
   width:100%;
+  padding:80px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+}
+
+h1{
+  font-family:'Fjalla One',sans-serif;
+  font-size:48px;
   margin-bottom:24px;
-  break-inside:avoid;
 }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-  .gallery-grid{column-count:2}
-  .panel{padding-left:24px}
-  .hero{width:calc(100vw - 48px)}
-}
-@media(max-width:600px){
-  .gallery-grid{column-count:1}
-}
-
-/* CLOSE */
-#closeGallery{
-  position:fixed;
-  top:24px;
-  right:32px;
-  font-size:32px;
-  cursor:pointer;
-}
-
-/* FOOTER */
-footer{
-  padding:120px 40px 80px;
-  border-top:1px solid #eee;
-  display:flex;
-  justify-content:space-between;
+p{
   font-size:14px;
+  line-height:1.7;
+  color:#444;
 }
-footer span{
-  display:block;
-  font-size:11px;
-  letter-spacing:2px;
+
+.gallery-link{
+  margin-top:40px;
+  display:inline-block;
+  font-size:12px;
+  letter-spacing:3px;
   text-transform:uppercase;
-  margin-bottom:6px;
-}
-footer a{
-  color:#111;
   text-decoration:none;
+  color:#111;
+  border-bottom:1px solid #111;
+  padding-bottom:4px;
 }
-footer a:hover{text-decoration:underline}
+
+.profile img{
+  width:100%;
+  max-width:280px;
+}
+
+.signature{
+  margin-top:16px;
+  font-family: cursive;
+  font-size:22px;
+}
+
+@media(max-width:768px){
+  .card{
+    grid-template-columns:1fr;
+    padding:40px;
+  }
+}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1 id="name">Edson Canales</h1>
-</header>
+<div class="container">
+  <div class="card">
 
-<section class="scroll-section">
-  <div class="horizontal-wrapper" id="horizontal">
+    <div>
+      <h1>PORTFOLIO</h1>
+      <p>
+        Aquí es donde voy a poner un poco de información de lo que soy,
+        de mi trabajo y del enfoque visual que desarrollo a través de
+        fotografía editorial y comercial.
+      </p>
 
-    <!-- EDITORIAL -->
-    <section class="panel">
-      <h2>Editorial</h2>
-      <div class="hero" onclick="openGallery('editorial')">
-        <img src="images/foto1.jpg">
-      </div>
-    </section>
+      <a href="gallery.html" class="gallery-link">Gallery</a>
+    </div>
 
-    <!-- FOOD -->
-    <section class="panel">
-      <h2>Alimentos & Bebidas</h2>
-      <div class="hero" onclick="openGallery('food')">
-        <img src="images/cafeteria/foto1c.JPG">
-      </div>
-    </section>
+    <div class="profile">
+      <img src="images/FOTOPERFIL.JPG" alt="Edson Canales">
+      <div class="signature">edson canales</div>
+    </div>
 
   </div>
-</section>
-
-<footer>
-  <div>
-    <span>Correo</span>
-    canalesed4@gmail.com
-  </div>
-  <div>
-    <span>Instagram</span>
-    <a href="https://www.instagram.com/edsoncanaled/" target="_blank">@edsoncanaled</a>
-  </div>
-</footer>
-
-<!-- GALLERY OVERLAY -->
-<div id="gallery">
-  <div id="closeGallery" onclick="closeGallery()">×</div>
-  <div class="gallery-grid" id="galleryContent"></div>
 </div>
-
-<script>
-gsap.to("#name",{opacity:1,y:0,duration:1.2,ease:"power3.out"});
-
-gsap.registerPlugin(ScrollTrigger);
-gsap.to("#horizontal",{
-  x:()=>-(document.querySelector("#horizontal").scrollWidth - window.innerWidth),
-  ease:"none",
-  scrollTrigger:{
-    trigger:".scroll-section",
-    start:"top top",
-    end:()=>"+="+document.querySelector("#horizontal").scrollWidth,
-    scrub:1,
-    pin:true
-  }
-});
-
-const editorialImgs=[
-  "images/foto1.jpg","images/foto2.jpg","images/foto3.jpg",
-  "images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"
-];
-
-const foodImgs=[
-  "images/cafeteria/foto1c.JPG","images/cafeteria/foto2c.JPG",
-  "images/cafeteria/foto3c.JPG","images/cafeteria/foto4c.JPG",
-  "images/cafeteria/foto5c.JPG","images/cafeteria/foto6c.JPG",
-  "images/cafeteria/foto7c.JPG","images/cafeteria/foto8c.JPG",
-  "images/cafeteria/foto9c.JPG","images/cafeteria/foto10c.JPG",
-  "images/cafeteria/foto11c.JPG"
-];
-
-function openGallery(type){
-  const container=document.getElementById('galleryContent');
-  container.innerHTML='';
-  const imgs=type==='editorial'?editorialImgs:foodImgs;
-  imgs.forEach(src=>{
-    const img=document.createElement('img');
-    img.src=src;
-    container.appendChild(img);
-  });
-  document.getElementById('gallery').classList.add('active');
-}
-
-function closeGallery(){
-  document.getElementById('gallery').classList.remove('active');
-}
-</script>
 
 </body>
 </html>
-
