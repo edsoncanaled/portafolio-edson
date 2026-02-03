@@ -22,7 +22,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* NAVEGACIÓN */
+        /* --- NAVEGACIÓN --- */
         nav {
             position: fixed; top: 0; width: 100%; display: flex;
             justify-content: space-between; padding: 30px 50px;
@@ -33,16 +33,17 @@
         }
         nav * { pointer-events: auto; }
 
-        /* UI TEXTO */
+        /* --- UI TEXTO CAROUSEL --- */
         .ui-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: space-between; align-items: center;
             padding: 100px 20px 80px 20px;
             pointer-events: none; z-index: 10;
+            transition: opacity 0.5s;
         }
 
-        .text-top { text-align: center; font-family: var(--font-mono); transition: opacity 0.3s; }
+        .text-top { text-align: center; font-family: var(--font-mono); }
         #project-id { font-size: 12px; color: #999; margin-bottom: 8px; display: block; }
         #project-title { font-size: 24px; text-transform: uppercase; letter-spacing: -1px; }
 
@@ -53,45 +54,83 @@
             background: rgba(255,255,255,0.9); padding: 10px; border-radius: 4px;
         }
 
-        /* GALERÍA INFINITA */
+        /* --- CAROUSEL INFINITO --- */
         .gallery-viewport {
             height: 100vh;
             display: flex; align-items: center;
             overflow-x: auto; scrollbar-width: none;
-            /* Padding calculado para que la foto quede centrada */
             padding: 0 calc(50vw - 130px); 
-            /* Importante: Quitar smooth behavior nativo porque interfiere con el bucle infinito manual */
-            scroll-behavior: auto; 
             cursor: grab;
+            /* Importante: para que el JS controle el scroll infinito */
         }
         .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
 
         .work-card {
             flex: 0 0 260px; margin: 0 15px;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
             transform: scale(0.9); opacity: 1; cursor: pointer;
             position: relative;
-            user-select: none; /* Evita que se seleccione la imagen al arrastrar */
+            user-select: none;
         }
-        
+
         .work-card img {
             width: 100%; height: 360px; object-fit: cover;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            pointer-events: none; /* Mejor arrastre */
+            pointer-events: none;
         }
 
         .work-card.active { transform: scale(1.15); z-index: 5; }
 
-        @media (max-width: 768px) {
-            .work-card { flex: 0 0 220px; }
-            .gallery-viewport { padding: 0 calc(50vw - 110px); }
+        /* --- VISTA DE DETALLE (OVERLAY DE PROYECTO) --- */
+        #project-detail-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 200;
+            overflow-y: auto; /* Scroll vertical activado */
+            display: none; /* Oculto por defecto */
+            opacity: 0;
         }
+
+        .detail-nav {
+            position: fixed; top: 0; width: 100%; padding: 30px 50px;
+            display: flex; justify-content: flex-end; z-index: 201;
+            mix-blend-mode: difference; color: white;
+        }
+
+        .close-btn {
+            font-family: var(--font-mono); font-size: 12px; cursor: pointer;
+            text-transform: uppercase; border: 1px solid white; padding: 10px 20px;
+            border-radius: 20px; transition: all 0.3s;
+        }
+        .close-btn:hover { background: white; color: black; }
+
+        .detail-content {
+            padding: 100px 20vw; /* Márgenes laterales para lectura */
+            display: flex; flex-direction: column; gap: 40px;
+        }
+
+        .detail-header {
+            text-align: center; margin-bottom: 60px;
+        }
+        .detail-title { font-size: 40px; text-transform: uppercase; margin-bottom: 20px; }
+        .detail-desc { font-family: var(--font-mono); font-size: 12px; color: #666; max-width: 600px; margin: 0 auto; }
+
+        .detail-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            opacity: 0; /* Para animar entrada */
+            transform: translateY(20px);
+        }
+
+        /* CSS CLASE UTILITARIA PARA OCULTAR CAROUSEL */
+        .hidden { opacity: 0; pointer-events: none; }
+
     </style>
 </head>
 <body>
 
-    <nav>
+    <nav id="main-nav">
         <div>EDSON CANALES ©2026</div>
         <div style="display: flex; gap: 20px;">
             <span>WORKS</span>
@@ -99,119 +138,131 @@
         </div>
     </nav>
 
-    <div class="ui-overlay">
+    <div class="ui-overlay" id="carousel-ui">
         <div class="text-top" id="top-content">
             <span id="project-id">D001</span>
             <h1 id="project-title">LOADING...</h1>
         </div>
         <div class="text-bottom" id="bottom-content">
-            <p id="project-desc">Scroll to explore</p>
+            <p id="project-desc">Click an image to view full project</p>
         </div>
     </div>
 
     <main class="gallery-viewport" id="slider">
-        <div class="work-card" data-id="D001" data-title="Birthday Slay" data-desc="A visual exploration of identity through light and shadow.">
-            <img src="images/foto1.jpg">
+        </main>
+
+    <div id="project-detail-view">
+        <div class="detail-nav">
+            <div class="close-btn" onclick="closeProject()">CLOSE [X]</div>
         </div>
-        <div class="work-card" data-id="D002" data-title="Shadow Play" data-desc="Minimalist architectural study focused on sharp contrasts.">
-            <img src="images/foto2.jpg">
-        </div>
-        <div class="work-card" data-id="D003" data-title="The Cafe" data-desc="Urban lifestyle documentary series captured in Mexico City.">
-            <img src="images/foto3.jpg">
-        </div>
-        <div class="work-card" data-id="D004" data-title="Motion Study" data-desc="Experimental high-speed photography capturing fluid movement.">
-            <img src="images/foto4.jpg">
-        </div>
-        <div class="work-card" data-id="D005" data-title="Street Archive" data-desc="Personal collection of candid street moments from 2023.">
-            <img src="images/foto5.jpg">
-        </div>
-        <div class="work-card" data-id="D006" data-title="Noir Sessions" data-desc="Black and white aesthetic exploration.">
-            <img src="images/foto6.jpg">
-        </div>
-    </main>
+        <div class="detail-content" id="detail-container">
+            </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 
     <script>
+        // ==========================================
+        // 1. CONFIGURACIÓN DE PROYECTOS (DATABASE)
+        // ==========================================
+        const projectsData = [
+            {
+                id: "D001",
+                title: "Birthday Slay",
+                cover: "images/foto1.jpg",
+                desc: "A visual exploration of identity through light and shadow.",
+                // AQUÍ PONES TODAS LAS FOTOS DE ESTA SESIÓN
+                images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg"] 
+            },
+            {
+                id: "D002",
+                title: "Shadow Play",
+                cover: "images/foto2.jpg",
+                desc: "Minimalist architectural study focused on sharp contrasts.",
+                images: ["images/foto2.jpg", "images/foto4.jpg", "images/foto5.jpg", "images/foto2.jpg"]
+            },
+            {
+                id: "D003",
+                title: "The Cafe",
+                cover: "images/foto3.jpg",
+                desc: "Urban lifestyle documentary series captured in Mexico City.",
+                images: ["images/foto3.jpg", "images/foto1.jpg", "images/foto6.jpg"]
+            },
+            {
+                id: "D004",
+                title: "Motion Study",
+                cover: "images/foto4.jpg",
+                desc: "Experimental high-speed photography capturing fluid movement.",
+                images: ["images/foto4.jpg", "images/foto3.jpg"]
+            },
+            {
+                id: "D005",
+                title: "Street Archive",
+                cover: "images/foto5.jpg",
+                desc: "Personal collection of candid street moments from 2023.",
+                images: ["images/foto5.jpg", "images/foto1.jpg", "images/foto2.jpg"]
+            },
+            {
+                id: "D006",
+                title: "Noir Sessions",
+                cover: "images/foto6.jpg",
+                desc: "Black and white aesthetic exploration.",
+                images: ["images/foto6.jpg", "images/foto5.jpg", "images/foto4.jpg"]
+            }
+        ];
+
+        // ==========================================
+        // 2. GENERACIÓN DEL CAROUSEL
+        // ==========================================
         const slider = document.getElementById('slider');
+        const detailView = document.getElementById('project-detail-view');
+        const detailContainer = document.getElementById('detail-container');
+        const carouselUI = document.getElementById('carousel-ui');
+
+        // Generar cards originales
+        projectsData.forEach(project => {
+            const div = document.createElement('div');
+            div.className = 'work-card';
+            div.dataset.id = project.id; // Guardamos el ID para buscarlo luego
+            div.innerHTML = `<img src="${project.cover}" draggable="false">`;
+            slider.appendChild(div);
+        });
+
+        // Clonar para efecto infinito
+        const originalCards = Array.from(document.querySelectorAll('.work-card'));
+        originalCards.forEach(card => slider.appendChild(card.cloneNode(true))); // Clon final
+        originalCards.reverse().forEach(card => slider.prepend(card.cloneNode(true))); // Clon inicio
+
+        // ==========================================
+        // 3. LÓGICA DEL CAROUSEL (SCROLL & UI)
+        // ==========================================
+        const allCards = document.querySelectorAll('.work-card');
+        const cardWidth = 260 + 30; // 260px width + 30px margin
+        const singleSetWidth = projectsData.length * cardWidth;
+
+        // Iniciar al centro
+        slider.scrollLeft = singleSetWidth;
+
+        // Función Scroll Infinito
+        slider.addEventListener('scroll', () => {
+            if (slider.scrollLeft >= singleSetWidth * 2) slider.scrollLeft -= singleSetWidth;
+            else if (slider.scrollLeft <= 10) slider.scrollLeft += singleSetWidth;
+            
+            checkCenter();
+        });
+
+        // UI Updates
         const pId = document.getElementById('project-id');
         const pTitle = document.getElementById('project-title');
         const pDesc = document.getElementById('project-desc');
-        
-        // 1. CONFIGURACIÓN DEL BUCLE INFINITO
-        // Clonamos todo el contenido 2 veces (original + clon inicio + clon final)
-        const originalCards = Array.from(document.querySelectorAll('.work-card'));
-        
-        // Clonar al final
-        originalCards.forEach(card => {
-            let clone = card.cloneNode(true);
-            clone.classList.add('clone');
-            slider.appendChild(clone);
-        });
-        
-        // Clonar al principio
-        originalCards.reverse().forEach(card => {
-            let clone = card.cloneNode(true);
-            clone.classList.add('clone');
-            slider.prepend(clone);
-        });
-
-        // Recuperar todas las cards (ahora hay el triple)
-        let allCards = document.querySelectorAll('.work-card');
-
-        // 2. POSICIONAMIENTO INICIAL
-        // Calculamos el ancho de un set completo para saber dónde "saltar"
-        const cardWidth = 260 + 30; // Ancho base + margin (15px * 2) aprox
-        const singleSetWidth = originalCards.length * cardWidth;
-        
-        // Iniciamos en el medio (donde están las originales)
-        slider.scrollLeft = singleSetWidth;
-
-        // 3. LÓGICA DE TELETRANSPORTACIÓN (INFINITO)
-        slider.addEventListener('scroll', () => {
-            // Si llegamos muy a la derecha (set de clones final), saltamos atrás
-            if (slider.scrollLeft >= singleSetWidth * 2) {
-                slider.scrollLeft -= singleSetWidth;
-            }
-            // Si llegamos muy a la izquierda (set de clones inicio), saltamos adelante
-            else if (slider.scrollLeft <= 0) {
-                slider.scrollLeft += singleSetWidth;
-            }
-
-            checkCenter(); // Actualizar UI
-        });
-
-        // 4. ACTUALIZACIÓN DE TEXTO
-        let lastId = "";
-        function updateText(id, title, desc) {
-            if (id === lastId) return;
-            lastId = id;
-            
-            gsap.to(["#top-content", "#bottom-content"], {
-                opacity: 0, y: 5, duration: 0.2,
-                onComplete: () => {
-                    pId.innerText = id;
-                    pTitle.innerText = title;
-                    pDesc.innerText = desc;
-                    gsap.to(["#top-content", "#bottom-content"], { opacity: 1, y: 0, duration: 0.3 });
-                }
-            });
-        }
 
         function checkCenter() {
             let center = slider.scrollLeft + (window.innerWidth / 2);
             let closestCard = null;
             let minDistance = Infinity;
 
-            // Buscamos la carta más cercana al centro relativo
             allCards.forEach(card => {
-                // Cálculo ajustado porque ahora el scrollLeft es infinito
-                const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-                const distance = Math.abs(center - cardCenter - slider.scrollLeft); 
-                // Nota: offsetLeft es relativo al padre, scrollLeft mueve la vista
-                
-                // Corrección: Usamos getBoundingClientRect para precisión visual
                 const rect = card.getBoundingClientRect();
                 const visualCenter = rect.left + rect.width / 2;
                 const distVisual = Math.abs((window.innerWidth/2) - visualCenter);
@@ -225,35 +276,101 @@
             allCards.forEach(c => c.classList.remove('active'));
             if (closestCard) {
                 closestCard.classList.add('active');
-                updateText(closestCard.dataset.id, closestCard.dataset.title, closestCard.dataset.desc);
+                // Buscar datos en el array original usando el ID
+                const data = projectsData.find(p => p.id === closestCard.dataset.id);
+                if(data) updateText(data.id, data.title, data.desc);
             }
         }
 
-        // 5. CLICK PARA CENTRAR (Con animación suave manual)
-        allCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const centerScreen = window.innerWidth / 2;
-                const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-                
-                // Animamos el scroll hacia la posición correcta
-                gsap.to(slider, { 
-                    scrollTo: { x: cardCenter - centerScreen }, 
-                    duration: 0.8, 
-                    ease: "power3.out" 
-                });
+        let lastId = "";
+        function updateText(id, title, desc) {
+            if (id === lastId) return;
+            lastId = id;
+            gsap.to(["#top-content", "#bottom-content"], {
+                opacity: 0, y: 5, duration: 0.2,
+                onComplete: () => {
+                    pId.innerText = id;
+                    pTitle.innerText = title;
+                    pDesc.innerText = desc;
+                    gsap.to(["#top-content", "#bottom-content"], { opacity: 1, y: 0, duration: 0.3 });
+                }
             });
-        });
+        }
 
-        // 6. SCROLL CON RUEDA DEL MOUSE
+        // Mouse Wheel Horizontal
         slider.addEventListener('wheel', e => {
             e.preventDefault();
             slider.scrollLeft += e.deltaY;
         });
 
-        // Inicialización
-        window.onload = () => {
-            checkCenter();
-        };
+        // ==========================================
+        // 4. ABRIR / CERRAR PROYECTO
+        // ==========================================
+        
+        // Delegación de eventos (para detectar clicks en clones también)
+        slider.addEventListener('click', (e) => {
+            const card = e.target.closest('.work-card');
+            if(!card) return;
+
+            // Si la carta no está activa (al centro), primero la centramos
+            if(!card.classList.contains('active')) {
+                const centerScreen = window.innerWidth / 2;
+                const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+                gsap.to(slider, { scrollTo: { x: cardCenter - centerScreen }, duration: 0.5 });
+            } else {
+                // Si ya está activa, ABRIMOS EL PROYECTO
+                openProject(card.dataset.id);
+            }
+        });
+
+        function openProject(id) {
+            const data = projectsData.find(p => p.id === id);
+            if(!data) return;
+
+            // 1. Llenar contenido
+            let htmlContent = `
+                <div class="detail-header">
+                    <div style="font-size:12px; margin-bottom:10px;">${data.id}</div>
+                    <h1 class="detail-title">${data.title}</h1>
+                    <p class="detail-desc">${data.desc}</p>
+                </div>
+            `;
+            
+            // Agregar todas las imágenes de la sesión
+            data.images.forEach(imgSrc => {
+                htmlContent += `<img src="${imgSrc}" class="detail-image">`;
+            });
+
+            detailContainer.innerHTML = htmlContent;
+
+            // 2. Mostrar Overlay
+            detailView.style.display = 'block';
+            
+            // Animación de entrada
+            const tl = gsap.timeline();
+            tl.to(carouselUI, { opacity: 0, duration: 0.3 }) // Ocultar UI carousel
+              .to(slider, { opacity: 0.5, duration: 0.3 }, "<") // Atenuar carousel
+              .to(detailView, { opacity: 1, duration: 0.5 })
+              .to(".detail-image", { 
+                  opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" 
+              }, "-=0.2");
+        }
+
+        function closeProject() {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    detailView.style.display = 'none';
+                    detailContainer.innerHTML = ""; // Limpiar memoria
+                }
+            });
+
+            tl.to(detailView, { opacity: 0, duration: 0.4 })
+              .to(slider, { opacity: 1, duration: 0.4 }, "<")
+              .to(carouselUI, { opacity: 1, duration: 0.4 }, "<");
+        }
+
+        // Init
+        window.onload = () => checkCenter();
 
     </script>
 </body>
