@@ -3,74 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales | Portfolio</title>
+<title>Edson Canales — Portfolio</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 body{
-  font-family:'Montserrat',sans-serif;
-  background:#fff;
+  font-family:'Inter', sans-serif;
+  background:#faf9f7;
   color:#111;
 }
 
-.container{
+/* -------- TOP BAR -------- */
+
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:30px 60px;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  letter-spacing:0.05em;
+}
+
+.top-left span{
+  margin-right:30px;
+}
+
+.top-right span{
+  margin-left:30px;
+}
+
+/* -------- MAIN POSTER -------- */
+
+.poster{
   min-height:100vh;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
+  padding-top:120px;
 }
 
-.card{
+.poster img{
+  width:65%;
   max-width:900px;
-  width:100%;
-  padding:80px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:60px;
+  height:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15);
 }
 
-h1{
-  font-family:'Fjalla One',sans-serif;
-  font-size:48px;
-  margin-bottom:24px;
-}
+/* -------- FOOT INFO -------- */
 
-p{
-  font-size:14px;
-  line-height:1.7;
-  color:#444;
-}
-
-.gallery-link{
-  margin-top:40px;
-  display:inline-block;
+.footer-info{
+  position:fixed;
+  bottom:30px;
+  left:60px;
   font-size:12px;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  text-decoration:none;
-  color:#111;
-  border-bottom:1px solid #111;
-  padding-bottom:4px;
-}
-
-.profile img{
-  width:100%;
-  max-width:280px;
+  letter-spacing:0.05em;
 }
 
 .signature{
-  margin-top:16px;
-  font-family: cursive;
+  position:fixed;
+  bottom:30px;
+  right:60px;
+  font-family:'Playfair Display', serif;
   font-size:22px;
 }
 
-@media(max-width:768px){
-  .card{
-    grid-template-columns:1fr;
-    padding:40px;
+/* -------- LINKS -------- */
+
+a{
+  text-decoration:none;
+  color:#111;
+}
+
+a:hover{
+  opacity:0.6;
+}
+
+/* -------- RESPONSIVE -------- */
+
+@media(max-width:900px){
+  .topbar{
+    padding:20px 30px;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .poster img{
+    width:85%;
+  }
+
+  .footer-info,
+  .signature{
+    position:static;
+    text-align:center;
+    margin:20px 0;
   }
 }
 </style>
@@ -78,26 +114,36 @@ p{
 
 <body>
 
-<div class="container">
-  <div class="card">
+<!-- TOP INFO -->
+<div class="topbar">
 
-    <div>
-      <h1>PORTFOLIO</h1>
-      <p>
-        Aquí es donde voy a poner un poco de información de lo que soy,
-        de mi trabajo y del enfoque visual que desarrollo a través de
-        fotografía editorial y comercial.
-      </p>
-
-      <a href="gallery.html" class="gallery-link">Gallery</a>
-    </div>
-
-    <div class="profile">
-      <img src="images/fotoperfil.JPG" alt="Edson Canales">
-      <div class="signature">edson canales</div>
-    </div>
-
+  <div class="top-left">
+    <span>Daily poster design</span>
+    <span>Years of production — 2025</span>
+    <span>Designer</span>
+    <span>Edson Canales</span>
   </div>
+
+  <div class="top-right">
+    <span><a href="gallery.html">Gallery</a></span>
+    <span><a href="about.html">About</a></span>
+    <span><a href="contact.html">Contact</a></span>
+  </div>
+
+</div>
+
+<!-- POSTER IMAGE -->
+<div class="poster">
+  <img src="images/fotoperfil.JPG" alt="Edson Canales">
+</div>
+
+<!-- FOOT -->
+<div class="footer-info">
+  2025 / 04 / 12
+</div>
+
+<div class="signature">
+  edson canales
 </div>
 
 </body>
