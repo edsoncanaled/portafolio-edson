@@ -29,9 +29,9 @@
             font-size: 10px; font-family: var(--font-mono);
             z-index: 100; text-transform: uppercase; letter-spacing: 1px;
             background: linear-gradient(to bottom, white 40%, transparent);
-            pointer-events: none; /* Permite clickear a través del gradiente */
+            pointer-events: none;
         }
-        nav * { pointer-events: auto; } /* Reactiva clicks en los links */
+        nav * { pointer-events: auto; }
 
         /* UI TEXTO */
         .ui-overlay {
@@ -53,14 +53,16 @@
             background: rgba(255,255,255,0.9); padding: 10px; border-radius: 4px;
         }
 
-        /* GALERÍA */
+        /* GALERÍA INFINITA */
         .gallery-viewport {
             height: 100vh;
             display: flex; align-items: center;
             overflow-x: auto; scrollbar-width: none;
-            padding: 0 calc(50vw - 130px); /* Centrado para desktop */
-            scroll-behavior: smooth;
-            cursor: grab; /* Indica que se puede arrastrar (aunque sea visual por ahora) */
+            /* Padding calculado para que la foto quede centrada */
+            padding: 0 calc(50vw - 130px); 
+            /* Importante: Quitar smooth behavior nativo porque interfiere con el bucle infinito manual */
+            scroll-behavior: auto; 
+            cursor: grab;
         }
         .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
@@ -70,24 +72,20 @@
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             transform: scale(0.9); opacity: 1; cursor: pointer;
             position: relative;
+            user-select: none; /* Evita que se seleccione la imagen al arrastrar */
+        }
+        
+        .work-card img {
+            width: 100%; height: 360px; object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: none; /* Mejor arrastre */
         }
 
         .work-card.active { transform: scale(1.15); z-index: 5; }
 
-        .work-card img {
-            width: 100%; height: 360px; object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* MEDIA QUERIES (VERSIÓN MÓVIL) */
         @media (max-width: 768px) {
-            nav { padding: 20px; flex-direction: column; gap: 10px; align-items: center; }
-            .ui-overlay { padding: 140px 20px 100px 20px; }
-            #project-title { font-size: 18px; }
-            .gallery-viewport { padding: 0 calc(50vw - 110px); } /* Ajuste centro móvil */
-            .work-card { flex: 0 0 220px; margin: 0 10px; } /* Tarjetas más chicas */
-            .work-card img { height: 300px; }
-            .text-bottom { font-size: 9px; max-width: 300px; }
+            .work-card { flex: 0 0 220px; }
+            .gallery-viewport { padding: 0 calc(50vw - 110px); }
         }
     </style>
 </head>
@@ -113,22 +111,22 @@
 
     <main class="gallery-viewport" id="slider">
         <div class="work-card" data-id="D001" data-title="Birthday Slay" data-desc="A visual exploration of identity through light and shadow.">
-            <img src="images/foto1.jpg" loading="lazy">
+            <img src="images/foto1.jpg">
         </div>
         <div class="work-card" data-id="D002" data-title="Shadow Play" data-desc="Minimalist architectural study focused on sharp contrasts.">
-            <img src="images/foto2.jpg" loading="lazy">
+            <img src="images/foto2.jpg">
         </div>
         <div class="work-card" data-id="D003" data-title="The Cafe" data-desc="Urban lifestyle documentary series captured in Mexico City.">
-            <img src="images/foto3.jpg" loading="lazy">
+            <img src="images/foto3.jpg">
         </div>
         <div class="work-card" data-id="D004" data-title="Motion Study" data-desc="Experimental high-speed photography capturing fluid movement.">
-            <img src="images/foto4.jpg" loading="lazy">
+            <img src="images/foto4.jpg">
         </div>
         <div class="work-card" data-id="D005" data-title="Street Archive" data-desc="Personal collection of candid street moments from 2023.">
-            <img src="images/foto5.jpg" loading="lazy">
+            <img src="images/foto5.jpg">
         </div>
-         <div class="work-card" data-id="D006" data-title="Noir Sessions" data-desc="Black and white aesthetic exploration.">
-            <img src="images/foto6.jpg" loading="lazy">
+        <div class="work-card" data-id="D006" data-title="Noir Sessions" data-desc="Black and white aesthetic exploration.">
+            <img src="images/foto6.jpg">
         </div>
     </main>
 
@@ -137,12 +135,54 @@
 
     <script>
         const slider = document.getElementById('slider');
-        const cards = document.querySelectorAll('.work-card');
         const pId = document.getElementById('project-id');
         const pTitle = document.getElementById('project-title');
         const pDesc = document.getElementById('project-desc');
+        
+        // 1. CONFIGURACIÓN DEL BUCLE INFINITO
+        // Clonamos todo el contenido 2 veces (original + clon inicio + clon final)
+        const originalCards = Array.from(document.querySelectorAll('.work-card'));
+        
+        // Clonar al final
+        originalCards.forEach(card => {
+            let clone = card.cloneNode(true);
+            clone.classList.add('clone');
+            slider.appendChild(clone);
+        });
+        
+        // Clonar al principio
+        originalCards.reverse().forEach(card => {
+            let clone = card.cloneNode(true);
+            clone.classList.add('clone');
+            slider.prepend(clone);
+        });
 
-        // Función para actualizar texto
+        // Recuperar todas las cards (ahora hay el triple)
+        let allCards = document.querySelectorAll('.work-card');
+
+        // 2. POSICIONAMIENTO INICIAL
+        // Calculamos el ancho de un set completo para saber dónde "saltar"
+        const cardWidth = 260 + 30; // Ancho base + margin (15px * 2) aprox
+        const singleSetWidth = originalCards.length * cardWidth;
+        
+        // Iniciamos en el medio (donde están las originales)
+        slider.scrollLeft = singleSetWidth;
+
+        // 3. LÓGICA DE TELETRANSPORTACIÓN (INFINITO)
+        slider.addEventListener('scroll', () => {
+            // Si llegamos muy a la derecha (set de clones final), saltamos atrás
+            if (slider.scrollLeft >= singleSetWidth * 2) {
+                slider.scrollLeft -= singleSetWidth;
+            }
+            // Si llegamos muy a la izquierda (set de clones inicio), saltamos adelante
+            else if (slider.scrollLeft <= 0) {
+                slider.scrollLeft += singleSetWidth;
+            }
+
+            checkCenter(); // Actualizar UI
+        });
+
+        // 4. ACTUALIZACIÓN DE TEXTO
         let lastId = "";
         function updateText(id, title, desc) {
             if (id === lastId) return;
@@ -159,67 +199,62 @@
             });
         }
 
-        // Lógica de Scroll y Centro
         function checkCenter() {
-            let center = window.innerWidth / 2;
+            let center = slider.scrollLeft + (window.innerWidth / 2);
             let closestCard = null;
             let minDistance = Infinity;
 
-            cards.forEach(card => {
+            // Buscamos la carta más cercana al centro relativo
+            allCards.forEach(card => {
+                // Cálculo ajustado porque ahora el scrollLeft es infinito
+                const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+                const distance = Math.abs(center - cardCenter - slider.scrollLeft); 
+                // Nota: offsetLeft es relativo al padre, scrollLeft mueve la vista
+                
+                // Corrección: Usamos getBoundingClientRect para precisión visual
                 const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const distance = Math.abs(center - cardCenter);
+                const visualCenter = rect.left + rect.width / 2;
+                const distVisual = Math.abs((window.innerWidth/2) - visualCenter);
 
-                if (distance < minDistance) {
-                    minDistance = distance;
+                if (distVisual < minDistance) {
+                    minDistance = distVisual;
                     closestCard = card;
                 }
             });
 
-            cards.forEach(c => c.classList.remove('active'));
+            allCards.forEach(c => c.classList.remove('active'));
             if (closestCard) {
                 closestCard.classList.add('active');
                 updateText(closestCard.dataset.id, closestCard.dataset.title, closestCard.dataset.desc);
             }
         }
 
-        slider.addEventListener('scroll', checkCenter);
-
-        // Click para centrar
-        cards.forEach(card => {
+        // 5. CLICK PARA CENTRAR (Con animación suave manual)
+        allCards.forEach(card => {
             card.addEventListener('click', () => {
-                const centerPoint = window.innerWidth / 2;
+                const centerScreen = window.innerWidth / 2;
                 const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-                gsap.to(slider, { scrollTo: { x: cardCenter - centerPoint }, duration: 0.8, ease: "power3.out" });
+                
+                // Animamos el scroll hacia la posición correcta
+                gsap.to(slider, { 
+                    scrollTo: { x: cardCenter - centerScreen }, 
+                    duration: 0.8, 
+                    ease: "power3.out" 
+                });
             });
         });
 
-        // Scroll Horizontal con Rueda
+        // 6. SCROLL CON RUEDA DEL MOUSE
         slider.addEventListener('wheel', e => {
             e.preventDefault();
             slider.scrollLeft += e.deltaY;
         });
 
-        // --- MEJORA: NAVEGACIÓN POR TECLADO ---
-        document.addEventListener('keydown', (e) => {
-            const current = document.querySelector('.work-card.active');
-            if (!current) return;
-
-            let target = null;
-            if (e.key === 'ArrowRight') target = current.nextElementSibling;
-            if (e.key === 'ArrowLeft') target = current.previousElementSibling;
-
-            if (target) {
-                // Simular click para usar la misma lógica de centrado
-                target.click(); 
-            }
-        });
-
-        // Inicio
+        // Inicialización
         window.onload = () => {
-            slider.scrollLeft = 1; 
             checkCenter();
         };
+
     </script>
 </body>
 </html>
