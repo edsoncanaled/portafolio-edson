@@ -1,287 +1,259 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gallery | Edson Canales</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editorial Gallery | Edson Canales</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+    <style>
+        :root {
+            --bg: #faf9f7;
+            --text: #111;
+            --soft-gray: #e0ddd7;
+            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
-body{
-  font-family:'Inter', sans-serif;
-  background:#faf9f7;
-  color:#111;
-  overflow:hidden;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* BACK */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden; /* Evita el scroll nativo feo */
+            height: 100vh;
+        }
 
-.back{
-  position:fixed;
-  top:30px;
-  left:60px;
-  font-size:12px;
-  letter-spacing:.08em;
-  z-index:10;
-}
+        /* NAVEGACIÓN */
+        .back {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            font-size: 11px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            z-index: 100;
+        }
 
-.back a{
-  text-decoration:none;
-  color:#111;
-}
+        .back a { text-decoration: none; color: var(--text); transition: opacity 0.3s; }
+        .back a:hover { opacity: .4; }
 
-.back a:hover{opacity:.6}
+        /* WRAPPER PRINCIPAL */
+        .wrapper {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
 
-/* WRAPPER */
+        /* INFO TEXT */
+        .info {
+            text-align: center;
+            margin-bottom: 5vh;
+            pointer-events: none;
+        }
 
-.wrapper{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:40px;
-}
+        .info h2 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
 
-/* INFO */
+        .info p {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #888;
+        }
 
-.info{
-  text-align:center;
-}
+        /* SLIDER - El corazón del movimiento soft */
+        .slider-wrap {
+            width: 100%;
+            cursor: grab;
+            overflow: hidden;
+            padding: 20px 0;
+        }
 
-.info h2{
-  font-size:26px;
-  font-weight:400;
-  margin-bottom:6px;
-}
+        .slider-wrap:active { cursor: grabbing; }
 
-.info p{
-  font-size:13px;
-  color:#666;
-}
+        .slider-inner {
+            display: flex;
+            gap: 100px; /* Espacio elegante entre fotos */
+            padding: 0 40vw; /* Permite que la primera y última foto se centren */
+            align-items: center;
+        }
 
-/* SLIDER */
+        .slide {
+            flex: 0 0 auto;
+            height: 55vh; /* Altura editorial */
+            position: relative;
+            transition: var(--transition);
+            filter: grayscale(100%);
+            opacity: 0.2;
+            transform: scale(0.8);
+        }
 
-.slider-container{
-  position:relative;
-}
+        .slide.active {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.05); /* Un pop suave hacia adelante */
+        }
 
-.slider{
-  display:flex;
-  gap:60px;
-  padding:40px 140px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-}
+        .slide img {
+            height: 100%;
+            width: auto;
+            object-fit: cover;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
 
-.slider::-webkit-scrollbar{
-  display:none;
-}
+        /* INDICADORES (DOTS) */
+        .dots {
+            margin-top: 5vh;
+            display: flex;
+            gap: 15px;
+        }
 
-.slide{
-  flex:0 0 auto;
-  height:190px;
-  scroll-snap-align:center;
-  cursor:pointer;
-}
+        .dot {
+            width: 30px;
+            height: 1px;
+            background: var(--soft-gray);
+            transition: var(--transition);
+        }
 
-.slide img{
-  height:100%;
-  width:auto;
-  opacity:.35;
-  transition:.5s ease;
-}
+        .dot.active {
+            background: var(--text);
+            width: 60px;
+        }
 
-.slide.active img{
-  opacity:1;
-  transform:scale(1.25);
-}
-
-/* ARROWS */
-
-.arrow{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:32px;
-  cursor:pointer;
-  opacity:.4;
-  user-select:none;
-}
-
-.arrow:hover{opacity:.8}
-
-.arrow.left{left:40px;}
-.arrow.right{right:40px;}
-
-/* DOTS */
-
-.dots{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-}
-
-.dots span{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#bbb;
-}
-
-.dots span.active{
-  background:#111;
-  transform:scale(1.4);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-  body{overflow:auto;}
-  .slider{padding:40px 30px;}
-  .back{left:30px;}
-}
-</style>
+        @media(max-width: 768px) {
+            .slider-inner { gap: 40px; }
+            .slide { height: 45vh; }
+            .back { top: 20px; left: 20px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="back">
-  <a href="index.html">← Back</a>
-</div>
+    <div class="back"><a href="index.html">← Return</a></div>
 
-<div class="wrapper">
+    <main class="wrapper">
+        <div class="info" id="info">
+            <h2 id="title">Loading</h2>
+            <p id="desc">Creative Portfolio</p>
+        </div>
 
-<!-- INFO -->
-<div class="info" id="info">
-  <h2>Birthday Shot</h2>
-  <p>Editorial session exploring identity.</p>
-</div>
+        <div class="slider-wrap" id="sliderWrap">
+            <div class="slider-inner" id="sliderInner">
+                <div class="slide" data-title="Birthday Shot" data-desc="Exploring identity & light">
+                    <img src="images/foto1.jpg" alt="">
+                </div>
+                <div class="slide" data-title="Shadows" data-desc="Contrast session 2024">
+                    <img src="images/foto2.jpg" alt="">
+                </div>
+                <div class="slide" data-title="Minimalist" data-desc="Form and movement">
+                    <img src="images/foto3.jpg" alt="">
+                </div>
+                <div class="slide" data-title="The Cafe" data-desc="Urban atmosphere">
+                    <img src="images/foto4.jpg" alt="">
+                </div>
+                <div class="slide" data-title="Portrait" data-desc="Close up series">
+                    <img src="images/foto5.jpg" alt="">
+                </div>
+                <div class="slide" data-title="Editorial" data-desc="Vogue inspired">
+                    <img src="images/foto6.jpg" alt="">
+                </div>
+            </div>
+        </div>
 
-<!-- SLIDER -->
-<div class="slider-container">
+        <div class="dots" id="dots"></div>
+    </main>
 
-<div class="arrow left" onclick="move(-1)">‹</div>
-<div class="arrow right" onclick="move(1)">›</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
 
-<div class="slider" id="slider">
+    <script>
+        gsap.registerPlugin(Draggable);
 
-<div class="slide active"
- data-title="Birthday Shot"
- data-desc="Editorial session exploring identity.">
- <img src="images/foto1.jpg">
-</div>
+        const inner = document.getElementById('sliderInner');
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('dots');
+        const title = document.getElementById('title');
+        const desc = document.getElementById('desc');
 
-<div class="slide"
- data-title="Birthday Shot"
- data-desc="Editorial session exploring identity.">
- <img src="images/foto2.jpg">
-</div>
+        // Crear dots
+        slides.forEach(() => {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dotsContainer.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.dot');
 
-<div class="slide"
- data-title="Birthday Shot"
- data-desc="Editorial session exploring identity.">
- <img src="images/foto3.jpg">
-</div>
+        // Configuración del Draggable (Scroll horizontal soft)
+        const drag = Draggable.create(inner, {
+            type: "x",
+            edgeResistance: 0.9,
+            inertia: true, // Esto hace que se sienta "soft" al soltar
+            bounds: {
+                minX: -inner.scrollWidth + window.innerWidth * 0.6,
+                maxX: 0
+            },
+            onUpdate: updateSlides,
+            onThrowUpdate: updateSlides
+        })[0];
 
-<div class="slide"
- data-title="Second Editorial"
- data-desc="Form and movement exploration.">
- <img src="images/foto4.jpg">
-</div>
+        function updateSlides() {
+            let closestSlide = 0;
+            let minDistance = Infinity;
 
-<div class="slide"
- data-title="Second Editorial"
- data-desc="Form and movement exploration.">
- <img src="images/foto5.jpg">
-</div>
+            slides.forEach((slide, i) => {
+                const rect = slide.getBoundingClientRect();
+                const center = window.innerWidth / 2;
+                const distance = Math.abs((rect.left + rect.width / 2) - center);
 
-</div>
-</div>
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestSlide = i;
+                }
+            });
 
-<!-- DOTS -->
-<div class="dots" id="dots"></div>
+            slides.forEach((s, i) => {
+                if (i === closestSlide) {
+                    s.classList.add('active');
+                    dots[i].classList.add('active');
+                    title.innerText = s.dataset.title;
+                    desc.innerText = s.dataset.desc;
+                } else {
+                    s.classList.remove('active');
+                    dots[i].classList.remove('active');
+                }
+            });
+        }
 
-</div>
+        // Click en imagen para centrarla
+        slides.forEach((slide, i) => {
+            slide.addEventListener('click', () => {
+                const rect = slide.getBoundingClientRect();
+                const currentX = gsap.getProperty(inner, "x");
+                const offset = (window.innerWidth / 2) - (rect.left + rect.width / 2);
+                
+                gsap.to(inner, {
+                    x: currentX + offset,
+                    duration: 1.2,
+                    ease: "power4.out",
+                    onUpdate: updateSlides
+                });
+            });
+        });
 
-<script>
-const slider = document.getElementById("slider");
-const slides = [...document.querySelectorAll(".slide")];
-const info = document.getElementById("info");
-const dotsContainer = document.getElementById("dots");
-
-let active = 0;
-
-/* CREATE DOTS */
-slides.forEach(()=>dotsContainer.appendChild(document.createElement("span")));
-const dots = [...dotsContainer.children];
-
-function setActive(i){
-  active = i;
-
-  slides.forEach((s,index)=>{
-    s.classList.toggle("active", index===i);
-    dots[index].classList.toggle("active", index===i);
-  });
-
-  info.querySelector("h2").textContent = slides[i].dataset.title;
-  info.querySelector("p").textContent = slides[i].dataset.desc;
-
-  slides[i].scrollIntoView({
-    behavior:"smooth",
-    inline:"center",
-    block:"nearest"
-  });
-}
-
-/* ARROWS */
-
-function move(dir){
-  let next = active + dir;
-
-  if(next < 0) next = slides.length-1;
-  if(next >= slides.length) next = 0;
-
-  setActive(next);
-}
-
-/* KEYBOARD */
-
-window.addEventListener("keydown", e=>{
-  if(e.key==="ArrowRight") move(1);
-  if(e.key==="ArrowLeft") move(-1);
-});
-
-/* CLICK IMAGE TO ADVANCE */
-
-slides.forEach((slide,i)=>{
-  slide.addEventListener("click",()=>{
-    setActive(i);
-  });
-});
-
-/* SCROLL DETECTION */
-
-slider.addEventListener("scroll", ()=>{
-  const center = slider.scrollLeft + slider.offsetWidth/2;
-
-  slides.forEach((slide,i)=>{
-    const slideCenter = slide.offsetLeft + slide.offsetWidth/2;
-    if(Math.abs(center - slideCenter) < slide.offsetWidth/2){
-      if(active !== i) setActive(i);
-    }
-  });
-});
-
-setActive(0);
-</script>
-
+        // Inicializar
+        window.addEventListener('load', () => {
+            updateSlides();
+        });
+    </script>
 </body>
 </html>
