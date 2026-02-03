@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Works | Edson Canales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg: #ffffff;
             --text: #000000;
-            --font-mono: 'JetBrains Mono', monospace;
+            --font-main: 'JetBrains Mono', monospace; /* Fuente principal cambiada a Mono */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,144 +19,141 @@
             height: 100vh; 
             overflow: hidden; 
             background: var(--bg); 
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-main); /* Aplicar a todo */
+            color: var(--text);
         }
 
-        /* --- NAVEGACIÓN --- */
+        /* --- NAVEGACIÓN (Estilo Lista Técnica) --- */
         nav {
             position: fixed; top: 0; width: 100%; display: flex;
-            justify-content: space-between; padding: 30px 50px;
-            font-size: 10px; font-family: var(--font-mono);
-            z-index: 100; text-transform: uppercase; letter-spacing: 1px;
-            background: linear-gradient(to bottom, white 40%, transparent);
+            justify-content: space-between; padding: 30px 40px;
+            font-size: 11px; 
+            z-index: 100; text-transform: uppercase;
+            background: linear-gradient(to bottom, white 50%, transparent);
             pointer-events: none;
         }
         nav * { pointer-events: auto; }
 
-        /* --- UI TEXTO CAROUSEL --- */
+        /* --- UI TEXTO CAROUSEL (MODIFICADO) --- */
         .ui-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
-            justify-content: space-between; align-items: center;
-            padding: 100px 20px 80px 20px;
+            justify-content: space-between; 
+            align-items: center; /* Mantiene el bloque en el centro horizontal */
+            padding: 110px 0 80px 0;
             pointer-events: none; z-index: 10;
-            transition: opacity 0.5s;
         }
 
-        .text-top { text-align: center; font-family: var(--font-mono); }
-        #project-id { font-size: 12px; color: #999; margin-bottom: 8px; display: block; }
-        #project-title { font-size: 24px; text-transform: uppercase; letter-spacing: -1px; }
-
-        .text-bottom {
-            max-width: 450px; text-align: center;
-            font-family: var(--font-mono); font-size: 11px;
-            text-transform: uppercase; line-height: 1.5; color: #333;
-            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 4px;
+        /* Contenedor de texto para alinear a la izquierda como la imagen */
+        .text-wrapper {
+            width: 260px; /* Mismo ancho que la imagen para que cuadre perfecto */
+            text-align: left; /* Alineación a la izquierda */
         }
 
-        /* --- CAROUSEL INFINITO --- */
+        /* Estilos Texto Superior */
+        .text-top { margin-bottom: 10px; }
+        #project-id { 
+            font-size: 10px; color: #999; display: block; margin-bottom: 5px; 
+        }
+        #project-client { 
+            font-size: 13px; 
+            font-weight: 700; /* Negrita como en la imagen (ej: MANGO) */
+            text-transform: uppercase; 
+            line-height: 1.2;
+        }
+
+        /* Estilos Texto Inferior */
+        .text-bottom { margin-top: 10px; }
+        #project-title { 
+            font-size: 12px; 
+            font-weight: 400; 
+            margin-bottom: 4px;
+            display: block;
+            line-height: 1.3;
+        }
+        #project-type {
+            font-size: 11px;
+            color: #666; /* Gris para la categoría (ej: Direct to Client) */
+            display: block;
+        }
+
+        /* --- CAROUSEL --- */
         .gallery-viewport {
             height: 100vh;
             display: flex; align-items: center;
             overflow-x: auto; scrollbar-width: none;
-            padding: 0 calc(50vw - 130px); 
+            padding: 0 calc(50vw - 130px); /* 130px es la mitad de 260px */
             cursor: grab;
-            /* Importante: para que el JS controle el scroll infinito */
         }
         .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
 
         .work-card {
-            flex: 0 0 260px; margin: 0 15px;
+            flex: 0 0 260px; margin: 0 20px; /* Un poco más de aire */
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-            transform: scale(0.9); opacity: 1; cursor: pointer;
+            transform: scale(0.95); opacity: 1; cursor: pointer;
             position: relative;
             user-select: none;
         }
 
         .work-card img {
-            width: 100%; height: 360px; object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%; height: 350px; object-fit: cover;
+            /* Quitamos sombras pesadas para un look más limpio */
             pointer-events: none;
         }
 
-        .work-card.active { transform: scale(1.15); z-index: 5; }
+        .work-card.active { transform: scale(1.05); z-index: 5; }
 
-        /* --- VISTA DE DETALLE (OVERLAY DE PROYECTO) --- */
+        /* --- DETALLE PROYECTO --- */
         #project-detail-view {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 200;
-            overflow-y: auto; /* Scroll vertical activado */
-            display: none; /* Oculto por defecto */
-            opacity: 0;
+            overflow-y: auto; display: none; opacity: 0;
         }
-
         .detail-nav {
-            position: fixed; top: 0; width: 100%; padding: 30px 50px;
+            position: fixed; top: 0; width: 100%; padding: 30px 40px;
             display: flex; justify-content: flex-end; z-index: 201;
             mix-blend-mode: difference; color: white;
         }
+        .close-btn { cursor: pointer; border: 1px solid white; padding: 5px 15px; border-radius: 15px; }
+        .detail-content { padding: 100px 20vw; display: flex; flex-direction: column; gap: 40px; }
+        .detail-image { width: 100%; height: auto; object-fit: cover; opacity: 0; transform: translateY(20px); }
 
-        .close-btn {
-            font-family: var(--font-mono); font-size: 12px; cursor: pointer;
-            text-transform: uppercase; border: 1px solid white; padding: 10px 20px;
-            border-radius: 20px; transition: all 0.3s;
+        /* MÓVIL */
+        @media (max-width: 768px) {
+            .gallery-viewport { padding: 0 calc(50vw - 110px); }
+            .work-card { flex: 0 0 220px; }
+            .text-wrapper { width: 220px; }
         }
-        .close-btn:hover { background: white; color: black; }
-
-        .detail-content {
-            padding: 100px 20vw; /* Márgenes laterales para lectura */
-            display: flex; flex-direction: column; gap: 40px;
-        }
-
-        .detail-header {
-            text-align: center; margin-bottom: 60px;
-        }
-        .detail-title { font-size: 40px; text-transform: uppercase; margin-bottom: 20px; }
-        .detail-desc { font-family: var(--font-mono); font-size: 12px; color: #666; max-width: 600px; margin: 0 auto; }
-
-        .detail-image {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            opacity: 0; /* Para animar entrada */
-            transform: translateY(20px);
-        }
-
-        /* CSS CLASE UTILITARIA PARA OCULTAR CAROUSEL */
-        .hidden { opacity: 0; pointer-events: none; }
-
     </style>
 </head>
 <body>
 
-    <nav id="main-nav">
-        <div>EDSON CANALES ©2026</div>
-        <div style="display: flex; gap: 20px;">
-            <span>WORKS</span>
-            <span>INFO</span>
-        </div>
+    <nav>
+        <div style="width: 200px;">M1. DIRECTORS</div>
+        <div style="width: 200px;">M2. WORKS</div>
+        <div style="width: 200px; text-align: right;">M3. CONTACT</div>
     </nav>
 
     <div class="ui-overlay" id="carousel-ui">
-        <div class="text-top" id="top-content">
+        
+        <div class="text-wrapper text-top" id="top-content">
             <span id="project-id">D001</span>
-            <h1 id="project-title">LOADING...</h1>
+            <div id="project-client">LOADING CLIENT</div>
         </div>
-        <div class="text-bottom" id="bottom-content">
-            <p id="project-desc">Click an image to view full project</p>
+
+        <div class="text-wrapper text-bottom" id="bottom-content">
+            <span id="project-title">Project Name</span>
+            <span id="project-type">Category</span>
         </div>
+
     </div>
 
-    <main class="gallery-viewport" id="slider">
-        </main>
+    <main class="gallery-viewport" id="slider"></main>
 
     <div id="project-detail-view">
-        <div class="detail-nav">
-            <div class="close-btn" onclick="closeProject()">CLOSE [X]</div>
-        </div>
-        <div class="detail-content" id="detail-container">
-            </div>
+        <div class="detail-nav"><div class="close-btn" onclick="closeProject()">CLOSE</div></div>
+        <div class="detail-content" id="detail-container"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -164,98 +161,110 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN DE PROYECTOS (DATABASE)
+        // 1. DATA (Actualizada al formato de la imagen)
         // ==========================================
         const projectsData = [
             {
                 id: "D001",
-                title: "Birthday Slay",
+                client: "MANGO", // Texto en negritas arriba
+                title: "A Mediterranean Dream", // Texto normal abajo
+                type: "Direct to Client", // Texto gris abajo
                 cover: "images/foto1.jpg",
-                desc: "A visual exploration of identity through light and shadow.",
-                // AQUÍ PONES TODAS LAS FOTOS DE ESTA SESIÓN
-                images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg"] 
+                images: ["images/foto1.jpg", "images/foto2.jpg"] 
             },
             {
                 id: "D002",
-                title: "Shadow Play",
+                client: "THE ROLLING STONES",
+                title: "Criss Cross",
+                type: "Music Video",
                 cover: "images/foto2.jpg",
-                desc: "Minimalist architectural study focused on sharp contrasts.",
-                images: ["images/foto2.jpg", "images/foto4.jpg", "images/foto5.jpg", "images/foto2.jpg"]
+                images: ["images/foto2.jpg", "images/foto4.jpg"]
             },
             {
                 id: "D003",
-                title: "The Cafe",
+                client: "A$AP ROCKY FT. FKA TWIGS",
+                title: "Fukk Sleep",
+                type: "Music Video",
                 cover: "images/foto3.jpg",
-                desc: "Urban lifestyle documentary series captured in Mexico City.",
-                images: ["images/foto3.jpg", "images/foto1.jpg", "images/foto6.jpg"]
+                images: ["images/foto3.jpg", "images/foto1.jpg"]
             },
             {
                 id: "D004",
-                title: "Motion Study",
+                client: "ROSALÍA",
+                title: "De Aquí No Sales",
+                type: "Music Video",
                 cover: "images/foto4.jpg",
-                desc: "Experimental high-speed photography capturing fluid movement.",
                 images: ["images/foto4.jpg", "images/foto3.jpg"]
             },
             {
                 id: "D005",
-                title: "Street Archive",
+                client: "C. TANGANA",
+                title: "Caballo Ganador",
+                type: "Documentary",
                 cover: "images/foto5.jpg",
-                desc: "Personal collection of candid street moments from 2023.",
-                images: ["images/foto5.jpg", "images/foto1.jpg", "images/foto2.jpg"]
+                images: ["images/foto5.jpg", "images/foto1.jpg"]
             },
             {
                 id: "D006",
+                client: "VOGUE SPAIN",
                 title: "Noir Sessions",
+                type: "Editorial",
                 cover: "images/foto6.jpg",
-                desc: "Black and white aesthetic exploration.",
-                images: ["images/foto6.jpg", "images/foto5.jpg", "images/foto4.jpg"]
+                images: ["images/foto6.jpg", "images/foto5.jpg"]
             }
         ];
 
         // ==========================================
-        // 2. GENERACIÓN DEL CAROUSEL
+        // 2. SETUP
         // ==========================================
         const slider = document.getElementById('slider');
         const detailView = document.getElementById('project-detail-view');
         const detailContainer = document.getElementById('detail-container');
         const carouselUI = document.getElementById('carousel-ui');
 
-        // Generar cards originales
+        // Referencias de texto
+        const pId = document.getElementById('project-id');
+        const pClient = document.getElementById('project-client');
+        const pTitle = document.getElementById('project-title');
+        const pType = document.getElementById('project-type');
+
+        // Generar cards
         projectsData.forEach(project => {
             const div = document.createElement('div');
             div.className = 'work-card';
-            div.dataset.id = project.id; // Guardamos el ID para buscarlo luego
+            div.dataset.id = project.id;
             div.innerHTML = `<img src="${project.cover}" draggable="false">`;
             slider.appendChild(div);
         });
 
-        // Clonar para efecto infinito
+        // Clonar para infinito
         const originalCards = Array.from(document.querySelectorAll('.work-card'));
-        originalCards.forEach(card => slider.appendChild(card.cloneNode(true))); // Clon final
-        originalCards.reverse().forEach(card => slider.prepend(card.cloneNode(true))); // Clon inicio
+        originalCards.forEach(card => slider.appendChild(card.cloneNode(true)));
+        originalCards.reverse().forEach(card => slider.prepend(card.cloneNode(true)));
 
-        // ==========================================
-        // 3. LÓGICA DEL CAROUSEL (SCROLL & UI)
-        // ==========================================
         const allCards = document.querySelectorAll('.work-card');
-        const cardWidth = 260 + 30; // 260px width + 30px margin
+        const cardWidth = 260 + 40; // width + margin
         const singleSetWidth = projectsData.length * cardWidth;
 
-        // Iniciar al centro
         slider.scrollLeft = singleSetWidth;
 
-        // Función Scroll Infinito
-        slider.addEventListener('scroll', () => {
-            if (slider.scrollLeft >= singleSetWidth * 2) slider.scrollLeft -= singleSetWidth;
-            else if (slider.scrollLeft <= 10) slider.scrollLeft += singleSetWidth;
-            
-            checkCenter();
-        });
-
-        // UI Updates
-        const pId = document.getElementById('project-id');
-        const pTitle = document.getElementById('project-title');
-        const pDesc = document.getElementById('project-desc');
+        // ==========================================
+        // 3. LOGICA
+        // ==========================================
+        
+        function updateText(data) {
+            // Animación simple de opacidad
+            gsap.to(["#top-content", "#bottom-content"], {
+                opacity: 0, duration: 0.1,
+                onComplete: () => {
+                    pId.innerText = data.id;
+                    pClient.innerText = data.client; // NUEVO CAMPO
+                    pTitle.innerText = data.title;
+                    pType.innerText = data.type;     // NUEVO CAMPO
+                    gsap.to(["#top-content", "#bottom-content"], { opacity: 1, duration: 0.2 });
+                }
+            });
+        }
 
         function checkCenter() {
             let center = slider.scrollLeft + (window.innerWidth / 2);
@@ -276,49 +285,38 @@
             allCards.forEach(c => c.classList.remove('active'));
             if (closestCard) {
                 closestCard.classList.add('active');
-                // Buscar datos en el array original usando el ID
-                const data = projectsData.find(p => p.id === closestCard.dataset.id);
-                if(data) updateText(data.id, data.title, data.desc);
+                
+                // Evitar actualizar si es el mismo proyecto para no parpadear
+                const currentId = closestCard.dataset.id;
+                if(pId.innerText !== currentId) {
+                    const data = projectsData.find(p => p.id === currentId);
+                    if(data) updateText(data);
+                }
             }
         }
 
-        let lastId = "";
-        function updateText(id, title, desc) {
-            if (id === lastId) return;
-            lastId = id;
-            gsap.to(["#top-content", "#bottom-content"], {
-                opacity: 0, y: 5, duration: 0.2,
-                onComplete: () => {
-                    pId.innerText = id;
-                    pTitle.innerText = title;
-                    pDesc.innerText = desc;
-                    gsap.to(["#top-content", "#bottom-content"], { opacity: 1, y: 0, duration: 0.3 });
-                }
-            });
-        }
+        // Eventos Scroll
+        slider.addEventListener('scroll', () => {
+            if (slider.scrollLeft >= singleSetWidth * 2) slider.scrollLeft -= singleSetWidth;
+            else if (slider.scrollLeft <= 10) slider.scrollLeft += singleSetWidth;
+            checkCenter();
+        });
 
-        // Mouse Wheel Horizontal
         slider.addEventListener('wheel', e => {
             e.preventDefault();
             slider.scrollLeft += e.deltaY;
         });
 
-        // ==========================================
-        // 4. ABRIR / CERRAR PROYECTO
-        // ==========================================
-        
-        // Delegación de eventos (para detectar clicks en clones también)
+        // Eventos Click
         slider.addEventListener('click', (e) => {
             const card = e.target.closest('.work-card');
             if(!card) return;
 
-            // Si la carta no está activa (al centro), primero la centramos
             if(!card.classList.contains('active')) {
                 const centerScreen = window.innerWidth / 2;
                 const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
                 gsap.to(slider, { scrollTo: { x: cardCenter - centerScreen }, duration: 0.5 });
             } else {
-                // Si ya está activa, ABRIMOS EL PROYECTO
                 openProject(card.dataset.id);
             }
         });
@@ -327,49 +325,34 @@
             const data = projectsData.find(p => p.id === id);
             if(!data) return;
 
-            // 1. Llenar contenido
             let htmlContent = `
-                <div class="detail-header">
-                    <div style="font-size:12px; margin-bottom:10px;">${data.id}</div>
-                    <h1 class="detail-title">${data.title}</h1>
-                    <p class="detail-desc">${data.desc}</p>
+                <div style="text-align:center; margin-bottom:60px; font-family: 'JetBrains Mono'; text-transform:uppercase;">
+                    <h1>${data.client}</h1>
+                    <p style="color:#666; margin-top:10px;">${data.title} — ${data.type}</p>
                 </div>
             `;
-            
-            // Agregar todas las imágenes de la sesión
             data.images.forEach(imgSrc => {
                 htmlContent += `<img src="${imgSrc}" class="detail-image">`;
             });
 
             detailContainer.innerHTML = htmlContent;
-
-            // 2. Mostrar Overlay
             detailView.style.display = 'block';
             
-            // Animación de entrada
             const tl = gsap.timeline();
-            tl.to(carouselUI, { opacity: 0, duration: 0.3 }) // Ocultar UI carousel
-              .to(slider, { opacity: 0.5, duration: 0.3 }, "<") // Atenuar carousel
-              .to(detailView, { opacity: 1, duration: 0.5 })
-              .to(".detail-image", { 
-                  opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" 
-              }, "-=0.2");
+            tl.to(carouselUI, { opacity: 0, duration: 0.2 })
+              .to(slider, { opacity: 0.2, duration: 0.2 }, "<")
+              .to(detailView, { opacity: 1, duration: 0.4 })
+              .to(".detail-image", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 }, "-=0.2");
         }
 
         function closeProject() {
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    detailView.style.display = 'none';
-                    detailContainer.innerHTML = ""; // Limpiar memoria
-                }
-            });
-
-            tl.to(detailView, { opacity: 0, duration: 0.4 })
-              .to(slider, { opacity: 1, duration: 0.4 }, "<")
-              .to(carouselUI, { opacity: 1, duration: 0.4 }, "<");
+            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
+                detailView.style.display = 'none';
+                detailContainer.innerHTML = "";
+            }});
+            gsap.to([slider, carouselUI], { opacity: 1, duration: 0.3 });
         }
 
-        // Init
         window.onload = () => checkCenter();
 
     </script>
