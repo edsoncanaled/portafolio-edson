@@ -5,135 +5,167 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gallery | Edson Canales</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 body{
-  font-family:'Montserrat',sans-serif;
-  background:#f4f4f4;
+  font-family:'Inter', sans-serif;
+  background:#faf9f7;
   color:#111;
   overflow:hidden;
 }
 
 /* BACK */
-.back-btn{
+
+.back{
   position:fixed;
-  top:24px;
-  left:24px;
+  top:30px;
+  left:60px;
   font-size:12px;
-  letter-spacing:2px;
-  text-transform:uppercase;
+  letter-spacing:.08em;
+  z-index:10;
+}
+
+.back a{
   text-decoration:none;
   color:#111;
-  z-index:999;
 }
-.back-btn:hover{opacity:.6}
+
+.back a:hover{opacity:.6}
 
 /* WRAPPER */
+
 .wrapper{
   height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  gap:32px;
+  gap:40px;
 }
 
 /* INFO */
+
 .info{
   text-align:center;
 }
+
 .info h2{
-  font-family:'Fjalla One',sans-serif;
   font-size:26px;
+  font-weight:400;
+  margin-bottom:6px;
 }
+
 .info p{
-  font-size:14px;
-  color:#555;
+  font-size:13px;
+  color:#666;
 }
 
 /* SLIDER */
+
 .slider-container{
   position:relative;
 }
 
 .slider{
   display:flex;
-  gap:56px;
+  gap:60px;
+  padding:40px 140px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
-  padding:40px 120px;
+  -webkit-overflow-scrolling:touch;
 }
-.slider::-webkit-scrollbar{display:none}
+
+.slider::-webkit-scrollbar{
+  display:none;
+}
 
 .slide{
   flex:0 0 auto;
-  height:200px;
+  height:190px;
   scroll-snap-align:center;
+  cursor:pointer;
 }
 
 .slide img{
   height:100%;
   width:auto;
   opacity:.35;
-  transition:.5s;
+  transition:.5s ease;
 }
 
 .slide.active img{
-  transform:scale(1.2);
   opacity:1;
+  transform:scale(1.25);
 }
 
 /* ARROWS */
+
 .arrow{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
-  font-size:28px;
+  font-size:32px;
   cursor:pointer;
-  opacity:.3;
+  opacity:.4;
   user-select:none;
 }
-.arrow:hover{opacity:.7}
-.arrow.left{left:32px}
-.arrow.right{right:32px}
+
+.arrow:hover{opacity:.8}
+
+.arrow.left{left:40px;}
+.arrow.right{right:40px;}
 
 /* DOTS */
+
 .dots{
   display:flex;
   justify-content:center;
   gap:8px;
 }
+
 .dots span{
   width:6px;
   height:6px;
   border-radius:50%;
-  background:#aaa;
+  background:#bbb;
 }
+
 .dots span.active{
   background:#111;
   transform:scale(1.4);
 }
 
+/* RESPONSIVE */
+
 @media(max-width:900px){
-  body{overflow:auto}
-  .slider{padding:40px 24px}
+  body{overflow:auto;}
+  .slider{padding:40px 30px;}
+  .back{left:30px;}
 }
 </style>
 </head>
 
 <body>
 
-<a href="index.html" class="back-btn">← Back</a>
+<div class="back">
+  <a href="index.html">← Back</a>
+</div>
 
 <div class="wrapper">
 
+<!-- INFO -->
 <div class="info" id="info">
   <h2>Birthday Shot</h2>
   <p>Editorial session exploring identity.</p>
 </div>
 
+<!-- SLIDER -->
 <div class="slider-container">
 
 <div class="arrow left" onclick="move(-1)">‹</div>
@@ -144,80 +176,108 @@ body{
 <div class="slide active"
  data-title="Birthday Shot"
  data-desc="Editorial session exploring identity.">
-<img src="images/foto1.jpg">
+ <img src="images/foto1.jpg">
 </div>
 
 <div class="slide"
  data-title="Birthday Shot"
  data-desc="Editorial session exploring identity.">
-<img src="images/foto2.jpg">
+ <img src="images/foto2.jpg">
 </div>
 
 <div class="slide"
  data-title="Birthday Shot"
  data-desc="Editorial session exploring identity.">
-<img src="images/foto3.jpg">
+ <img src="images/foto3.jpg">
 </div>
 
 <div class="slide"
  data-title="Second Editorial"
  data-desc="Form and movement exploration.">
-<img src="images/foto4.jpg">
+ <img src="images/foto4.jpg">
 </div>
 
 <div class="slide"
  data-title="Second Editorial"
  data-desc="Form and movement exploration.">
-<img src="images/foto5.jpg">
+ <img src="images/foto5.jpg">
 </div>
 
 </div>
 </div>
 
+<!-- DOTS -->
 <div class="dots" id="dots"></div>
 
 </div>
 
 <script>
-const slider=document.getElementById("slider");
-const slides=[...document.querySelectorAll(".slide")];
-const info=document.getElementById("info");
-const dotsContainer=document.getElementById("dots");
+const slider = document.getElementById("slider");
+const slides = [...document.querySelectorAll(".slide")];
+const info = document.getElementById("info");
+const dotsContainer = document.getElementById("dots");
 
-let activeIndex=0;
+let active = 0;
 
-/* DOTS */
-slides.forEach((_,i)=>{
-  const dot=document.createElement("span");
-  dotsContainer.appendChild(dot);
-});
-const dots=[...dotsContainer.children];
+/* CREATE DOTS */
+slides.forEach(()=>dotsContainer.appendChild(document.createElement("span")));
+const dots = [...dotsContainer.children];
 
 function setActive(i){
-  activeIndex=i;
+  active = i;
 
   slides.forEach((s,index)=>{
-    s.classList.toggle("active",index===i);
-    dots[index].classList.toggle("active",index===i);
+    s.classList.toggle("active", index===i);
+    dots[index].classList.toggle("active", index===i);
   });
 
-  info.querySelector("h2").textContent=slides[i].dataset.title;
-  info.querySelector("p").textContent=slides[i].dataset.desc;
+  info.querySelector("h2").textContent = slides[i].dataset.title;
+  info.querySelector("p").textContent = slides[i].dataset.desc;
 
-  slides[i].scrollIntoView({behavior:"smooth",inline:"center"});
+  slides[i].scrollIntoView({
+    behavior:"smooth",
+    inline:"center",
+    block:"nearest"
+  });
 }
 
+/* ARROWS */
+
 function move(dir){
-  let next=activeIndex+dir;
-  if(next<0) next=slides.length-1;
-  if(next>=slides.length) next=0;
+  let next = active + dir;
+
+  if(next < 0) next = slides.length-1;
+  if(next >= slides.length) next = 0;
+
   setActive(next);
 }
 
-/* Keyboard */
-window.addEventListener("keydown",e=>{
+/* KEYBOARD */
+
+window.addEventListener("keydown", e=>{
   if(e.key==="ArrowRight") move(1);
   if(e.key==="ArrowLeft") move(-1);
+});
+
+/* CLICK IMAGE TO ADVANCE */
+
+slides.forEach((slide,i)=>{
+  slide.addEventListener("click",()=>{
+    setActive(i);
+  });
+});
+
+/* SCROLL DETECTION */
+
+slider.addEventListener("scroll", ()=>{
+  const center = slider.scrollLeft + slider.offsetWidth/2;
+
+  slides.forEach((slide,i)=>{
+    const slideCenter = slide.offsetLeft + slide.offsetWidth/2;
+    if(Math.abs(center - slideCenter) < slide.offsetWidth/2){
+      if(active !== i) setActive(i);
+    }
+  });
 });
 
 setActive(0);
