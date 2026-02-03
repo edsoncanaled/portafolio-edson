@@ -14,126 +14,123 @@
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+        /* Corregimos el cursor: quitamos el !important del selector universal para evitar conflictos */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { cursor: none; } /* Ocultamos el cursor aquí mejor */
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.2;
-            overflow: hidden; /* Mantiene la estética de pantalla fija */
+            overflow: hidden;
             height: 100vh;
         }
 
-        /* CURSOR PERSONALIZADO */
+        /* CURSOR CORREGIDO */
         #cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 10px;
-    height: 10px;
-    background-color: black; /* Asegúrate de que no sea del mismo color que el fondo */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999; /* Máxima prioridad visual */
-    display: block !important; /* Forzamos que exista */
-    mix-blend-mode: difference;
-}
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            background-color: black;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            /* Aseguramos que sea visible desde el inicio */
+            display: block;
+        }
 
-        /* NAVEGACIÓN SUPERIOR */
-        nav {
+        /* LAYOUT PRINCIPAL (Dos columnas) */
+        .main-container {
             display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            padding: 25px 20px;
-            border-bottom: 1px solid var(--border);
-            font-size: 10px;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-            background: white;
+            grid-template-columns: 350px 1fr; /* Columna izquierda fija para texto */
+            height: 100vh;
+            width: 100vw;
         }
 
-        nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
-        nav a:hover { opacity: 0.5; }
-
-        /* LISTA DINÁMICA DE TEXTO */
-        .text-list {
-            padding: 60px 20px;
-            font-family: var(--font-mono);
-            text-transform: uppercase;
-        }
-
-        .label { font-size: 9px; color: #999; margin-bottom: 15px; }
-
-        .list-item-active {
-            display: grid;
-            grid-template-columns: 60px 1fr;
-            font-size: 16px;
-            letter-spacing: -0.02em;
-            color: var(--text);
-        }
-
-        #project-name { font-weight: 400; }
-
-        /* GALERÍA HORIZONTAL */
-        .works-row {
+        /* COLUMNA IZQUIERDA (TEXTO) */
+        .sidebar {
+            padding: 40px;
+            border-right: 1px solid var(--border);
             display: flex;
-            gap: 20px;
-            padding: 0 45vw; /* Padding lateral para permitir centrado */
-            height: 40vh;
+            flex-direction: column;
+            justify-content: center; /* Centrado vertical del texto */
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .label { font-size: 10px; color: #999; margin-bottom: 20px; }
+
+        #project-id { font-size: 24px; display: block; margin-bottom: 10px; font-weight: bold;}
+        #project-name { font-size: 18px; line-height: 1.4; color: var(--text); }
+
+        /* COLUMNA DERECHA (GALERÍA) */
+        .gallery-container {
+            display: flex;
             align-items: center;
             overflow-x: auto;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
             scrollbar-width: none; /* Firefox */
+            padding-left: 50px; /* Margen inicial */
+            padding-right: 50vw; /* Espacio para que la última foto pueda centrarse */
         }
 
-        .works-row::-webkit-scrollbar { display: none; }
+        .gallery-container::-webkit-scrollbar { display: none; }
 
         .work-card {
-            flex: 0 0 320px;
-            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.8s;
-            opacity: 0.3;
+            flex: 0 0 450px; /* Tamaño de las fotos */
+            margin-right: 60px;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            opacity: 0.2;
             transform: scale(0.9);
         }
 
         .work-card.active {
             opacity: 1;
-            transform: scale(1.05);
+            transform: scale(1);
         }
 
         .work-card img {
             width: 100%;
-            height: 220px;
+            height: 550px;
             object-fit: cover;
             filter: grayscale(100%);
-            transition: filter 0.8s ease;
         }
 
         .work-card.active img { filter: grayscale(0%); }
 
         .work-info-mini {
-            margin-top: 12px;
-            font-family: var(--font-mono);
-            font-size: 9px;
+            margin-top: 15px;
+            font-size: 10px;
             display: flex;
             justify-content: space-between;
+            font-family: var(--font-mono);
             color: #888;
         }
 
-        /* PIE DE PÁGINA / ÍNDICE */
-        .footer-index {
-            padding: 40px 20px;
-            font-family: var(--font-mono);
+        /* NAV SUPERIOR SOBREPUESTA */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 350px 1fr 1fr 1fr;
+            padding: 25px 40px;
             font-size: 10px;
-            color: #ccc;
-            display: flex;
-            gap: 40px;
+            font-family: var(--font-mono);
+            background: white;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
         }
 
-        @media (max-width: 768px) {
+        nav a { text-decoration: none; color: inherit; }
+
+        @media (max-width: 900px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar { position: absolute; bottom: 0; background: white; width: 100%; z-index: 10; height: 200px; }
             nav { grid-template-columns: 1fr 1fr; }
-            .works-row { padding: 0 20vw; }
-            .work-card { flex: 0 0 250px; }
         }
     </style>
 </head>
@@ -148,44 +145,41 @@
         <div>M3. CONTACT</div>
     </nav>
 
-    <div class="text-list">
-        <div class="label">EXPANDED VIEW / INDEX</div>
-        <div class="list-item-active" id="dynamic-info">
-            <span id="project-id">D001</span> 
-            <span id="project-name">LOADING PROJECT...</span>
-        </div>
-    </div>
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="label">CURRENT PROJECT</div>
+            <div id="dynamic-info">
+                <span id="project-id">D001</span>
+                <div id="project-name">LOADING...</div>
+            </div>
+        </aside>
 
-    <section class="works-row" id="slider">
-        <div class="work-card" data-id="D001" data-title="BIRTHDAY SHOT" data-desc="EDITORIAL / IDENTITY">
-            <img src="images/foto1.jpg">
-            <div class="work-info-mini"><span>PORTRAIT</span><span>2024</span></div>
-        </div>
-        <div class="work-card" data-id="D002" data-title="SHADOW PLAY" data-desc="MINIMALIST / B&W">
-            <img src="images/foto2.jpg">
-            <div class="work-info-mini"><span>EXPERIMENTAL</span><span>2024</span></div>
-        </div>
-        <div class="work-card" data-id="D003" data-title="THE CAFE" data-desc="URBAN ATMOSPHERE">
-            <img src="images/foto3.jpg">
-            <div class="work-info-mini"><span>LIFESTYLE</span><span>2023</span></div>
-        </div>
-        <div class="work-card" data-id="D004" data-title="MOTION STUDY" data-desc="FORM & MOVEMENT">
-            <img src="images/foto4.jpg">
-            <div class="work-info-mini"><span>CONCEPTUAL</span><span>2024</span></div>
-        </div>
-        <div class="work-card" data-id="D005" data-title="STREET ARCHIVE" data-desc="DOCUMENTARY">
-            <img src="images/foto5.jpg">
-            <div class="work-info-mini"><span>STREET</span><span>2023</span></div>
-        </div>
-        <div class="work-card" data-id="D006" data-title="EDITORIAL" data-desc="FASHION / VOGUE">
-            <img src="images/foto6.jpg">
-            <div class="work-info-mini"><span>COMMERCIAL</span><span>2024</span></div>
-        </div>
-    </section>
-
-    <div class="footer-index">
-        <div>SCROLL TO EXPLORE</div>
-        <div>CLICK TO SELECT</div>
+        <main class="gallery-container" id="slider">
+            <div class="work-card" data-id="D001" data-title="BIRTHDAY SHOT" data-desc="EDITORIAL / IDENTITY">
+                <img src="images/foto1.jpg">
+                <div class="work-info-mini"><span>PORTRAIT</span><span>2024</span></div>
+            </div>
+            <div class="work-card" data-id="D002" data-title="SHADOW PLAY" data-desc="MINIMALIST / B&W">
+                <img src="images/foto2.jpg">
+                <div class="work-info-mini"><span>EXPERIMENTAL</span><span>2024</span></div>
+            </div>
+            <div class="work-card" data-id="D003" data-title="THE CAFE" data-desc="URBAN ATMOSPHERE">
+                <img src="images/foto3.jpg">
+                <div class="work-info-mini"><span>LIFESTYLE</span><span>2023</span></div>
+            </div>
+            <div class="work-card" data-id="D004" data-title="MOTION STUDY" data-desc="FORM & MOVEMENT">
+                <img src="images/foto4.jpg">
+                <div class="work-info-mini"><span>CONCEPTUAL</span><span>2024</span></div>
+            </div>
+            <div class="work-card" data-id="D005" data-title="STREET ARCHIVE" data-desc="DOCUMENTARY">
+                <img src="images/foto5.jpg">
+                <div class="work-info-mini"><span>STREET</span><span>2023</span></div>
+            </div>
+            <div class="work-card" data-id="D006" data-title="EDITORIAL" data-desc="FASHION / VOGUE">
+                <img src="images/foto6.jpg">
+                <div class="work-info-mini"><span>COMMERCIAL</span><span>2024</span></div>
+            </div>
+        </main>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -198,40 +192,51 @@
         const projectId = document.getElementById('project-id');
         const projectName = document.getElementById('project-name');
 
-        // 1. MOVIMIENTO DEL CURSOR
+        // 1. MOVIMIENTO DEL CURSOR (Corregido para asegurar visibilidad)
+        gsap.set(cursor, {xPercent: -50, yPercent: -50}); // Centrar el div en la punta del mouse
+
         window.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                overwrite: 'auto'
+            });
         });
 
+        // Efecto al pasar sobre fotos
         cards.forEach(card => {
-            card.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 4 }));
-            card.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1 }));
+            card.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, backgroundColor: "white" }));
+            card.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, backgroundColor: "black" }));
         });
 
-        // 2. FUNCIÓN DE ACTUALIZACIÓN DE TEXTO
+        // 2. ACTUALIZACIÓN DE TEXTO VERTICAL
         let lastId = "";
         function updateContent(id, title, desc) {
             if (id === lastId) return;
             lastId = id;
 
             gsap.to("#dynamic-info", {
-                opacity: 0, x: -20, duration: 0.2, 
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
                 onComplete: () => {
                     projectId.innerText = id;
-                    projectName.innerText = `${title} — ${desc}`;
-                    gsap.to("#dynamic-info", { opacity: 1, x: 0, duration: 0.4 });
+                    projectName.innerHTML = `${title}<br><span style="font-size:12px; color:#888">${desc}</span>`;
+                    gsap.to("#dynamic-info", { opacity: 1, y: 0, duration: 0.5 });
                 }
             });
         }
 
-        // 3. DETECCIÓN DE SCROLL (ACTIVA LA FOTO CENTRAL)
+        // 3. DETECCIÓN DE SCROLL (ACTIVA LA FOTO QUE ENTRA AL CAMPO DE VISIÓN)
         slider.addEventListener('scroll', () => {
             let closestCard = null;
             let minDistance = Infinity;
 
             cards.forEach(card => {
                 const rect = card.getBoundingClientRect();
-                const distance = Math.abs((rect.left + rect.width / 2) - window.innerWidth / 2);
+                // Medimos la distancia al borde de la columna de texto (350px)
+                const distance = Math.abs(rect.left - 350);
 
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -250,23 +255,30 @@
             }
         });
 
-        // 4. CLICK PARA CENTRAR IMAGEN
+        // 4. CLICK PARA MOVER GALERÍA
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                const offset = card.offsetLeft - (window.innerWidth / 2) + (card.offsetWidth / 2);
-                gsap.to(slider, { scrollTo: { x: offset }, duration: 1, ease: "power4.out" });
+                // Centramos la foto justo al lado de la barra lateral (350px)
+                const scrollTarget = card.offsetLeft - 350;
+                gsap.to(slider, { scrollTo: { x: scrollTarget }, duration: 1.2, ease: "power3.inOut" });
             });
         });
 
-        // 5. SOPORTE PARA RUEDA DEL MOUSE (SCROLL HORIZONTAL)
+        // 5. SOPORTE PARA RUEDA DEL MOUSE
         slider.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            slider.scrollLeft += e.deltaY;
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                slider.scrollLeft += e.deltaY;
+            }
         });
 
-        // Inicializar al cargar
+        // Inicializar
         window.onload = () => {
-            slider.scrollLeft = 1; // Trigger inicial
+            slider.scrollLeft = 0;
+            // Forzar primer update
+            const first = cards[0];
+            first.classList.add('active');
+            updateContent(first.dataset.id, first.dataset.title, first.dataset.desc);
         };
     </script>
 </body>
