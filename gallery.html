@@ -20,107 +20,84 @@
             overflow: hidden; 
             background: var(--bg); 
             font-family: 'Inter', sans-serif;
-            /* Cursor normal del sistema restaurado */
         }
 
-        /* NAVEGACIÓN SUPERIOR */
+        /* NAVEGACIÓN */
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 30px 50px;
-            font-size: 10px;
-            font-family: var(--font-mono);
-            z-index: 100;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: linear-gradient(to bottom, white 50%, transparent); /* Mejora legibilidad */
+            position: fixed; top: 0; width: 100%; display: flex;
+            justify-content: space-between; padding: 30px 50px;
+            font-size: 10px; font-family: var(--font-mono);
+            z-index: 100; text-transform: uppercase; letter-spacing: 1px;
+            background: linear-gradient(to bottom, white 40%, transparent);
+            pointer-events: none; /* Permite clickear a través del gradiente */
         }
+        nav * { pointer-events: auto; } /* Reactiva clicks en los links */
 
-        /* ESTRUCTURA DE TEXTO FIJO */
+        /* UI TEXTO */
         .ui-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 100px 0 80px 0; /* Ajustado para el nuevo tamaño de fotos */
-            pointer-events: none; 
-            z-index: 10;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: space-between; align-items: center;
+            padding: 100px 20px 80px 20px;
+            pointer-events: none; z-index: 10;
         }
 
-        .text-top { text-align: center; font-family: var(--font-mono); }
+        .text-top { text-align: center; font-family: var(--font-mono); transition: opacity 0.3s; }
         #project-id { font-size: 12px; color: #999; margin-bottom: 8px; display: block; }
-        #project-title { font-size: 24px; text-transform: uppercase; font-weight: 400; letter-spacing: -1px; color: var(--text); }
+        #project-title { font-size: 24px; text-transform: uppercase; letter-spacing: -1px; }
 
         .text-bottom {
-            max-width: 450px;
-            text-align: center;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            text-transform: uppercase;
-            line-height: 1.5;
-            color: #333;
-            background: rgba(255,255,255,0.8); /* Fondo sutil para legibilidad */
-            padding: 10px;
+            max-width: 450px; text-align: center;
+            font-family: var(--font-mono); font-size: 11px;
+            text-transform: uppercase; line-height: 1.5; color: #333;
+            background: rgba(255,255,255,0.9); padding: 10px; border-radius: 4px;
         }
 
-        /* CONTENEDOR DE GALERÍA HORIZONTAL */
+        /* GALERÍA */
         .gallery-viewport {
             height: 100vh;
-            display: flex;
-            align-items: center;
-            overflow-x: auto;
-            scrollbar-width: none;
-            /* Padding calculado para centrar elementos más pequeños */
-            padding: 0 calc(50vw - 130px); 
+            display: flex; align-items: center;
+            overflow-x: auto; scrollbar-width: none;
+            padding: 0 calc(50vw - 130px); /* Centrado para desktop */
             scroll-behavior: smooth;
+            cursor: grab; /* Indica que se puede arrastrar (aunque sea visual por ahora) */
         }
-
+        .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
 
         .work-card {
-            /* Tamaño reducido para ver más fotos */
-            flex: 0 0 260px; 
-            margin: 0 15px; /* Espacio reducido entre fotos */
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            /* Inactivas: Tamaño normal, full color */
-            transform: scale(0.9); 
-            opacity: 1; 
-            cursor: pointer;
+            flex: 0 0 260px; margin: 0 15px;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.9); opacity: 1; cursor: pointer;
+            position: relative;
         }
 
-        /* LA FOTO ACTIVA */
-        .work-card.active {
-            /* Activa: Ligeramente más grande para destacar */
-            transform: scale(1.15);
-            z-index: 5; /* Asegura que se superponga si es necesario */
-        }
+        .work-card.active { transform: scale(1.15); z-index: 5; }
 
         .work-card img {
-            width: 100%;
-            height: 360px; /* Altura ajustada al nuevo ancho */
-            object-fit: cover;
-            /* Eliminados los filtros de gris y opacidad */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Sombra suave para despegar del fondo */
+            width: 100%; height: 360px; object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
+        /* MEDIA QUERIES (VERSIÓN MÓVIL) */
+        @media (max-width: 768px) {
+            nav { padding: 20px; flex-direction: column; gap: 10px; align-items: center; }
+            .ui-overlay { padding: 140px 20px 100px 20px; }
+            #project-title { font-size: 18px; }
+            .gallery-viewport { padding: 0 calc(50vw - 110px); } /* Ajuste centro móvil */
+            .work-card { flex: 0 0 220px; margin: 0 10px; } /* Tarjetas más chicas */
+            .work-card img { height: 300px; }
+            .text-bottom { font-size: 9px; max-width: 300px; }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <div>EDSON CANALES ©2026</div>
-        <div style="display: flex; gap: 30px;">
-            <span>M1. DIRECTORS</span>
-            <span>M2. WORKS</span>
-            <span>M3. CONTACT</span>
+        <div style="display: flex; gap: 20px;">
+            <span>WORKS</span>
+            <span>INFO</span>
         </div>
     </nav>
 
@@ -129,30 +106,29 @@
             <span id="project-id">D001</span>
             <h1 id="project-title">LOADING...</h1>
         </div>
-        
         <div class="text-bottom" id="bottom-content">
-            <p id="project-desc">Description of the project appears here.</p>
+            <p id="project-desc">Scroll to explore</p>
         </div>
     </div>
 
     <main class="gallery-viewport" id="slider">
         <div class="work-card" data-id="D001" data-title="Birthday Slay" data-desc="A visual exploration of identity through light and shadow.">
-            <img src="images/foto1.jpg" alt="Work 01">
+            <img src="images/foto1.jpg" loading="lazy">
         </div>
         <div class="work-card" data-id="D002" data-title="Shadow Play" data-desc="Minimalist architectural study focused on sharp contrasts.">
-            <img src="images/foto2.jpg" alt="Work 02">
+            <img src="images/foto2.jpg" loading="lazy">
         </div>
         <div class="work-card" data-id="D003" data-title="The Cafe" data-desc="Urban lifestyle documentary series captured in Mexico City.">
-            <img src="images/foto3.jpg" alt="Work 03">
+            <img src="images/foto3.jpg" loading="lazy">
         </div>
         <div class="work-card" data-id="D004" data-title="Motion Study" data-desc="Experimental high-speed photography capturing fluid movement.">
-            <img src="images/foto4.jpg" alt="Work 04">
+            <img src="images/foto4.jpg" loading="lazy">
         </div>
         <div class="work-card" data-id="D005" data-title="Street Archive" data-desc="Personal collection of candid street moments from 2023.">
-            <img src="images/foto5.jpg" alt="Work 05">
+            <img src="images/foto5.jpg" loading="lazy">
         </div>
-        <div class="work-card" data-id="D006" data-title="Another Session" data-desc="More editorial work for the portfolio.">
-            <img src="images/foto6.jpg" alt="Work 06">
+         <div class="work-card" data-id="D006" data-title="Noir Sessions" data-desc="Black and white aesthetic exploration.">
+            <img src="images/foto6.jpg" loading="lazy">
         </div>
     </main>
 
@@ -160,25 +136,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 
     <script>
-        // JS del cursor eliminado
-
         const slider = document.getElementById('slider');
         const cards = document.querySelectorAll('.work-card');
-        
         const pId = document.getElementById('project-id');
         const pTitle = document.getElementById('project-title');
         const pDesc = document.getElementById('project-desc');
 
-        // 1. ACTUALIZACIÓN DE TEXTO (GSAP)
+        // Función para actualizar texto
         let lastId = "";
         function updateText(id, title, desc) {
             if (id === lastId) return;
             lastId = id;
-
+            
             gsap.to(["#top-content", "#bottom-content"], {
-                opacity: 0,
-                y: 5,
-                duration: 0.2,
+                opacity: 0, y: 5, duration: 0.2,
                 onComplete: () => {
                     pId.innerText = id;
                     pTitle.innerText = title;
@@ -188,8 +159,8 @@
             });
         }
 
-        // 2. DETECTAR IMAGEN CENTRAL
-        slider.addEventListener('scroll', () => {
+        // Lógica de Scroll y Centro
+        function checkCenter() {
             let center = window.innerWidth / 2;
             let closestCard = null;
             let minDistance = Infinity;
@@ -208,35 +179,46 @@
             cards.forEach(c => c.classList.remove('active'));
             if (closestCard) {
                 closestCard.classList.add('active');
-                updateText(
-                    closestCard.dataset.id, 
-                    closestCard.dataset.title, 
-                    closestCard.dataset.desc
-                );
+                updateText(closestCard.dataset.id, closestCard.dataset.title, closestCard.dataset.desc);
             }
-        });
+        }
 
-        // 3. CLICK EN FOTO PARA CENTRAR
+        slider.addEventListener('scroll', checkCenter);
+
+        // Click para centrar
         cards.forEach(card => {
             card.addEventListener('click', () => {
-                // Cálculo preciso para centrar el elemento clickeado
                 const centerPoint = window.innerWidth / 2;
                 const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-                const scrollPos = cardCenter - centerPoint;
-                
-                gsap.to(slider, { scrollTo: { x: scrollPos }, duration: 0.8, ease: "power3.out" });
+                gsap.to(slider, { scrollTo: { x: cardCenter - centerPoint }, duration: 0.8, ease: "power3.out" });
             });
         });
 
-        // 4. RUEDA DEL MOUSE HORIZONTAL
+        // Scroll Horizontal con Rueda
         slider.addEventListener('wheel', e => {
             e.preventDefault();
-            slider.scrollLeft += e.deltaY * 1.5; // Scroll un poco más rápido
+            slider.scrollLeft += e.deltaY;
         });
 
-        // INICIO
+        // --- MEJORA: NAVEGACIÓN POR TECLADO ---
+        document.addEventListener('keydown', (e) => {
+            const current = document.querySelector('.work-card.active');
+            if (!current) return;
+
+            let target = null;
+            if (e.key === 'ArrowRight') target = current.nextElementSibling;
+            if (e.key === 'ArrowLeft') target = current.previousElementSibling;
+
+            if (target) {
+                // Simular click para usar la misma lógica de centrado
+                target.click(); 
+            }
+        });
+
+        // Inicio
         window.onload = () => {
             slider.scrollLeft = 1; 
+            checkCenter();
         };
     </script>
 </body>
