@@ -3,169 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editorial Gallery | Edson Canales</title>
-
+    <title>Edson Canales | Photography Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --bg: #faf9f7;
             --text: #111;
-            --soft-gray: #e0ddd7;
+            --accent: #d4a373;
             --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; } /* Ocultamos el cursor default */
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            overflow: hidden; /* Evita el scroll nativo feo */
+            overflow: hidden;
             height: 100vh;
+        }
+
+        /* CURSOR PERSONALIZADO */
+        #custom-cursor {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--text);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease, background 0.3s ease, width 0.3s ease, height 0.3s ease;
+            mix-blend-mode: difference; /* Efecto visual increíble sobre blanco/negro */
+        }
+
+        .cursor-hover {
+            width: 80px !important;
+            height: 80px !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(4px);
         }
 
         /* NAVEGACIÓN */
         .back {
-            position: fixed;
-            top: 40px;
-            left: 40px;
-            font-size: 11px;
-            letter-spacing: .15em;
-            text-transform: uppercase;
-            z-index: 100;
+            position: fixed; top: 40px; left: 40px;
+            font-size: 11px; letter-spacing: .15em;
+            text-transform: uppercase; z-index: 100;
         }
+        .back a { text-decoration: none; color: var(--text); }
 
-        .back a { text-decoration: none; color: var(--text); transition: opacity 0.3s; }
-        .back a:hover { opacity: .4; }
-
-        /* WRAPPER PRINCIPAL */
+        /* WRAPPER Y TEXTO ANIMADO */
         .wrapper {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
 
-        /* INFO TEXT */
-        .info {
-            text-align: center;
-            margin-bottom: 5vh;
-            pointer-events: none;
-        }
-
+        .info { text-align: center; margin-bottom: 5vh; height: 100px; }
+        
+        .title-container { overflow: hidden; height: 60px; }
         .info h2 {
             font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: clamp(32px, 5vw, 48px);
-            font-weight: 400;
-            margin-bottom: 10px;
+            font-style: italic; font-size: clamp(32px, 5vw, 48px);
+            font-weight: 400; transform: translateY(100%); /* Preparado para animar */
         }
 
         .info p {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: #888;
+            font-size: 10px; text-transform: uppercase;
+            letter-spacing: 0.3em; color: #888; opacity: 0;
         }
 
-        /* SLIDER - El corazón del movimiento soft */
-        .slider-wrap {
-            width: 100%;
-            cursor: grab;
-            overflow: hidden;
-            padding: 20px 0;
-        }
-
-        .slider-wrap:active { cursor: grabbing; }
-
-        .slider-inner {
-            display: flex;
-            gap: 100px; /* Espacio elegante entre fotos */
-            padding: 0 40vw; /* Permite que la primera y última foto se centren */
-            align-items: center;
-        }
+        /* SLIDER */
+        .slider-wrap { width: 100%; overflow: hidden; padding: 20px 0; }
+        .slider-inner { display: flex; gap: 80px; padding: 0 45vw; align-items: center; }
 
         .slide {
-            flex: 0 0 auto;
-            height: 55vh; /* Altura editorial */
-            position: relative;
-            transition: var(--transition);
-            filter: grayscale(100%);
-            opacity: 0.2;
-            transform: scale(0.8);
+            flex: 0 0 auto; height: 50vh; position: relative;
+            transition: var(--transition); filter: grayscale(100%) blur(2px);
+            opacity: 0.15; transform: scale(0.85);
         }
 
         .slide.active {
-            filter: grayscale(0%);
-            opacity: 1;
-            transform: scale(1.05); /* Un pop suave hacia adelante */
+            filter: grayscale(0%) blur(0px);
+            opacity: 1; transform: scale(1.1);
         }
 
-        .slide img {
-            height: 100%;
-            width: auto;
-            object-fit: cover;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-        }
+        .slide img { height: 100%; width: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.08); }
 
-        /* INDICADORES (DOTS) */
-        .dots {
-            margin-top: 5vh;
-            display: flex;
-            gap: 15px;
-        }
-
-        .dot {
-            width: 30px;
-            height: 1px;
-            background: var(--soft-gray);
-            transition: var(--transition);
-        }
-
-        .dot.active {
-            background: var(--text);
-            width: 60px;
-        }
-
-        @media(max-width: 768px) {
-            .slider-inner { gap: 40px; }
-            .slide { height: 45vh; }
-            .back { top: 20px; left: 20px; }
-        }
+        .dots { margin-top: 5vh; display: flex; gap: 10px; }
+        .dot { width: 40px; height: 1px; background: #ddd; transition: 0.5s; }
+        .dot.active { background: var(--text); width: 80px; }
     </style>
 </head>
 <body>
 
+    <div id="custom-cursor"></div>
+
     <div class="back"><a href="index.html">← Return</a></div>
 
     <main class="wrapper">
-        <div class="info" id="info">
-            <h2 id="title">Loading</h2>
+        <div class="info">
+            <div class="title-container"><h2 id="title">Loading</h2></div>
             <p id="desc">Creative Portfolio</p>
         </div>
 
         <div class="slider-wrap" id="sliderWrap">
             <div class="slider-inner" id="sliderInner">
-                <div class="slide" data-title="Birthday Shot" data-desc="Exploring identity & light">
-                    <img src="images/foto1.jpg" alt="">
+                <div class="slide" data-title="Aura" data-desc="2024 Editorial Session">
+                    <img src="images/foto1.jpg">
                 </div>
-                <div class="slide" data-title="Shadows" data-desc="Contrast session 2024">
-                    <img src="images/foto2.jpg" alt="">
+                <div class="slide" data-title="Motion" data-desc="Blur and identity">
+                    <img src="images/foto2.jpg">
                 </div>
-                <div class="slide" data-title="Minimalist" data-desc="Form and movement">
-                    <img src="images/foto3.jpg" alt="">
+                <div class="slide" data-title="Silhouettes" data-desc="Shadow play">
+                    <img src="images/foto3.jpg">
                 </div>
-                <div class="slide" data-title="The Cafe" data-desc="Urban atmosphere">
-                    <img src="images/foto4.jpg" alt="">
+                <div class="slide" data-title="Urban" data-desc="Street photography">
+                    <img src="images/foto4.jpg">
                 </div>
-                <div class="slide" data-title="Portrait" data-desc="Close up series">
-                    <img src="images/foto5.jpg" alt="">
+                <div class="slide" data-title="Portraits" data-desc="Close up series">
+                    <img src="images/foto5.jpg">
                 </div>
-                <div class="slide" data-title="Editorial" data-desc="Vogue inspired">
-                    <img src="images/foto6.jpg" alt="">
+                <div class="slide" data-title="Final" data-desc="Archive 01">
+                    <img src="images/foto6.jpg">
                 </div>
             </div>
         </div>
@@ -179,29 +138,32 @@
     <script>
         gsap.registerPlugin(Draggable);
 
+        const cursor = document.getElementById('custom-cursor');
         const inner = document.getElementById('sliderInner');
         const slides = document.querySelectorAll('.slide');
         const dotsContainer = document.getElementById('dots');
         const title = document.getElementById('title');
         const desc = document.getElementById('desc');
 
-        // Crear dots
-        slides.forEach(() => {
-            const dot = document.createElement('div');
-            dot.className = 'dot';
-            dotsContainer.appendChild(dot);
+        // 1. CURSOR LOGIC
+        window.addEventListener('mousemove', e => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
         });
+
+        slides.forEach(slide => {
+            slide.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+            slide.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+        });
+
+        // 2. DOTS
+        slides.forEach(() => dotsContainer.appendChild(document.createElement('div')).className = 'dot');
         const dots = document.querySelectorAll('.dot');
 
-        // Configuración del Draggable (Scroll horizontal soft)
+        // 3. SLIDER LOGIC
         const drag = Draggable.create(inner, {
             type: "x",
-            edgeResistance: 0.9,
-            inertia: true, // Esto hace que se sienta "soft" al soltar
-            bounds: {
-                minX: -inner.scrollWidth + window.innerWidth * 0.6,
-                maxX: 0
-            },
+            inertia: true,
+            bounds: { minX: -inner.scrollWidth + window.innerWidth * 0.55, maxX: 0 },
             onUpdate: updateSlides,
             onThrowUpdate: updateSlides
         })[0];
@@ -221,39 +183,36 @@
                 }
             });
 
+            if (slides[closestSlide].classList.contains('active')) return;
+
+            // Animar cambio de texto
+            gsap.to(title, { y: "100%", duration: 0.3, onComplete: () => {
+                title.innerText = slides[closestSlide].dataset.title;
+                gsap.to(title, { y: "0%", duration: 0.5, ease: "power2.out" });
+            }});
+            
+            gsap.to(desc, { opacity: 0, duration: 0.2, onComplete: () => {
+                desc.innerText = slides[closestSlide].dataset.desc;
+                gsap.to(desc, { opacity: 1, duration: 0.4 });
+            }});
+
             slides.forEach((s, i) => {
-                if (i === closestSlide) {
-                    s.classList.add('active');
-                    dots[i].classList.add('active');
-                    title.innerText = s.dataset.title;
-                    desc.innerText = s.dataset.desc;
-                } else {
-                    s.classList.remove('active');
-                    dots[i].classList.remove('active');
-                }
+                s.classList.toggle('active', i === closestSlide);
+                dots[i].classList.toggle('active', i === closestSlide);
             });
         }
 
-        // Click en imagen para centrarla
+        // Click to center
         slides.forEach((slide, i) => {
             slide.addEventListener('click', () => {
                 const rect = slide.getBoundingClientRect();
                 const currentX = gsap.getProperty(inner, "x");
                 const offset = (window.innerWidth / 2) - (rect.left + rect.width / 2);
-                
-                gsap.to(inner, {
-                    x: currentX + offset,
-                    duration: 1.2,
-                    ease: "power4.out",
-                    onUpdate: updateSlides
-                });
+                gsap.to(inner, { x: currentX + offset, duration: 1.5, ease: "power4.out", onUpdate: updateSlides });
             });
         });
 
-        // Inicializar
-        window.addEventListener('load', () => {
-            updateSlides();
-        });
+        window.onload = updateSlides;
     </script>
 </body>
 </html>
