@@ -5,145 +5,152 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales — Portfolio</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+/* Reset y Base */
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 body{
-  /* Tipografía técnica y limpia como la de tu referencia */
-  font-family: 'Courier Prime', monospace; 
-  background:#faf9f7;
-  color:#111;
-  text-transform: uppercase; /* Todo en mayúsculas para el look editorial */
+    font-family: 'Courier Prime', monospace; 
+    background:#ffffff; /* Blanco puro como el papel de la imagen */
+    color:#111;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 60px; /* Margen externo global */
 }
 
-/* -------- TOP BAR (Estilo Tabla) -------- */
-
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  padding:20px 60px;
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Tres columnas exactas como la imagen */
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  border-bottom: 1px solid rgba(0,0,0,0.1); /* Línea sutil de separación */
-  background: rgba(250, 249, 247, 0.9);
-  z-index: 100;
+/* -------- TOP INFO (Basado en la imagen de Caterina) -------- */
+.header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 80px;
 }
 
-/* -------- MAIN POSTER -------- */
-
-.poster{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding: 100px 0;
+.brand-info {
+    font-size: 14px;
+    line-height: 1.2;
 }
 
-.poster img{
-  width:55%; /* Un poco más pequeño para dar aire (espacio negativo) */
-  max-width:800px;
-  height:auto;
-  /* Eliminamos sombras pesadas para un look más flat y moderno */
-  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+.index-list {
+    text-align: right;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-/* -------- FOOT INFO -------- */
-
-.footer-info{
-  position:fixed;
-  bottom:30px;
-  left:60px;
-  font-size:11px;
+.index-item {
+    display: flex;
+    justify-content: flex-end;
+    gap: 40px;
 }
 
-.signature{
-  position:fixed;
-  bottom:30px;
-  right:60px;
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 20px;
-  text-transform: lowercase; /* La firma suele ir en minúsculas en este estilo */
+/* -------- CONTENIDO CENTRAL (PÓSTER) -------- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.poster-frame {
+    width: 60%;
+    max-width: 700px;
+    position: relative;
+}
+
+.poster-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* Efecto sutil para que parezca impreso */
+    filter: contrast(1.05) brightness(0.98);
+}
+
+/* -------- FOOTER (EL TÍTULO GRANDE CON FLECHA) -------- */
+.footer-portfolio {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.arrow {
+    font-size: 60px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.portfolio-title {
+    font-size: 80px; /* Tamaño masivo como en la imagen */
+    font-weight: 700;
+    letter-spacing: -2px;
+    text-transform: none; /* "Portfolio" suele ir en minúsculas en ese estilo */
 }
 
 /* -------- LINKS -------- */
-
-a{
-  text-decoration:none;
-  color:#111;
-  transition: opacity 0.3s;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-a:hover{
-  opacity:0.4;
+a:hover {
+    text-decoration: underline;
 }
 
 /* -------- RESPONSIVE -------- */
-
-@media(max-width:900px){
-  .topbar{
-    padding:15px 30px;
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
-
-  .poster img{
-    width:80%;
-  }
-
-  .footer-info,
-  .signature{
-    position:relative;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align:center;
-    padding: 20px;
-  }
+@media(max-width: 900px){
+    body { padding: 30px; }
+    
+    .portfolio-title { font-size: 40px; }
+    .arrow { font-size: 30px; }
+    
+    .index-item { gap: 15px; }
+    
+    .poster-frame { width: 100%; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <div class="nav-col">
-    EDSON CANALES <br> 
-    <span style="opacity: 0.5;">DESIGNER</span>
-  </div>
-  
-  <div class="nav-col">
-    YEARS — 2025 <br>
-    DAILY POSTER
-  </div>
+    <header class="header-main">
+        <div class="brand-info">
+            <strong>EDSON CANALES</strong><br>
+            Graphic Designer
+        </div>
 
-  <div class="nav-col" style="text-align: right;">
-    <a href="gallery.html">M1. GALLERY</a> <br>
-    <a href="about.html">M2. ABOUT</a>
-  </div>
-</div>
+        <div class="index-list">
+            <div class="index-item">
+                <span><a href="gallery.html">Brand identity</a></span>
+                <span>3-8</span>
+            </div>
+            <div class="index-item">
+                <span><a href="gallery.html">Editorials</a></span>
+                <span>10-20</span>
+            </div>
+            <div class="index-item">
+                <span><a href="about.html">About</a></span>
+                <span>22-25</span>
+            </div>
+        </div>
+    </header>
 
-<div class="poster">
-  <img src="images/fotoperfil.JPG" alt="Edson Canales">
-</div>
+    <main class="main-content">
+        <div class="poster-frame">
+            <img src="images/fotoperfil.JPG" alt="Featured Work">
+        </div>
+    </main>
 
-<div class="footer-info">
-  LOG — 2025 / 04 / 12
-</div>
-
-<div class="signature">
-  edson canales
-</div>
+    <footer class="footer-portfolio">
+        <div class="arrow">→</div>
+        <h1 class="portfolio-title">Portfolio</h1>
+    </footer>
 
 </body>
 </html>
