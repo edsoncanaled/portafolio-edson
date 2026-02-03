@@ -27,10 +27,18 @@
 
         /* CURSOR PERSONALIZADO */
         #cursor {
-            position: fixed; width: 8px; height: 8px; background: black;
-            border-radius: 50%; pointer-events: none; z-index: 1000;
-            mix-blend-mode: difference; transition: transform 0.15s ease;
-        }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: black; /* Asegúrate de que no sea del mismo color que el fondo */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999; /* Máxima prioridad visual */
+    display: block !important; /* Forzamos que exista */
+    mix-blend-mode: difference;
+}
 
         /* NAVEGACIÓN SUPERIOR */
         nav {
