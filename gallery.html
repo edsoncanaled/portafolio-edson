@@ -3,216 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edson Canales | Photography Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <title>Works | Edson Canales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=JetBrains+Mono&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #faf9f7;
-            --text: #111;
-            --accent: #d4a373;
-            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            --bg: #ffffff;
+            --text: #000000;
+            --border: #e5e5e5;
+            --font-mono: 'JetBrains Mono', monospace; /* Para ese look de "lista" */
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; } /* Ocultamos el cursor default */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            overflow: hidden;
-            height: 100vh;
+            line-height: 1.2;
         }
 
-        /* CURSOR PERSONALIZADO */
-        #custom-cursor {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--text);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s ease, background 0.3s ease, width 0.3s ease, height 0.3s ease;
-            mix-blend-mode: difference; /* Efecto visual increíble sobre blanco/negro */
+        /* HEADER NAV (Inspirado en tu imagen) */
+        nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 10px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 100;
         }
 
-        .cursor-hover {
-            width: 80px !important;
-            height: 80px !important;
-            background: rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(4px);
+        nav a { text-decoration: none; color: inherit; }
+
+        /* SECCIÓN DE TEXTO (LISTA SUPERIOR) */
+        .text-list {
+            padding: 40px 20px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
         }
 
-        /* NAVEGACIÓN */
-        .back {
-            position: fixed; top: 40px; left: 40px;
-            font-size: 11px; letter-spacing: .15em;
-            text-transform: uppercase; z-index: 100;
-        }
-        .back a { text-decoration: none; color: var(--text); }
-
-        /* WRAPPER Y TEXTO ANIMADO */
-        .wrapper {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+        .list-item {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            margin-bottom: 4px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s;
         }
 
-        .info { text-align: center; margin-bottom: 5vh; height: 100px; }
-        
-        .title-container { overflow: hidden; height: 60px; }
-        .info h2 {
-            font-family: 'Playfair Display', serif;
-            font-style: italic; font-size: clamp(32px, 5vw, 48px);
-            font-weight: 400; transform: translateY(100%); /* Preparado para animar */
+        .list-item:hover { color: var(--text); }
+
+        /* LA FILA DE IMÁGENES (EL CORE DE TU REFERENCIA) */
+        .works-row {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
-        .info p {
-            font-size: 10px; text-transform: uppercase;
-            letter-spacing: 0.3em; color: #888; opacity: 0;
+        .works-row::-webkit-scrollbar { display: none; }
+
+        .work-card {
+            flex: 0 0 280px; /* Tamaño fijo para las fotos en fila */
         }
 
-        /* SLIDER */
-        .slider-wrap { width: 100%; overflow: hidden; padding: 20px 0; }
-        .slider-inner { display: flex; gap: 80px; padding: 0 45vw; align-items: center; }
-
-        .slide {
-            flex: 0 0 auto; height: 50vh; position: relative;
-            transition: var(--transition); filter: grayscale(100%) blur(2px);
-            opacity: 0.15; transform: scale(0.85);
+        .work-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
         }
 
-        .slide.active {
-            filter: grayscale(0%) blur(0px);
-            opacity: 1; transform: scale(1.1);
+        .work-card:hover img { filter: grayscale(0%); }
+
+        .work-info {
+            margin-top: 10px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
         }
 
-        .slide img { height: 100%; width: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.08); }
+        .work-info h3 { font-size: 10px; font-weight: 500; margin-bottom: 2px; }
+        .work-info p { color: #888; }
 
-        .dots { margin-top: 5vh; display: flex; gap: 10px; }
-        .dot { width: 40px; height: 1px; background: #ddd; transition: 0.5s; }
-        .dot.active { background: var(--text); width: 80px; }
+        /* SECCIÓN INFERIOR */
+        .bottom-list { padding: 40px 20px; font-family: var(--font-mono); font-size: 11px; }
+
+        /* CURSOR PERSONALIZADO (Ajustado para este estilo) */
+        #cursor {
+            position: fixed; width: 6px; height: 6px; background: black;
+            border-radius: 50%; pointer-events: none; z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            nav { grid-template-columns: 1fr 1fr; gap: 10px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="custom-cursor"></div>
+    <div id="cursor"></div>
 
-    <div class="back"><a href="index.html">← Return</a></div>
+    <nav>
+        <a href="index.html">← Edson Canales</a>
+        <div>M1. Photography</div>
+        <div>M2. Editorial</div>
+        <div>M3. Contact</div>
+    </nav>
 
-    <main class="wrapper">
-        <div class="info">
-            <div class="title-container"><h2 id="title">Loading</h2></div>
-            <p id="desc">Creative Portfolio</p>
-        </div>
+    <div class="text-list">
+        <div style="margin-bottom: 20px; color: black;">Expand All ▾</div>
+        <div class="list-item"><span>D001</span> <span>Fashion Campaign</span></div>
+        <div class="list-item"><span>D002</span> <span>Street Archive</span></div>
+        <div class="list-item"><span>D003</span> <span>Personal Works</span></div>
+        <div class="list-item"><span>D004</span> <span>Digital Journal</span></div>
+    </div>
 
-        <div class="slider-wrap" id="sliderWrap">
-            <div class="slider-inner" id="sliderInner">
-                <div class="slide" data-title="Aura" data-desc="2024 Editorial Session">
-                    <img src="images/foto1.jpg">
-                </div>
-                <div class="slide" data-title="Motion" data-desc="Blur and identity">
-                    <img src="images/foto2.jpg">
-                </div>
-                <div class="slide" data-title="Silhouettes" data-desc="Shadow play">
-                    <img src="images/foto3.jpg">
-                </div>
-                <div class="slide" data-title="Urban" data-desc="Street photography">
-                    <img src="images/foto4.jpg">
-                </div>
-                <div class="slide" data-title="Portraits" data-desc="Close up series">
-                    <img src="images/foto5.jpg">
-                </div>
-                <div class="slide" data-title="Final" data-desc="Archive 01">
-                    <img src="images/foto6.jpg">
-                </div>
+    <section class="works-row">
+        <div class="work-card">
+            <img src="images/foto1.jpg" alt="">
+            <div class="work-info">
+                <h3>Birthday Shot</h3>
+                <p>Editorial / Portrait</p>
             </div>
         </div>
+        <div class="work-card">
+            <img src="images/foto2.jpg" alt="">
+            <div class="work-info">
+                <h3>Shadow Play</h3>
+                <p>Minimal / B&W</p>
+            </div>
+        </div>
+        <div class="work-card">
+            <img src="images/foto3.jpg" alt="">
+            <div class="work-info">
+                <h3>Cafeteria Session</h3>
+                <p>Lifestyle / Urban</p>
+            </div>
+        </div>
+        <div class="work-card">
+            <img src="images/foto4.jpg" alt="">
+            <div class="work-info">
+                <h3>Motion Study</h3>
+                <p>Abstract / Identity</p>
+            </div>
+        </div>
+        <div class="work-card">
+            <img src="images/foto5.jpg" alt="">
+            <div class="work-info">
+                <h3>The Studio</h3>
+                <p>Creative Direction</p>
+            </div>
+        </div>
+    </section>
 
-        <div class="dots" id="dots"></div>
-    </main>
+    <div class="bottom-list">
+        <div class="list-item"><span>D005</span> <span>Commercial Work</span></div>
+        <div class="list-item"><span>D006</span> <span>Client Archive</span></div>
+        <div class="list-item"><span>D007</span> <span>2024 Retrospective</span></div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-
     <script>
-        gsap.registerPlugin(Draggable);
-
-        const cursor = document.getElementById('custom-cursor');
-        const inner = document.getElementById('sliderInner');
-        const slides = document.querySelectorAll('.slide');
-        const dotsContainer = document.getElementById('dots');
-        const title = document.getElementById('title');
-        const desc = document.getElementById('desc');
-
-        // 1. CURSOR LOGIC
-        window.addEventListener('mousemove', e => {
+        // Cursor Movement
+        const cursor = document.getElementById('cursor');
+        window.addEventListener('mousemove', (e) => {
             gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
         });
 
-        slides.forEach(slide => {
-            slide.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
-            slide.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+        // Horizontal Scroll with Mouse Wheel
+        const scrollContainer = document.querySelector(".works-row");
+        scrollContainer.addEventListener("wheel", (evt) => {
+            evt.preventDefault();
+            scrollContainer.scrollLeft += evt.deltaY;
         });
-
-        // 2. DOTS
-        slides.forEach(() => dotsContainer.appendChild(document.createElement('div')).className = 'dot');
-        const dots = document.querySelectorAll('.dot');
-
-        // 3. SLIDER LOGIC
-        const drag = Draggable.create(inner, {
-            type: "x",
-            inertia: true,
-            bounds: { minX: -inner.scrollWidth + window.innerWidth * 0.55, maxX: 0 },
-            onUpdate: updateSlides,
-            onThrowUpdate: updateSlides
-        })[0];
-
-        function updateSlides() {
-            let closestSlide = 0;
-            let minDistance = Infinity;
-
-            slides.forEach((slide, i) => {
-                const rect = slide.getBoundingClientRect();
-                const center = window.innerWidth / 2;
-                const distance = Math.abs((rect.left + rect.width / 2) - center);
-
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestSlide = i;
-                }
-            });
-
-            if (slides[closestSlide].classList.contains('active')) return;
-
-            // Animar cambio de texto
-            gsap.to(title, { y: "100%", duration: 0.3, onComplete: () => {
-                title.innerText = slides[closestSlide].dataset.title;
-                gsap.to(title, { y: "0%", duration: 0.5, ease: "power2.out" });
-            }});
-            
-            gsap.to(desc, { opacity: 0, duration: 0.2, onComplete: () => {
-                desc.innerText = slides[closestSlide].dataset.desc;
-                gsap.to(desc, { opacity: 1, duration: 0.4 });
-            }});
-
-            slides.forEach((s, i) => {
-                s.classList.toggle('active', i === closestSlide);
-                dots[i].classList.toggle('active', i === closestSlide);
-            });
-        }
-
-        // Click to center
-        slides.forEach((slide, i) => {
-            slide.addEventListener('click', () => {
-                const rect = slide.getBoundingClientRect();
-                const currentX = gsap.getProperty(inner, "x");
-                const offset = (window.innerWidth / 2) - (rect.left + rect.width / 2);
-                gsap.to(inner, { x: currentX + offset, duration: 1.5, ease: "power4.out", onUpdate: updateSlides });
-            });
-        });
-
-        window.onload = updateSlides;
     </script>
 </body>
 </html>
