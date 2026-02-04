@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edson Canales — Portfolio</title>
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎞️</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22 ry=%222%22/><path d=%22M7 3v18M17 3v18M3 7h4M3 12h4M3 17h4M17 7h4M17 12h4M17 17h4%22/></svg>">
 
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Reset y Base */
+        /* Global Reset */
         *{
             margin:0;
             padding:0;
             box-sizing:border-box;
         }
 
+        /* Ocultar cursor predeterminado */
         html, body, a {
-            /* Ocultamos el cursor real */
             cursor: none;
         }
 
@@ -47,6 +47,7 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
+        /* Efecto de expansión al pasar por enlaces */
         .cursor.active {
             width: 45px;
             height: 45px;
@@ -64,6 +65,7 @@
         .brand-info {
             font-size: 15px;
             line-height: 1.2;
+            text-transform: none;
         }
 
         .index-list {
@@ -78,7 +80,7 @@
             gap: 60px;
         }
 
-        /* -------- ÁREA CENTRAL -------- */
+        /* -------- ÁREA CENTRAL (Vacia) -------- */
         .main-empty {
             flex-grow: 1;
         }
@@ -101,6 +103,7 @@
             font-weight: 700;
             letter-spacing: -5px;
             line-height: 0.8;
+            text-transform: none;
         }
 
         /* -------- LINKS -------- */
@@ -162,11 +165,13 @@
     <script>
         const cursor = document.querySelector('.cursor');
 
+        // Seguimiento del mouse
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
+        // Interacción con links
         const links = document.querySelectorAll('a');
         links.forEach(link => {
             link.addEventListener('mouseenter', () => {
