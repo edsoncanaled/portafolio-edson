@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edson Canales — Portfolio</title>
 
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎞️</text></svg>">
+
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -16,7 +18,7 @@
         }
 
         html, body, a {
-            /* Ocultamos el cursor real para usar el personalizado */
+            /* Ocultamos el cursor real */
             cursor: none;
         }
 
@@ -29,7 +31,7 @@
             flex-direction: column;
             justify-content: space-between; 
             padding: 60px; 
-            overflow: hidden; /* Evita scroll innecesario en la home */
+            overflow: hidden;
         }
 
         /* -------- CURSOR PERSONALIZADO -------- */
@@ -45,11 +47,10 @@
             transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
 
-        /* Efecto al pasar por enlaces */
         .cursor.active {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(0, 0, 0, 0.05);
+            width: 45px;
+            height: 45px;
+            background-color: rgba(0, 0, 0, 0.03);
             border: 1px solid #000;
         }
 
@@ -77,7 +78,7 @@
             gap: 60px;
         }
 
-        /* -------- ÁREA CENTRAL (Espacio Negativo) -------- */
+        /* -------- ÁREA CENTRAL -------- */
         .main-empty {
             flex-grow: 1;
         }
@@ -106,7 +107,6 @@
         a {
             text-decoration: none;
             color: inherit;
-            position: relative;
         }
 
         /* -------- RESPONSIVE -------- */
@@ -116,7 +116,7 @@
             .arrow { font-size: 40px; }
             .index-item { gap: 20px; }
             .header-main { flex-direction: column; gap: 40px; }
-            .cursor { display: none; } /* En móviles ocultamos el cursor personalizado */
+            .cursor { display: none; }
             html, body, a { cursor: auto; }
         }
     </style>
@@ -129,7 +129,7 @@
     <header class="header-main">
         <div class="brand-info">
             <strong>Edson Canales</strong><br>
-            Photographer
+            Graphic Designer
         </div>
 
         <nav class="index-list">
@@ -162,13 +162,11 @@
     <script>
         const cursor = document.querySelector('.cursor');
 
-        // Mover el cursor con el mouse
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // Detectar hover en todos los enlaces
         const links = document.querySelectorAll('a');
         links.forEach(link => {
             link.addEventListener('mouseenter', () => {
