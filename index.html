@@ -1,114 +1,134 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edson Canales — Portfolio</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+    <style>
+        /* Reset y Base */
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
 
-body{
-    font-family: 'Courier Prime', monospace; 
-    background:#ffffff; 
-    color:#111;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Empuja el contenido a los extremos */
-    padding: 60px; 
-}
+        html, body, a {
+            /* Ocultamos el cursor real para usar el personalizado */
+            cursor: none;
+        }
 
-/* -------- HEADER (Top Info) -------- */
-.header-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
+        body {
+            font-family: 'Courier Prime', monospace; 
+            background: #ffffff; 
+            color: #111;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
+            padding: 60px; 
+            overflow: hidden; /* Evita scroll innecesario en la home */
+        }
 
-.brand-info {
-    font-size: 15px;
-    line-height: 1.2;
-    text-transform: none; /* Mantiene mayúsculas y minúsculas naturales */
-}
+        /* -------- CURSOR PERSONALIZADO -------- */
+        .cursor {
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
 
-.index-list {
-    text-align: right;
-    font-size: 14px;
-    line-height: 1.6;
-}
+        /* Efecto al pasar por enlaces */
+        .cursor.active {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid #000;
+        }
 
-.index-item {
-    display: flex;
-    justify-content: flex-end;
-    gap: 50px; /* Espacio entre el nombre y el número de página */
-}
+        /* -------- HEADER (Top Info) -------- */
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
 
-/* -------- ESPACIO CENTRAL VACÍO -------- */
-.main-empty {
-    flex-grow: 1;
-}
+        .brand-info {
+            font-size: 15px;
+            line-height: 1.2;
+        }
 
-/* -------- FOOTER (Título masivo con flecha) -------- */
-.footer-portfolio {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: -10px; /* Ajuste fino de posición */
-}
+        .index-list {
+            text-align: right;
+            font-size: 14px;
+            line-height: 1.6;
+        }
 
-.arrow {
-    font-size: 70px;
-    font-weight: 300;
-    line-height: 1;
-    margin-right: 10px;
-}
+        .index-item {
+            display: flex;
+            justify-content: flex-end;
+            gap: 60px;
+        }
 
-.portfolio-title {
-    font-size: 100px; /* Tamaño muy grande como en la imagen */
-    font-weight: 700;
-    letter-spacing: -4px;
-    line-height: 1;
-}
+        /* -------- ÁREA CENTRAL (Espacio Negativo) -------- */
+        .main-empty {
+            flex-grow: 1;
+        }
 
-/* -------- LINKS -------- */
-a {
-    text-decoration: none;
-    color: inherit;
-}
+        /* -------- FOOTER (Título masivo) -------- */
+        .footer-portfolio {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
 
-a:hover {
-    text-decoration: underline;
-}
+        .arrow {
+            font-size: 80px;
+            font-weight: 300;
+            line-height: 1;
+        }
 
-/* -------- RESPONSIVE -------- */
-@media(max-width: 900px){
-    body { padding: 30px; }
-    
-    .portfolio-title { font-size: 50px; letter-spacing: -2px; }
-    .arrow { font-size: 40px; }
-    
-    .index-item { gap: 20px; }
-    
-    .header-main {
-        flex-direction: column;
-        gap: 30px;
-    }
-}
-</style>
+        .portfolio-title {
+            font-size: 110px; 
+            font-weight: 700;
+            letter-spacing: -5px;
+            line-height: 0.8;
+        }
+
+        /* -------- LINKS -------- */
+        a {
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+
+        /* -------- RESPONSIVE -------- */
+        @media(max-width: 900px){
+            body { padding: 30px; }
+            .portfolio-title { font-size: 55px; letter-spacing: -2px; }
+            .arrow { font-size: 40px; }
+            .index-item { gap: 20px; }
+            .header-main { flex-direction: column; gap: 40px; }
+            .cursor { display: none; } /* En móviles ocultamos el cursor personalizado */
+            html, body, a { cursor: auto; }
+        }
+    </style>
 </head>
 
 <body>
 
-   <header class="header-main">
+    <div class="cursor"></div>
+
+    <header class="header-main">
         <div class="brand-info">
-            <strong>EDSON CANALES</strong><br>
+            <strong>Edson Canales</strong><br>
             Photographer
         </div>
 
@@ -118,7 +138,7 @@ a:hover {
                 <span>3-8</span>
             </div>
             <div class="index-item">
-                <a href="gallery.html">Food & Drinks</a>
+                <a href="gallery.html">Label & packaging design</a>
                 <span>10-20</span>
             </div>
             <div class="index-item">
@@ -138,6 +158,27 @@ a:hover {
         <span class="arrow">→</span>
         <h1 class="portfolio-title">Portfolio</h1>
     </footer>
+
+    <script>
+        const cursor = document.querySelector('.cursor');
+
+        // Mover el cursor con el mouse
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Detectar hover en todos los enlaces
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.classList.add('active');
+            });
+            link.addEventListener('mouseleave', () => {
+                cursor.classList.remove('active');
+            });
+        });
+    </script>
 
 </body>
 </html>
