@@ -4,88 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edson Canales — Portfolio</title>
-
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><rect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22 ry=%222%22/><path d=%22M7 3v18M17 3v18M3 7h4M3 12h4M3 17h4M17 7h4M17 12h4M17 17h4%22/></svg>">
+    
+    <link rel="icon" href="data:image/svg+xml,...">
 
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Global Reset */
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* Ocultar cursor predeterminado */
-        html, body, a {
-            cursor: none;
+        /* Solo ocultamos el cursor si el dispositivo tiene puntero (ratón) */
+        @media (pointer: fine) {
+            html, body, a {
+                cursor: none;
+            }
         }
 
         body {
             font-family: 'Courier Prime', monospace; 
             background: #ffffff; 
             color: #111;
-            height: 100vh;
+            /* Usamos svh para mejor soporte en móviles */
+            min-height: 100svh;
             display: flex;
             flex-direction: column;
             justify-content: space-between; 
-            padding: 60px; 
+            padding: clamp(30px, 5vw, 60px); /* Padding fluido */
             overflow: hidden;
         }
 
-        /* -------- CURSOR PERSONALIZADO -------- */
+        /* -------- CURSOR OPTIMIZADO -------- */
         .cursor {
             width: 10px;
             height: 10px;
             background-color: #000;
             border-radius: 50%;
             position: fixed;
+            top: 0;
+            left: 0;
             pointer-events: none;
             z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            /* Usamos transform para mejor rendimiento */
+            transform: translate3d(-50%, -50%, 0);
+            transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
+                        height 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
+                        background-color 0.3s;
+            will-change: transform;
         }
 
-        /* Efecto de expansión al pasar por enlaces */
         .cursor.active {
-            width: 45px;
-            height: 45px;
-            background-color: rgba(0, 0, 0, 0.03);
-            border: 1px solid #000;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0,0,0,0.2); /* Mayor visibilidad */
         }
 
-        /* -------- HEADER (Top Info) -------- */
+        /* -------- HEADER -------- */
         .header-main {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            z-index: 10;
         }
 
-        .brand-info {
+        h1.brand-info {
             font-size: 15px;
+            font-weight: 700;
             line-height: 1.2;
-            text-transform: none;
         }
 
         .index-list {
             text-align: right;
             font-size: 14px;
             line-height: 1.6;
+            list-style: none;
         }
 
         .index-item {
             display: flex;
             justify-content: flex-end;
-            gap: 60px;
+            gap: 40px;
         }
 
-        /* -------- ÁREA CENTRAL (Vacia) -------- */
-        .main-empty {
-            flex-grow: 1;
-        }
-
-        /* -------- FOOTER (Título masivo) -------- */
+        /* -------- FOOTER -------- */
         .footer-portfolio {
             display: flex;
             align-items: center;
@@ -93,91 +97,85 @@
         }
 
         .arrow {
-            font-size: 80px;
+            font-size: clamp(40px, 8vw, 80px);
             font-weight: 300;
-            line-height: 1;
         }
 
         .portfolio-title {
-            font-size: 110px; 
+            font-size: clamp(50px, 10vw, 110px); 
             font-weight: 700;
-            letter-spacing: -5px;
+            letter-spacing: -0.05em;
             line-height: 0.8;
-            text-transform: none;
         }
 
-        /* -------- LINKS -------- */
         a {
             text-decoration: none;
             color: inherit;
+            outline: none;
         }
 
-        /* -------- RESPONSIVE -------- */
+        /* Responsive */
         @media(max-width: 900px){
-            body { padding: 30px; }
-            .portfolio-title { font-size: 55px; letter-spacing: -2px; }
-            .arrow { font-size: 40px; }
-            .index-item { gap: 20px; }
-            .header-main { flex-direction: column; gap: 40px; }
+            .header-main { flex-direction: column; gap: 30px; }
+            .index-item { justify-content: flex-start; }
             .cursor { display: none; }
-            html, body, a { cursor: auto; }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="cursor"></div>
+    <div class="cursor" aria-hidden="true"></div>
 
     <header class="header-main">
-        <div class="brand-info">
-            <strong>Edson Canales</strong><br>
-            Photographer
-        </div>
+        <h1 class="brand-info">
+            Edson Canales<br>
+            <span style="font-weight: 400;">Photographer</span>
+        </h1>
 
-        <nav class="index-list">
-            <div class="index-item">
+        <ul class="index-list">
+            <li class="index-item">
                 <a href="gallery.html">Contact</a>
                 <span>3-8</span>
-            </div>
-            <div class="index-item">
+            </li>
+            <li class="index-item">
                 <a href="gallery.html">Editorials</a>
                 <span>22-25</span>
-            </div>
-            <div class="index-item">
+            </li>
+            <li class="index-item">
                 <a href="gallery.html">Food & Drinks</a>
                 <span>27-30</span>
-            </div>
-        </nav>
+            </li>
+        </ul>
     </header>
 
     <div class="main-empty"></div>
 
     <footer class="footer-portfolio">
-        <span class="arrow">→</span>
-        <h1 class="portfolio-title">Portfolio</h1>
+        <span class="arrow" aria-hidden="true">→</span>
+        <span class="portfolio-title">Portfolio</span>
     </footer>
 
     <script>
         const cursor = document.querySelector('.cursor');
+        
+        // Usamos requestAnimationFrame para suavizar el movimiento
+        let mouseX = 0;
+        let mouseY = 0;
 
-        // Seguimiento del mouse
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Actualización inmediata con transform (GPU acelerada)
+            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
         });
 
-        // Interacción con links
         const links = document.querySelectorAll('a');
         links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.classList.add('active');
-            });
-            link.addEventListener('mouseleave', () => {
-                cursor.classList.remove('active');
-            });
+            link.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            link.addEventListener('mouseleave', () => cursor.classList.remove('active'));
         });
     </script>
-
 </body>
 </html>
