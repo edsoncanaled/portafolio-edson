@@ -23,137 +23,134 @@
             color: var(--text);
         }
 
-        /* --- NAVEGACIÓN PRINCIPAL --- */
         nav {
-            position: fixed; top: 0; width: 100%; display: flex;
-            justify-content: space-between; padding: 30px 40px;
-            font-size: 11px; z-index: 100; text-transform: uppercase;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 40px;
+            font-size: 11px;
+            z-index: 100;
+            text-transform: uppercase;
             background: linear-gradient(to bottom, white 50%, transparent);
         }
 
         nav a {
             text-decoration: none;
             color: inherit;
-            transition: opacity 0.3s;
         }
-        nav a:hover { opacity: 0.5; }
 
-        /* --- UI TEXTO CAROUSEL --- */
         .ui-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: space-between; align-items: center;
-            padding: 110px 0 80px 0;
-            pointer-events: none; z-index: 10;
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 110px 0 80px;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .text-wrapper { width: 260px; text-align: left; }
-        .text-top { margin-bottom: 10px; }
-        #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
-        #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-        
-        .text-bottom { margin-top: 10px; }
-        #project-title { font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; }
-        #project-type { font-size: 11px; color: #666; display: block; }
+        .text-wrapper { width: 260px; }
+        #project-id { font-size: 10px; color: #999; display: block; }
+        #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; }
 
-        /* --- CAROUSEL --- */
+        #project-title { font-size: 12px; display: block; }
+        #project-title a { pointer-events: auto; } /* IMPORTANTE */
+        #project-type { font-size: 11px; color: #666; }
+
         .gallery-viewport {
             height: 100vh;
-            display: flex; align-items: center;
-            overflow-x: auto; scrollbar-width: none;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
             padding: 0 calc(50vw - 130px);
-            cursor: grab;
         }
-        .gallery-viewport:active { cursor: grabbing; }
+
         .gallery-viewport::-webkit-scrollbar { display: none; }
 
         .work-card {
-            flex: 0 0 260px; margin: 0 20px;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-            transform: scale(0.95); opacity: 1; cursor: pointer;
-            position: relative;
-            user-select: none;
+            flex: 0 0 260px;
+            margin: 0 20px;
+            transform: scale(0.95);
+            transition: transform 0.4s;
+            cursor: pointer;
         }
-        .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
-        .work-card.active { transform: scale(1.05); z-index: 5; }
 
-        /* --- DETALLE PROYECTO --- */
+        .work-card.active { transform: scale(1.05); }
+        .work-card img { width: 100%; height: 350px; object-fit: cover; }
+
         #project-detail-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 200;
-            overflow-y: auto; display: none; opacity: 0;
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 200;
+            display: none;
+            opacity: 0;
         }
-        
+
         .detail-nav {
-            position: fixed; top: 0; width: 100%; padding: 30px 40px;
-            display: flex; justify-content: flex-start;
-            z-index: 201;
-        }
-        
-        .back-btn-top { 
-            cursor: pointer; font-size: 11px; text-transform: uppercase; 
-            padding-bottom: 2px; border-bottom: 1px solid black;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 40px;
         }
 
-        .detail-content { padding: 120px 20vw 80px 20vw; display: flex; flex-direction: column; gap: 40px; }
-        .detail-image { width: 100%; height: auto; object-fit: cover; opacity: 0; transform: translateY(20px); }
-
-        .project-footer {
-            margin-top: 60px; padding-top: 40px;
-            border-top: 1px solid #eee; text-align: center;
+        .detail-content {
+            padding: 120px 20vw 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
         }
-        .back-index-btn {
-            font-size: 12px; text-transform: uppercase; cursor: pointer;
-            display: inline-block; padding: 10px 25px; border: 1px solid #000;
-            transition: all 0.3s;
-        }
-        .back-index-btn:hover { background: black; color: white; }
 
-        @media (max-width: 768px) {
-            .gallery-viewport { padding: 0 calc(50vw - 110px); }
-            .work-card { flex: 0 0 220px; }
-            .text-wrapper { width: 220px; }
-            .detail-content { padding: 100px 20px; }
+        .detail-image {
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
         }
     </style>
 </head>
+
 <body>
 
-    <nav id="main-nav">
-        <div style="width: 200px;"><a href="index.html">← BACK</a></div>
-        <div style="width: 200px; text-align: center;">M2. WORKS</div>
-        <div style="width: 200px; text-align: right;">M3. CONTACT</div>
-    </nav>
+<nav id="main-nav">
+    <div><a href="index.html">← BACK</a></div>
+    <div>M2. WORKS</div>
+    <div>M3. CONTACT</div>
+</nav>
 
-    <div class="ui-overlay" id="carousel-ui">
-        <div class="text-wrapper text-top" id="top-content">
-            <span id="project-id">---</span>
-            <div id="project-client">SELECT WORK</div>
-        </div>
-        <div class="text-wrapper text-bottom" id="bottom-content">
-            <span id="project-title">---</span>
-            <span id="project-type">---</span>
-        </div>
+<div class="ui-overlay" id="carousel-ui">
+    <div class="text-wrapper">
+        <span id="project-id">---</span>
+        <div id="project-client">SELECT WORK</div>
     </div>
-
-    <main class="gallery-viewport" id="slider"></main>
-
-    <div id="project-detail-view">
-        <div class="detail-nav">
-            <div class="back-btn-top" onclick="closeProject()">← BACK </div>
-        </div>
-        <div class="detail-content" id="detail-container"></div>
+    <div class="text-wrapper">
+        <span id="project-title">---</span>
+        <span id="project-type">---</span>
     </div>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+<main class="gallery-viewport" id="slider"></main>
+
+<div id="project-detail-view">
+    <div class="detail-nav">
+        <div onclick="closeProject()">← BACK</div>
+    </div>
+    <div class="detail-content" id="detail-container"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 
 <script>
 const projectsData = [
     {
         id: "2024",
         client: "Abú Coffee",
-        title: '<a href="https://www.instagram.com/abucoffee.mx?igsh=MTlmM3Rrb2hiOXdvcA%3D%3D&utm_source=qr">@abucoffee.mx</a>',
+        title: '<a href="https://www.instagram.com/abucoffee.mx" target="_blank">@abucoffee.mx</a>',
         type: "Arista 400",
         cover: "images/cafeteria/foto4c.JPG",
         images: ["images/foto1.jpg", "images/foto2.jpg"]
@@ -165,130 +162,63 @@ const projectsData = [
         type: "Music Video",
         cover: "images/foto2.jpg",
         images: ["images/foto2.jpg", "images/foto4.jpg"]
-    },
-    {
-        id: "D003",
-        client: "A$AP ROCKY",
-        title: "Fukk Sleep",
-        type: "Music Video",
-        cover: "images/foto3.jpg",
-        images: ["images/foto3.jpg", "images/foto1.jpg"]
-    },
-    {
-        id: "D004",
-        client: "ROSALÍA",
-        title: "De Aquí No Sales",
-        type: "Music Video",
-        cover: "images/foto4.jpg",
-        images: ["images/foto4.jpg", "images/foto3.jpg"]
-    },
-    {
-        id: "D005",
-        client: "C. TANGANA",
-        title: "Caballo Ganador",
-        type: "Documentary",
-        cover: "images/foto5.jpg",
-        images: ["images/foto5.jpg", "images/foto1.jpg"]
     }
 ];
+
+const slider = document.getElementById('slider');
+const detailView = document.getElementById('project-detail-view');
+const detailContainer = document.getElementById('detail-container');
+const carouselUI = document.getElementById('carousel-ui');
+const mainNav = document.getElementById('main-nav');
+
+projectsData.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'work-card';
+    div.dataset.id = p.id;
+    div.innerHTML = `<img src="${p.cover}" draggable="false">`;
+    slider.appendChild(div);
+});
+
+const cards = document.querySelectorAll('.work-card');
+let activeIndex = 0;
+
+function updateUI() {
+    const data = projectsData[activeIndex];
+    document.getElementById('project-id').innerText = data.id;
+    document.getElementById('project-client').innerText = data.client;
+    document.getElementById('project-title').innerHTML = data.title;
+    document.getElementById('project-type').innerText = data.type;
+
+    cards.forEach(c => c.classList.remove('active'));
+    cards[activeIndex].classList.add('active');
+}
+
+cards.forEach((card, i) => {
+    card.addEventListener('click', () => {
+        activeIndex = i;
+        updateUI();
+    });
+});
+
+updateUI();
+
+function openProject(id) {
+    const data = projectsData.find(p => p.id === id);
+    detailContainer.innerHTML = data.images.map(img =>
+        `<img src="${img}" class="detail-image">`
+    ).join('');
+    detailView.style.display = 'block';
+    gsap.to(detailView, { opacity: 1 });
+    gsap.to(".detail-image", { opacity: 1, y: 0, stagger: 0.1 });
+}
+
+function closeProject() {
+    gsap.to(detailView, {
+        opacity: 0,
+        onComplete: () => detailView.style.display = 'none'
+    });
+}
 </script>
 
-
-
-        const slider = document.getElementById('slider');
-        const detailView = document.getElementById('project-detail-view');
-        const detailContainer = document.getElementById('detail-container');
-        const carouselUI = document.getElementById('carousel-ui');
-        const mainNav = document.getElementById('main-nav');
-
-        // Render e Infinito
-        projectsData.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'work-card';
-            div.dataset.id = p.id;
-            div.innerHTML = `<img src="${p.cover}" draggable="false">`;
-            slider.appendChild(div);
-        });
-
-        const originalCards = Array.from(document.querySelectorAll('.work-card'));
-        originalCards.forEach(c => slider.appendChild(c.cloneNode(true)));
-        originalCards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
-
-        const allCards = document.querySelectorAll('.work-card');
-        const cardWidth = 300; 
-        slider.scrollLeft = projectsData.length * cardWidth;
-
-        function checkCenter() {
-            let center = slider.scrollLeft + (window.innerWidth / 2);
-            let closest = null;
-            let minD = Infinity;
-
-            allCards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const d = Math.abs((window.innerWidth/2) - (rect.left + rect.width/2));
-                if (d < minD) { minD = d; closest = card; }
-            });
-
-            allCards.forEach(c => c.classList.remove('active'));
-            if (closest) {
-                closest.classList.add('active');
-                const data = projectsData.find(p => p.id === closest.dataset.id);
-                if(data && document.getElementById('project-id').innerText !== data.id) {
-                    document.getElementById('project-id').innerText = data.id;
-                    document.getElementById('project-client').innerText = data.client;
-                    document.getElementById('project-title').innerText = data.title;
-                    document.getElementById('project-type').innerText = data.type;
-                }
-            }
-        }
-
-        slider.addEventListener('scroll', () => {
-            const limit = projectsData.length * cardWidth;
-            if (slider.scrollLeft >= limit * 2) slider.scrollLeft -= limit;
-            else if (slider.scrollLeft <= 10) slider.scrollLeft += limit;
-            checkCenter();
-        });
-
-        slider.addEventListener('wheel', e => { e.preventDefault(); slider.scrollLeft += e.deltaY; });
-
-        slider.addEventListener('click', (e) => {
-            const card = e.target.closest('.work-card');
-            if(!card) return;
-            if(!card.classList.contains('active')) {
-                gsap.to(slider, { scrollTo: { x: card.offsetLeft + (card.offsetWidth/2) - (window.innerWidth/2) }, duration: 0.5 });
-            } else {
-                openProject(card.dataset.id);
-            }
-        });
-
-        function openProject(id) {
-            const data = projectsData.find(p => p.id === id);
-            let imgsHtml = data.images.map(img => `<img src="${img}" class="detail-image">`).join('');
-            
-            detailContainer.innerHTML = `
-                <div style="text-align:center; margin-bottom:60px; text-transform:uppercase;">
-                    <h1 style="font-size:24px;">${data.client}</h1>
-                    <p style="color:#666; margin-top:10px; font-size:12px;">${data.title} — ${data.type}</p>
-                </div>
-                ${imgsHtml}
-                <div class="project-footer"><div class="back-index-btn" onclick="closeProject()">Back to Works</div></div>
-            `;
-
-            detailView.style.display = 'block';
-            gsap.to([carouselUI, mainNav], { opacity: 0, y: -20, duration: 0.3 });
-            gsap.to(detailView, { opacity: 1, duration: 0.5 });
-            gsap.to(".detail-image", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8 });
-        }
-
-        function closeProject() {
-            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
-                detailView.style.display = 'none';
-                window.scrollTo(0,0);
-            }});
-            gsap.to([carouselUI, mainNav], { opacity: 1, y: 0, duration: 0.3 });
-        }
-
-        window.onload = checkCenter;
-    </script>
 </body>
 </html>
