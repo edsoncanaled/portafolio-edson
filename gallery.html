@@ -17,7 +17,7 @@
         
         body, html { 
             height: 100vh; 
-            overflow: hidden; 
+            overflow: hidden; /* Evita el scroll global que causa saltos */
             background: var(--bg); 
             font-family: var(--font-main);
             color: var(--text);
@@ -31,11 +31,7 @@
             background: linear-gradient(to bottom, white 50%, transparent);
         }
 
-        nav a {
-            text-decoration: none;
-            color: inherit;
-            transition: opacity 0.3s;
-        }
+        nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
         nav a:hover { opacity: 0.5; }
 
         /* --- UI TEXTO CAROUSEL --- */
@@ -48,11 +44,8 @@
         }
 
         .text-wrapper { width: 260px; text-align: left; }
-        .text-top { margin-bottom: 10px; }
         #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
         #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-        
-        .text-bottom { margin-top: 10px; }
         #project-title { font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; }
         #project-type { font-size: 11px; color: #666; display: block; }
 
@@ -63,6 +56,7 @@
             overflow-x: auto; scrollbar-width: none;
             padding: 0 calc(50vw - 130px);
             cursor: grab;
+            scroll-behavior: auto; /* Importante para el scroll infinito manual */
         }
         .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
@@ -70,24 +64,27 @@
         .work-card {
             flex: 0 0 260px; margin: 0 20px;
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-            transform: scale(0.95); opacity: 1; cursor: pointer;
+            transform: scale(0.95); opacity: 0.6; cursor: pointer;
             position: relative;
             user-select: none;
         }
         .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
-        .work-card.active { transform: scale(1.05); z-index: 5; }
+        .work-card.active { transform: scale(1.05); opacity: 1; z-index: 5; }
 
-        /* --- DETALLE PROYECTO --- */
+        /* --- DETALLE PROYECTO (CORREGIDO) --- */
         #project-detail-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh; /* Altura fija de pantalla */
             background: white; z-index: 200;
-            overflow-y: auto; display: none; opacity: 0;
+            overflow-y: scroll; /* Scroll interno obligatorio */
+            -webkit-overflow-scrolling: touch;
+            display: none; opacity: 0;
         }
         
         .detail-nav {
-            position: fixed; top: 0; width: 100%; padding: 30px 40px;
+            position: sticky; top: 0; width: 100%; padding: 30px 40px;
             display: flex; justify-content: flex-start;
-            z-index: 201;
+            z-index: 201; background: rgba(255,255,255,0.9);
         }
         
         .back-btn-top { 
@@ -95,8 +92,8 @@
             padding-bottom: 2px; border-bottom: 1px solid black;
         }
 
-        .detail-content { padding: 120px 20vw 80px 20vw; display: flex; flex-direction: column; gap: 40px; }
-        .detail-image { width: 100%; height: auto; object-fit: cover; opacity: 0; transform: translateY(20px); }
+        .detail-content { padding: 60px 20vw 80px 20vw; display: flex; flex-direction: column; gap: 40px; }
+        .detail-image { width: 100%; height: auto; object-fit: cover; opacity: 0; transform: translateY(30px); }
 
         .project-footer {
             margin-top: 60px; padding-top: 40px;
@@ -113,7 +110,7 @@
             .gallery-viewport { padding: 0 calc(50vw - 110px); }
             .work-card { flex: 0 0 220px; }
             .text-wrapper { width: 220px; }
-            .detail-content { padding: 100px 20px; }
+            .detail-content { padding: 60px 20px; }
         }
     </style>
 </head>
@@ -126,11 +123,11 @@
     </nav>
 
     <div class="ui-overlay" id="carousel-ui">
-        <div class="text-wrapper text-top" id="top-content">
+        <div class="text-wrapper text-top">
             <span id="project-id">---</span>
             <div id="project-client">SELECT WORK</div>
         </div>
-        <div class="text-wrapper text-bottom" id="bottom-content">
+        <div class="text-wrapper text-bottom">
             <span id="project-title">---</span>
             <span id="project-type">---</span>
         </div>
@@ -163,31 +160,39 @@
         const carouselUI = document.getElementById('carousel-ui');
         const mainNav = document.getElementById('main-nav');
 
-        // Render e Infinito
-        projectsData.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'work-card';
-            div.dataset.id = p.id;
-            div.innerHTML = `<img src="${p.cover}" draggable="false">`;
-            slider.appendChild(div);
-        });
+        // Generar contenido del Slider
+        function initSlider() {
+            projectsData.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'work-card';
+                div.dataset.id = p.id;
+                div.innerHTML = `<img src="${p.cover}" draggable="false">`;
+                slider.appendChild(div);
+            });
 
-        const originalCards = Array.from(document.querySelectorAll('.work-card'));
-        originalCards.forEach(c => slider.appendChild(c.cloneNode(true)));
-        originalCards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
+            // Clonar para infinito (una vez antes y una después)
+            const cards = Array.from(slider.children);
+            cards.forEach(c => slider.appendChild(c.cloneNode(true)));
+            cards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
+        }
+
+        initSlider();
 
         const allCards = document.querySelectorAll('.work-card');
-        const cardWidth = 300; 
-        slider.scrollLeft = projectsData.length * cardWidth;
+        
+        // Centrado inicial
+        const singleSetWidth = projectsData.length * 300; // Aproximado inicial
+        slider.scrollLeft = singleSetWidth;
 
         function checkCenter() {
-            let center = slider.scrollLeft + (window.innerWidth / 2);
+            let center = window.innerWidth / 2;
             let closest = null;
             let minD = Infinity;
 
             allCards.forEach(card => {
                 const rect = card.getBoundingClientRect();
-                const d = Math.abs((window.innerWidth/2) - (rect.left + rect.width/2));
+                const cardCenter = rect.left + rect.width / 2;
+                const d = Math.abs(center - cardCenter);
                 if (d < minD) { minD = d; closest = card; }
             });
 
@@ -204,20 +209,36 @@
             }
         }
 
+        // Scroll Infinito Lógica Corregida
         slider.addEventListener('scroll', () => {
-            const limit = projectsData.length * cardWidth;
-            if (slider.scrollLeft >= limit * 2) slider.scrollLeft -= limit;
-            else if (slider.scrollLeft <= 10) slider.scrollLeft += limit;
+            const cardFullWidth = allCards[0].offsetWidth + 40; // width + margins
+            const scrollSection = projectsData.length * cardFullWidth;
+            
+            if (slider.scrollLeft >= scrollSection * 2) {
+                slider.scrollLeft -= scrollSection;
+            } else if (slider.scrollLeft <= 0) {
+                slider.scrollLeft += scrollSection;
+            }
             checkCenter();
         });
 
-        slider.addEventListener('wheel', e => { e.preventDefault(); slider.scrollLeft += e.deltaY; });
+        // Soporte para Rueda del Mouse
+        slider.addEventListener('wheel', e => {
+            e.preventDefault();
+            slider.scrollLeft += e.deltaY;
+        });
 
+        // Click para centrar o abrir
         slider.addEventListener('click', (e) => {
             const card = e.target.closest('.work-card');
             if(!card) return;
+            
             if(!card.classList.contains('active')) {
-                gsap.to(slider, { scrollTo: { x: card.offsetLeft + (card.offsetWidth/2) - (window.innerWidth/2) }, duration: 0.5 });
+                gsap.to(slider, { 
+                    scrollTo: { x: card.offsetLeft - (window.innerWidth / 2) + (card.offsetWidth / 2) }, 
+                    duration: 0.6,
+                    ease: "power2.out"
+                });
             } else {
                 openProject(card.dataset.id);
             }
@@ -233,24 +254,40 @@
                     <p style="color:#666; margin-top:10px; font-size:12px;">${data.title} — ${data.type}</p>
                 </div>
                 ${imgsHtml}
-                <div class="project-footer"><div class="back-index-btn" onclick="closeProject()">Back to Works</div></div>
+                <div class="project-footer">
+                    <div class="back-index-btn" onclick="closeProject()">Back to Works</div>
+                </div>
             `;
 
             detailView.style.display = 'block';
+            
+            // Animación de entrada
             gsap.to([carouselUI, mainNav], { opacity: 0, y: -20, duration: 0.3 });
-            gsap.to(detailView, { opacity: 1, duration: 0.5 });
-            gsap.to(".detail-image", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8 });
+            gsap.to(detailView, { opacity: 1, duration: 0.4 });
+            gsap.to(".detail-image", { 
+                opacity: 1, 
+                y: 0, 
+                stagger: 0.15, 
+                duration: 1, 
+                ease: "power2.out",
+                delay: 0.2 
+            });
         }
 
         function closeProject() {
-            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
-                detailView.style.display = 'none';
-                window.scrollTo(0,0);
-            }});
+            gsap.to(detailView, { 
+                opacity: 0, 
+                duration: 0.3, 
+                onComplete: () => {
+                    detailView.style.display = 'none';
+                    detailView.scrollTop = 0; // Reset scroll interno del detalle
+                }
+            });
             gsap.to([carouselUI, mainNav], { opacity: 1, y: 0, duration: 0.3 });
         }
 
         window.onload = checkCenter;
+        window.onresize = checkCenter;
     </script>
 </body>
 </html>
