@@ -43,7 +43,15 @@
         }
         .text-wrapper { width: 260px; text-align: left; }
         #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
-        #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
+        
+        /* Ajuste para que el link sea cliqueable */
+        #project-client { 
+            font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; 
+            pointer-events: auto; 
+        }
+        #project-client a { color: inherit; text-decoration: underline; transition: opacity 0.2s; }
+        #project-client a:hover { opacity: 0.6; }
+
         #project-title { font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; }
         #project-type { font-size: 11px; color: #666; display: block; }
 
@@ -64,7 +72,7 @@
         .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
         .work-card.active { transform: scale(1.05); opacity: 1; }
 
-        /* --- VISTA DETALLE (CORREGIDA) --- */
+        /* --- VISTA DETALLE --- */
         #project-detail-view {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: white; z-index: 200;
@@ -77,7 +85,6 @@
         .back-btn-top { cursor: pointer; font-size: 11px; border-bottom: 1px solid black; display: inline-block; }
         .detail-content { padding: 40px 20vw 100px 20vw; display: flex; flex-direction: column; gap: 60px; }
         
-        /* Estilo base para Lazy Reveal */
         .detail-image { 
             width: 100%; height: auto; 
             opacity: 0; transform: translateY(50px); 
@@ -105,8 +112,14 @@
     </nav>
 
     <div class="ui-overlay" id="carousel-ui">
-        <div class="text-wrapper"><span id="project-id">---</span><div id="project-client">SELECT WORK</div></div>
-        <div class="text-wrapper"><span id="project-title">---</span><span id="project-type">---</span></div>
+        <div class="text-wrapper">
+            <span id="project-id">---</span>
+            <div id="project-client">SELECT WORK</div>
+        </div>
+        <div class="text-wrapper">
+            <span id="project-title">---</span>
+            <span id="project-type">---</span>
+        </div>
     </div>
 
     <main class="gallery-viewport" id="slider"></main>
@@ -122,7 +135,14 @@
 
     <script>
         const projectsData = [
-            { id: "2024", client: "B&W Series", title: "Film 35mm", type: "Arista 400", cover: "images/foto1.jpg", images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg", "images/foto4.jpg", "images/foto5.jpg", "images/foto6.jpg"] },
+            { 
+                id: "2024", 
+                client: '<a href="https://www.instagram.com/abucoffee.mx/?hl=en" target="_blank">@abucoffee.mx</a>', 
+                title: "Film 35mm", 
+                type: "Arista 400", 
+                cover: "images/foto1.jpg", 
+                images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg", "images/foto4.jpg", "images/foto5.jpg", "images/foto6.jpg"] 
+            },
             { id: "D002", client: "THE ROLLING STONES", title: "Criss Cross", type: "Music Video", cover: "images/foto2.jpg", images: ["images/foto2.jpg", "images/foto4.jpg"] },
             { id: "D003", client: "A$AP ROCKY", title: "Fukk Sleep", type: "Music Video", cover: "images/foto3.jpg", images: ["images/foto3.jpg", "images/foto1.jpg"] }
         ];
@@ -131,7 +151,7 @@
         const detailView = document.getElementById('project-detail-view');
         const detailContainer = document.getElementById('detail-container');
 
-        // 1. Inicializar Slider con clones para infinito
+        // 1. Inicializar Slider
         projectsData.forEach(p => {
             const div = document.createElement('div');
             div.className = 'work-card';
@@ -147,7 +167,7 @@
         const allCards = document.querySelectorAll('.work-card');
         slider.scrollLeft = projectsData.length * 300;
 
-        // 2. Lógica de centrado y scroll infinito
+        // 2. Lógica de centrado
         function checkCenter() {
             let center = window.innerWidth / 2;
             let closest = null;
@@ -165,7 +185,8 @@
                 const data = projectsData.find(p => p.id === closest.dataset.id);
                 if(data) {
                     document.getElementById('project-id').innerText = data.id;
-                    document.getElementById('project-client').innerText = data.client;
+                    // Cambio a innerHTML para soportar el link
+                    document.getElementById('project-client').innerHTML = data.client;
                     document.getElementById('project-title').innerText = data.title;
                     document.getElementById('project-type').innerText = data.type;
                 }
@@ -192,7 +213,7 @@
             }
         });
 
-        // 3. Abrir Proyecto con Lazy Reveal Scroll
+        // 3. Abrir Proyecto
         function openProject(id) {
             const data = projectsData.find(p => p.id === id);
             let imgsHtml = data.images.map(img => `<img src="${img}" class="detail-image">`).join('');
@@ -207,23 +228,16 @@
             `;
 
             detailView.style.display = 'block';
-            
-            // Animación de entrada de la vista
             gsap.to(detailView, { opacity: 1, duration: 0.5 });
             gsap.to(".header-anim", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 });
 
-            // EFECTO LAZY REVEAL (ScrollTrigger)
-            // Esto hace que las imágenes aparezcan conforme haces scroll
             gsap.utils.toArray(".detail-image").forEach((img) => {
                 gsap.to(img, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    ease: "power2.out",
+                    opacity: 1, y: 0, duration: 1, ease: "power2.out",
                     scrollTrigger: {
                         trigger: img,
-                        scroller: "#project-detail-view", // IMPORTANTE: El scroll ocurre aquí
-                        start: "top 85%", // Empieza cuando la imagen asoma un 15% desde abajo
+                        scroller: "#project-detail-view",
+                        start: "top 85%",
                         toggleActions: "play none none none"
                     }
                 });
@@ -231,9 +245,7 @@
         }
 
         function closeProject() {
-            // Matar los triggers para que no consuman memoria
             ScrollTrigger.getAll().forEach(t => t.kill());
-            
             gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
                 detailView.style.display = 'none';
                 detailView.scrollTop = 0;
