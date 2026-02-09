@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edson Canales — Portfolio</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📷</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,...">
+
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
@@ -15,7 +16,7 @@
             box-sizing: border-box;
         }
 
-        /* Solo ocultamos el cursor si el dispositivo tiene ratón */
+        /* Solo ocultamos el cursor si el dispositivo tiene puntero (ratón) */
         @media (pointer: fine) {
             html, body, a {
                 cursor: none;
@@ -26,15 +27,16 @@
             font-family: 'Courier Prime', monospace; 
             background: #ffffff; 
             color: #111;
+            /* Usamos svh para mejor soporte en móviles */
             min-height: 100svh;
             display: flex;
             flex-direction: column;
             justify-content: space-between; 
-            padding: clamp(30px, 5vw, 60px);
+            padding: clamp(30px, 5vw, 60px); /* Padding fluido */
             overflow: hidden;
         }
 
-        /* -------- CURSOR CON TEXTO -------- */
+        /* -------- CURSOR OPTIMIZADO -------- */
         .cursor {
             width: 10px;
             height: 10px;
@@ -45,36 +47,22 @@
             left: 0;
             pointer-events: none;
             z-index: 9999;
+            /* Usamos transform para mejor rendimiento */
             transform: translate3d(-50%, -50%, 0);
             transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
                         height 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
                         background-color 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             will-change: transform;
         }
 
-        /* Texto dentro del cursor (oculto por defecto) */
-        .cursor::after {
-            content: 'OPEN';
-            font-size: 10px;
-            color: #fff;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
         .cursor.active {
-            width: 65px;
-            height: 65px;
-            background-color: #000;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0,0,0,0.2); /* Mayor visibilidad */
         }
 
-        .cursor.active::after {
-            opacity: 1;
-        }
-
-        /* -------- HEADER & LINKS -------- */
+        /* -------- HEADER -------- */
         .header-main {
             display: flex;
             justify-content: space-between;
@@ -93,38 +81,12 @@
             font-size: 14px;
             line-height: 1.6;
             list-style: none;
-            /* Animación de entrada para guiar la vista */
-            animation: fadeInRight 1s ease-out;
         }
 
         .index-item {
             display: flex;
             justify-content: flex-end;
             gap: 40px;
-            margin-bottom: 5px;
-        }
-
-        .index-item a {
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-            padding-bottom: 2px;
-        }
-
-        /* Subrayado animado */
-        .index-item a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1px;
-            bottom: 0;
-            left: 0;
-            background-color: #000;
-            transition: width 0.3s ease;
-        }
-
-        .index-item a:hover::after {
-            width: 100%;
         }
 
         /* -------- FOOTER -------- */
@@ -146,10 +108,10 @@
             line-height: 0.8;
         }
 
-        /* -------- ANIMACIONES -------- */
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+        a {
+            text-decoration: none;
+            color: inherit;
+            outline: none;
         }
 
         /* Responsive */
@@ -157,9 +119,6 @@
             .header-main { flex-direction: column; gap: 30px; }
             .index-item { justify-content: flex-start; }
             .cursor { display: none; }
-            @media (pointer: fine) {
-                html, body, a { cursor: auto; }
-            }
         }
     </style>
 </head>
@@ -176,7 +135,7 @@
 
         <ul class="index-list">
             <li class="index-item">
-                <a href="contact.html">Contact</a>
+                <a href="gallery.html">Contact</a>
                 <span>3-8</span>
             </li>
             <li class="index-item">
@@ -200,35 +159,22 @@
     <script>
         const cursor = document.querySelector('.cursor');
         
+        // Usamos requestAnimationFrame para suavizar el movimiento
         let mouseX = 0;
         let mouseY = 0;
 
-        // Movimiento del cursor
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // Usamos translate3d para mejor rendimiento (GPU)
+            // Actualización inmediata con transform (GPU acelerada)
             cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
         });
 
-        // Interacción con enlaces
         const links = document.querySelectorAll('a');
         links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.classList.add('active');
-            });
-            link.addEventListener('mouseleave', () => {
-                cursor.classList.remove('active');
-            });
-        });
-
-        // Ocultar cursor al salir de la ventana
-        document.addEventListener('mouseleave', () => {
-            cursor.style.opacity = '0';
-        });
-        document.addEventListener('mouseenter', () => {
-            cursor.style.opacity = '1';
+            link.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            link.addEventListener('mouseleave', () => cursor.classList.remove('active'));
         });
     </script>
 </body>
