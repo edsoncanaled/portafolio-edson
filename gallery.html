@@ -17,24 +17,23 @@
         
         body, html { 
             height: 100vh; 
-            overflow: hidden; /* Evita el scroll global que causa saltos */
+            overflow: hidden; 
             background: var(--bg); 
             font-family: var(--font-main);
             color: var(--text);
         }
 
-        /* --- NAVEGACIÓN PRINCIPAL --- */
+        /* --- NAVEGACIÓN --- */
         nav {
             position: fixed; top: 0; width: 100%; display: flex;
             justify-content: space-between; padding: 30px 40px;
             font-size: 11px; z-index: 100; text-transform: uppercase;
             background: linear-gradient(to bottom, white 50%, transparent);
         }
-
         nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
         nav a:hover { opacity: 0.5; }
 
-        /* --- UI TEXTO CAROUSEL --- */
+        /* --- UI TEXTO --- */
         .ui-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
@@ -42,75 +41,58 @@
             padding: 110px 0 80px 0;
             pointer-events: none; z-index: 10;
         }
-
         .text-wrapper { width: 260px; text-align: left; }
         #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
         #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
         #project-title { font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; }
         #project-type { font-size: 11px; color: #666; display: block; }
 
-        /* --- CAROUSEL --- */
+        /* --- CAROUSEL INFINITO --- */
         .gallery-viewport {
             height: 100vh;
             display: flex; align-items: center;
             overflow-x: auto; scrollbar-width: none;
             padding: 0 calc(50vw - 130px);
             cursor: grab;
-            scroll-behavior: auto; /* Importante para el scroll infinito manual */
         }
-        .gallery-viewport:active { cursor: grabbing; }
         .gallery-viewport::-webkit-scrollbar { display: none; }
-
         .work-card {
             flex: 0 0 260px; margin: 0 20px;
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-            transform: scale(0.95); opacity: 0.6; cursor: pointer;
-            position: relative;
-            user-select: none;
+            transform: scale(0.95); opacity: 0.5; cursor: pointer;
         }
         .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
-        .work-card.active { transform: scale(1.05); opacity: 1; z-index: 5; }
+        .work-card.active { transform: scale(1.05); opacity: 1; }
 
-        /* --- DETALLE PROYECTO (CORREGIDO) --- */
+        /* --- VISTA DETALLE (CORREGIDA) --- */
         #project-detail-view {
-            position: fixed; top: 0; left: 0; width: 100%; 
-            height: 100vh; /* Altura fija de pantalla */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: white; z-index: 200;
-            overflow-y: scroll; /* Scroll interno obligatorio */
-            -webkit-overflow-scrolling: touch;
-            display: none; opacity: 0;
+            overflow-y: auto; display: none; opacity: 0;
         }
-        
         .detail-nav {
-            position: sticky; top: 0; width: 100%; padding: 30px 40px;
-            display: flex; justify-content: flex-start;
-            z-index: 201; background: rgba(255,255,255,0.9);
+            position: sticky; top: 0; padding: 30px 40px;
+            z-index: 210; background: rgba(255,255,255,0.9);
         }
+        .back-btn-top { cursor: pointer; font-size: 11px; border-bottom: 1px solid black; display: inline-block; }
+        .detail-content { padding: 40px 20vw 100px 20vw; display: flex; flex-direction: column; gap: 60px; }
         
-        .back-btn-top { 
-            cursor: pointer; font-size: 11px; text-transform: uppercase; 
-            padding-bottom: 2px; border-bottom: 1px solid black;
+        /* Estilo base para Lazy Reveal */
+        .detail-image { 
+            width: 100%; height: auto; 
+            opacity: 0; transform: translateY(50px); 
+            will-change: transform, opacity;
         }
 
-        .detail-content { padding: 60px 20vw 80px 20vw; display: flex; flex-direction: column; gap: 40px; }
-        .detail-image { width: 100%; height: auto; object-fit: cover; opacity: 0; transform: translateY(30px); }
-
-        .project-footer {
-            margin-top: 60px; padding-top: 40px;
-            border-top: 1px solid #eee; text-align: center;
-        }
-        .back-index-btn {
-            font-size: 12px; text-transform: uppercase; cursor: pointer;
-            display: inline-block; padding: 10px 25px; border: 1px solid #000;
-            transition: all 0.3s;
+        .project-footer { text-align: center; padding: 50px 0; border-top: 1px solid #eee; }
+        .back-index-btn { 
+            padding: 10px 25px; border: 1px solid #000; text-transform: uppercase; 
+            font-size: 12px; cursor: pointer; transition: 0.3s;
         }
         .back-index-btn:hover { background: black; color: white; }
 
         @media (max-width: 768px) {
-            .gallery-viewport { padding: 0 calc(50vw - 110px); }
-            .work-card { flex: 0 0 220px; }
-            .text-wrapper { width: 220px; }
-            .detail-content { padding: 60px 20px; }
+            .detail-content { padding: 40px 20px; }
         }
     </style>
 </head>
@@ -123,67 +105,49 @@
     </nav>
 
     <div class="ui-overlay" id="carousel-ui">
-        <div class="text-wrapper text-top">
-            <span id="project-id">---</span>
-            <div id="project-client">SELECT WORK</div>
-        </div>
-        <div class="text-wrapper text-bottom">
-            <span id="project-title">---</span>
-            <span id="project-type">---</span>
-        </div>
+        <div class="text-wrapper"><span id="project-id">---</span><div id="project-client">SELECT WORK</div></div>
+        <div class="text-wrapper"><span id="project-title">---</span><span id="project-type">---</span></div>
     </div>
 
     <main class="gallery-viewport" id="slider"></main>
 
     <div id="project-detail-view">
-        <div class="detail-nav">
-            <div class="back-btn-top" onclick="closeProject()">← BACK </div>
-        </div>
+        <div class="detail-nav"><div class="back-btn-top" onclick="closeProject()">← BACK </div></div>
         <div class="detail-content" id="detail-container"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <script>
         const projectsData = [
-            { id: "2024", client: "B&W Series", title: "Film 35mm", type: "Arista 400", cover: "images/foto1.jpg", images: ["images/foto1.jpg", "images/foto2.jpg"] },
+            { id: "2024", client: "B&W Series", title: "Film 35mm", type: "Arista 400", cover: "images/foto1.jpg", images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg"] },
             { id: "D002", client: "THE ROLLING STONES", title: "Criss Cross", type: "Music Video", cover: "images/foto2.jpg", images: ["images/foto2.jpg", "images/foto4.jpg"] },
-            { id: "D003", client: "A$AP ROCKY", title: "Fukk Sleep", type: "Music Video", cover: "images/foto3.jpg", images: ["images/foto3.jpg", "images/foto1.jpg"] },
-            { id: "D004", client: "ROSALÍA", title: "De Aquí No Sales", type: "Music Video", cover: "images/foto4.jpg", images: ["images/foto4.jpg", "images/foto3.jpg"] },
-            { id: "D005", client: "C. TANGANA", title: "Caballo Ganador", type: "Documentary", cover: "images/foto5.jpg", images: ["images/foto5.jpg", "images/foto1.jpg"] }
+            { id: "D003", client: "A$AP ROCKY", title: "Fukk Sleep", type: "Music Video", cover: "images/foto3.jpg", images: ["images/foto3.jpg", "images/foto1.jpg"] }
         ];
 
         const slider = document.getElementById('slider');
         const detailView = document.getElementById('project-detail-view');
         const detailContainer = document.getElementById('detail-container');
-        const carouselUI = document.getElementById('carousel-ui');
-        const mainNav = document.getElementById('main-nav');
 
-        // Generar contenido del Slider
-        function initSlider() {
-            projectsData.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'work-card';
-                div.dataset.id = p.id;
-                div.innerHTML = `<img src="${p.cover}" draggable="false">`;
-                slider.appendChild(div);
-            });
+        // 1. Inicializar Slider con clones para infinito
+        projectsData.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'work-card';
+            div.dataset.id = p.id;
+            div.innerHTML = `<img src="${p.cover}">`;
+            slider.appendChild(div);
+        });
 
-            // Clonar para infinito (una vez antes y una después)
-            const cards = Array.from(slider.children);
-            cards.forEach(c => slider.appendChild(c.cloneNode(true)));
-            cards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
-        }
-
-        initSlider();
+        const originalCards = Array.from(slider.children);
+        originalCards.forEach(c => slider.appendChild(c.cloneNode(true)));
+        originalCards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
 
         const allCards = document.querySelectorAll('.work-card');
-        
-        // Centrado inicial
-        const singleSetWidth = projectsData.length * 300; // Aproximado inicial
-        slider.scrollLeft = singleSetWidth;
+        slider.scrollLeft = projectsData.length * 300;
 
+        // 2. Lógica de centrado y scroll infinito
         function checkCenter() {
             let center = window.innerWidth / 2;
             let closest = null;
@@ -191,8 +155,7 @@
 
             allCards.forEach(card => {
                 const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const d = Math.abs(center - cardCenter);
+                const d = Math.abs(center - (rect.left + rect.width/2));
                 if (d < minD) { minD = d; closest = card; }
             });
 
@@ -200,7 +163,7 @@
             if (closest) {
                 closest.classList.add('active');
                 const data = projectsData.find(p => p.id === closest.dataset.id);
-                if(data && document.getElementById('project-id').innerText !== data.id) {
+                if(data) {
                     document.getElementById('project-id').innerText = data.id;
                     document.getElementById('project-client').innerText = data.client;
                     document.getElementById('project-title').innerText = data.title;
@@ -209,85 +172,75 @@
             }
         }
 
-        // Scroll Infinito Lógica Corregida
         slider.addEventListener('scroll', () => {
-            const cardFullWidth = allCards[0].offsetWidth + 40; // width + margins
-            const scrollSection = projectsData.length * cardFullWidth;
-            
-            if (slider.scrollLeft >= scrollSection * 2) {
-                slider.scrollLeft -= scrollSection;
-            } else if (slider.scrollLeft <= 0) {
-                slider.scrollLeft += scrollSection;
-            }
+            const cardWidth = allCards[0].offsetWidth + 40;
+            const loopWidth = projectsData.length * cardWidth;
+            if (slider.scrollLeft >= loopWidth * 2) slider.scrollLeft -= loopWidth;
+            else if (slider.scrollLeft <= 0) slider.scrollLeft += loopWidth;
             checkCenter();
         });
 
-        // Soporte para Rueda del Mouse
-        slider.addEventListener('wheel', e => {
-            e.preventDefault();
-            slider.scrollLeft += e.deltaY;
-        });
+        slider.addEventListener('wheel', e => { e.preventDefault(); slider.scrollLeft += e.deltaY; });
 
-        // Click para centrar o abrir
         slider.addEventListener('click', (e) => {
             const card = e.target.closest('.work-card');
             if(!card) return;
-            
             if(!card.classList.contains('active')) {
-                gsap.to(slider, { 
-                    scrollTo: { x: card.offsetLeft - (window.innerWidth / 2) + (card.offsetWidth / 2) }, 
-                    duration: 0.6,
-                    ease: "power2.out"
-                });
+                gsap.to(slider, { scrollTo: { x: card.offsetLeft - (window.innerWidth/2) + (card.offsetWidth/2) }, duration: 0.6 });
             } else {
                 openProject(card.dataset.id);
             }
         });
 
+        // 3. Abrir Proyecto con Lazy Reveal Scroll
         function openProject(id) {
             const data = projectsData.find(p => p.id === id);
             let imgsHtml = data.images.map(img => `<img src="${img}" class="detail-image">`).join('');
             
             detailContainer.innerHTML = `
-                <div style="text-align:center; margin-bottom:60px; text-transform:uppercase;">
+                <div class="header-anim" style="text-align:center; margin-bottom:40px; opacity:0;">
                     <h1 style="font-size:24px;">${data.client}</h1>
                     <p style="color:#666; margin-top:10px; font-size:12px;">${data.title} — ${data.type}</p>
                 </div>
                 ${imgsHtml}
-                <div class="project-footer">
-                    <div class="back-index-btn" onclick="closeProject()">Back to Works</div>
-                </div>
+                <div class="project-footer"><div class="back-index-btn" onclick="closeProject()">Back to Works</div></div>
             `;
 
             detailView.style.display = 'block';
             
-            // Animación de entrada
-            gsap.to([carouselUI, mainNav], { opacity: 0, y: -20, duration: 0.3 });
-            gsap.to(detailView, { opacity: 1, duration: 0.4 });
-            gsap.to(".detail-image", { 
-                opacity: 1, 
-                y: 0, 
-                stagger: 0.15, 
-                duration: 1, 
-                ease: "power2.out",
-                delay: 0.2 
+            // Animación de entrada de la vista
+            gsap.to(detailView, { opacity: 1, duration: 0.5 });
+            gsap.to(".header-anim", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 });
+
+            // EFECTO LAZY REVEAL (ScrollTrigger)
+            // Esto hace que las imágenes aparezcan conforme haces scroll
+            gsap.utils.toArray(".detail-image").forEach((img) => {
+                gsap.to(img, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: img,
+                        scroller: "#project-detail-view", // IMPORTANTE: El scroll ocurre aquí
+                        start: "top 85%", // Empieza cuando la imagen asoma un 15% desde abajo
+                        toggleActions: "play none none none"
+                    }
+                });
             });
         }
 
         function closeProject() {
-            gsap.to(detailView, { 
-                opacity: 0, 
-                duration: 0.3, 
-                onComplete: () => {
-                    detailView.style.display = 'none';
-                    detailView.scrollTop = 0; // Reset scroll interno del detalle
-                }
-            });
-            gsap.to([carouselUI, mainNav], { opacity: 1, y: 0, duration: 0.3 });
+            // Matar los triggers para que no consuman memoria
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            
+            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
+                detailView.style.display = 'none';
+                detailView.scrollTop = 0;
+            }});
         }
 
         window.onload = checkCenter;
-        window.onresize = checkCenter;
     </script>
 </body>
 </html>
