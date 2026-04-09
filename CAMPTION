@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camption | Edson Canales</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f0ede6;
+      --text: #1a1a1a;
+      --muted: #888;
+      --border: #ccc9c0;
+      --accent: #1a1a1a;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 40px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--muted); }
+
+    nav .nav-center {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 60px 40px 20px;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 80px;
+    }
+
+    .page-header .label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── SESSION ENTRY ── */
+    .session {
+      padding: 0 40px 100px;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 80px;
+    }
+
+    .session:last-of-type {
+      border-bottom: none;
+    }
+
+    /* meta row */
+    .session-meta {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .session-meta .year {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .session-meta .series {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* main layout: hero left, info right */
+    .session-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* hero image */
+    .hero-wrap {
+      position: relative;
+    }
+
+    .hero-wrap img {
+      width: 100%;
+      display: block;
+      filter: grayscale(100%);
+      transition: filter 0.5s ease;
+    }
+
+    .hero-wrap:hover img {
+      filter: grayscale(0%);
+    }
+
+    .hero-caption {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* right column */
+    .session-right {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* description block */
+    .description h2 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .description p {
+      font-size: 13px;
+      line-height: 1.85;
+      color: #444;
+      letter-spacing: 0.02em;
+    }
+
+    /* specs */
+    .specs {
+      border-top: 0.5px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 11px;
+    }
+
+    .spec-row .spec-key {
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .spec-row .spec-val {
+      letter-spacing: 0.04em;
+    }
+
+    /* thumbnail strip */
+    .thumb-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .thumb-strip img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      filter: grayscale(100%);
+      cursor: pointer;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+      opacity: 0.75;
+    }
+
+    .thumb-strip img:hover {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(240, 237, 230, 0.96);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox img {
+      max-height: 85vh;
+      max-width: 85vw;
+      filter: grayscale(100%);
+      display: block;
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 28px;
+      right: 40px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      text-transform: uppercase;
+      color: var(--text);
+      background: none;
+      border: none;
+      font-family: 'Courier New', monospace;
+    }
+
+    .lightbox-close:hover { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html">← Back</a>
+    <span class="nav-center">M4. Camption</span>
+    <a href="gallery.html">M2. Works</a>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="label">Selected sessions — ongoing</div>
+    <h1>Camption</h1>
+  </div>
+
+  <!-- ── SESSION 01 ── -->
+  <div class="session">
+    <div class="session-meta">
+      <span class="year">2024</span>
+      <span class="series">Urban Decay Series</span>
+    </div>
+
+    <div class="session-layout">
+      <!-- Hero -->
+      <div class="hero-wrap">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=900&q=80" alt="Urban Decay main shot">
+        <div class="hero-caption">01 / Hero frame — Monterrey, MX</div>
+      </div>
+
+      <!-- Right -->
+      <div class="session-right">
+
+        <div class="description">
+          <h2>Between Walls</h2>
+          <p>
+            A walk through the forgotten corners of the city. This session explores the tension
+            between architecture and identity — concrete, shadow, and the human body occupying
+            spaces not built for stillness. Shot over two evenings in the industrial district.
+          </p>
+        </div>
+
+        <div class="specs">
+          <div class="spec-row">
+            <span class="spec-key">Film</span>
+            <span class="spec-val">35mm — Arista EDU 400</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Camera</span>
+            <span class="spec-val">Canon AE-1</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Location</span>
+            <span class="spec-val">Monterrey, Nuevo León</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Frames</span>
+            <span class="spec-val">36</span>
+          </div>
+        </div>
+
+        <!-- Thumb strip -->
+        <div class="thumb-strip">
+          <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=300&q=80" alt="frame 2" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="frame 3" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" alt="frame 4" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=300&q=80" alt="frame 5" onclick="openLightbox(this.src)">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SESSION 02 ── -->
+  <div class="session">
+    <div class="session-meta">
+      <span class="year">2024</span>
+      <span class="series">Natural Light Series</span>
+    </div>
+
+    <div class="session-layout">
+      <!-- Hero -->
+      <div class="hero-wrap">
+        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=80" alt="Natural light main shot">
+        <div class="hero-caption">01 / Hero frame — Rooftop session</div>
+      </div>
+
+      <!-- Right -->
+      <div class="session-right">
+
+        <div class="description">
+          <h2>Soft Hours</h2>
+          <p>
+            Golden hour pushed past its limit. This session chases the last fifteen minutes of
+            usable light — when the sky turns a dull amber and everything goes flat in the best
+            possible way. Minimal direction, maximum presence.
+          </p>
+        </div>
+
+        <div class="specs">
+          <div class="spec-row">
+            <span class="spec-key">Film</span>
+            <span class="spec-val">35mm — Kodak Gold 200</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Camera</span>
+            <span class="spec-val">Nikon FM2</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Location</span>
+            <span class="spec-val">San Pedro, Nuevo León</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-key">Frames</span>
+            <span class="spec-val">24</span>
+          </div>
+        </div>
+
+        <!-- Thumb strip -->
+        <div class="thumb-strip">
+          <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&q=80" alt="frame 2" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=300&q=80" alt="frame 3" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80" alt="frame 4" onclick="openLightbox(this.src)">
+          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" alt="frame 5" onclick="openLightbox(this.src)">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2024 Edson Canales</span>
+    <span>edsoncanales.art</span>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">× Close</button>
+    <img id="lightbox-img" src="" alt="expanded frame">
+  </div>
+
+  <script>
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>
