@@ -264,7 +264,7 @@
         <div style="width:200px; text-align:right;"><a href="gallery.html">M2. WORKS</a></div>
     </nav>
 
-    <!-- PAGE HEADER con texto introductorio -->
+    <!-- PAGE HEADER -->
     <div class="page-header">
         <div class="page-header-left">
             <div class="label">Selected sessions — ongoing</div>
@@ -286,12 +286,12 @@
         <!-- SESSION 01 -->
         <div class="session" onclick="openSession(0)">
             <div class="session-cover">
-                <img src="images/CAMPTION1.jpg" alt="SHOOT 1">
+                <img src="images/CAMPTION1.jpg" alt="Camption 1 cover">
             </div>
             <div class="session-info">
                 <div class="session-top">
                     <span class="session-id">2024 — 01</span>
-                    <div class="session-title">SHOOT 1</div>
+                    <div class="session-title">B&W Series</div>
                     <div class="session-subtitle">
                         Un recorrido por los márgenes de la ciudad. Concreto, sombra y
                         presencia humana en espacios que no fueron hechos para la quietud.
@@ -302,56 +302,6 @@
                     <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Arista EDU 400</span></div>
                     <div class="spec-row"><span class="key">Cámara</span><span class="val">Canon AE-1</span></div>
                     <div class="spec-row"><span class="key">Locación</span><span class="val">Monterrey, NL</span></div>
-                    <div class="spec-row"><span class="key">Frames</span><span class="val">36</span></div>
-                    <span class="session-arrow">→</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- SESSION 02 -->
-        <div class="session" onclick="openSession(1)">
-            <div class="session-cover">
-                <img src="images/foto2.jpg" alt="Soft Hours cover">
-            </div>
-            <div class="session-info">
-                <div class="session-top">
-                    <span class="session-id">2024 — 02</span>
-                    <div class="session-title">Soft Hours</div>
-                    <div class="session-subtitle">
-                        Golden hour llevado al límite. Esta sesión persigue los últimos
-                        quince minutos de luz útil — cuando el cielo se aplana y todo
-                        se vuelve silencioso de la mejor manera posible.
-                    </div>
-                </div>
-                <div class="session-bottom">
-                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Kodak Gold 200</span></div>
-                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Nikon FM2</span></div>
-                    <div class="spec-row"><span class="key">Locación</span><span class="val">San Pedro, NL</span></div>
-                    <div class="spec-row"><span class="key">Frames</span><span class="val">24</span></div>
-                    <span class="session-arrow">→</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- SESSION 03 -->
-        <div class="session" onclick="openSession(2)">
-            <div class="session-cover">
-                <img src="images/foto3.jpg" alt="Crudo cover">
-            </div>
-            <div class="session-info">
-                <div class="session-top">
-                    <span class="session-id">2024 — 03</span>
-                    <div class="session-title">Crudo</div>
-                    <div class="session-subtitle">
-                        Sin retoques, sin poses. Retratos directos bajo luz natural dura.
-                        La idea era encontrar la imagen antes de que el sujeto supiera
-                        que ya había ocurrido.
-                    </div>
-                </div>
-                <div class="session-bottom">
-                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Ilford HP5</span></div>
-                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Olympus OM-1</span></div>
-                    <div class="spec-row"><span class="key">Locación</span><span class="val">Centro, MTY</span></div>
                     <div class="spec-row"><span class="key">Frames</span><span class="val">36</span></div>
                     <span class="session-arrow">→</span>
                 </div>
@@ -405,41 +355,19 @@
                     { key: "Locación", val: "Monterrey, NL" },
                     { key: "Frames",   val: "36" }
                 ],
-                cover:   "images/foto1.jpg",
-                hero:    "images/foto1.jpg",
+                cover:   "images/CAMPTION1.jpg",
+                hero:    "images/CAMPTION1.jpg",
                 caption: "01 / Frame principal — Monterrey, NL",
-                thumbs:  ["images/foto2.jpg","images/foto3.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"]
-            },
-            {
-                id: "2024 — 02",
-                title: "Soft Hours",
-                desc: "Golden hour llevado al límite. Esta sesión persigue los últimos quince minutos de luz útil — cuando el cielo se aplana y todo se vuelve silencioso de la mejor manera posible.",
-                specs: [
-                    { key: "Film",     val: "35mm — Kodak Gold 200" },
-                    { key: "Cámara",   val: "Nikon FM2" },
-                    { key: "Locación", val: "San Pedro, NL" },
-                    { key: "Frames",   val: "24" }
-                ],
-                cover:   "images/foto2.jpg",
-                hero:    "images/foto2.jpg",
-                caption: "01 / Frame principal — San Pedro, NL",
-                thumbs:  ["images/foto3.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg","images/foto1.jpg"]
-            },
-            {
-                id: "2024 — 03",
-                title: "Crudo",
-                desc: "Sin retoques, sin poses. Retratos directos bajo luz natural dura. La idea era encontrar la imagen antes de que el sujeto supiera que ya había ocurrido.",
-                specs: [
-                    { key: "Film",     val: "35mm — Ilford HP5" },
-                    { key: "Cámara",   val: "Olympus OM-1" },
-                    { key: "Locación", val: "Centro, MTY" },
-                    { key: "Frames",   val: "36" }
-                ],
-                cover:   "images/foto3.jpg",
-                hero:    "images/foto3.jpg",
-                caption: "01 / Frame principal — Centro, MTY",
-                thumbs:  ["images/foto1.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg","images/foto2.jpg"]
+                thumbs:  [
+                    "images/CAMPTION1-1.jpg",
+                    "images/CAMPTION1-2.jpg",
+                    "images/CAMPTION1-3.jpg",
+                    "images/CAMPTION1-4.jpg",
+                    "images/CAMPTION1-5.jpg",
+                    "images/CAMPTION1-6.jpg"
+                ]
             }
+            // — Agrega aquí los siguientes shoots cuando los tengas —
         ];
 
         const detailView     = document.getElementById('detail-view');
