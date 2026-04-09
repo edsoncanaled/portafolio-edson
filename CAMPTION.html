@@ -24,7 +24,6 @@
             min-height: 100vh;
         }
 
-        /* --- NAV --- */
         nav {
             position: fixed; top: 0; width: 100%;
             display: flex; justify-content: space-between;
@@ -35,7 +34,6 @@
         nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
         nav a:hover { opacity: 0.5; }
 
-        /* --- PAGE HEADER --- */
         .page-header {
             padding: 130px 40px 70px;
             border-bottom: 1px solid var(--border);
@@ -45,179 +43,129 @@
             align-items: end;
         }
         .page-header-left .label {
-            font-size: 10px;
-            color: var(--muted);
-            letter-spacing: 0.1em;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+            font-size: 10px; color: var(--muted);
+            letter-spacing: 0.1em; margin-bottom: 10px; text-transform: uppercase;
         }
         .page-header-left h1 {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
+            font-size: 28px; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
         }
         .page-header-right {
-            border-left: 1px solid var(--border);
-            padding-left: 60px;
+            border-left: 1px solid var(--border); padding-left: 60px;
         }
         .page-header-right p {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.9;
-            max-width: 420px;
+            font-size: 12px; color: #555; line-height: 1.9; max-width: 420px;
         }
 
-        /* --- SESSION LIST --- */
         .sessions { padding: 0 40px; }
 
-        /* --- SINGLE SESSION CARD --- */
         .session {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.3s;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0; border-bottom: 1px solid var(--border);
+            cursor: pointer; transition: background 0.3s;
         }
         .session:hover { background: #fafafa; }
 
         .session-cover { overflow: hidden; }
         .session-cover img {
-            width: 100%; height: 420px;
-            object-fit: cover; display: block;
+            width: 100%; height: 420px; object-fit: cover; display: block;
             filter: grayscale(100%);
             transition: filter 0.6s ease, transform 0.6s ease;
         }
-        .session:hover .session-cover img {
-            filter: grayscale(0%);
-            transform: scale(1.02);
-        }
+        .session:hover .session-cover img { filter: grayscale(0%); transform: scale(1.02); }
 
         .session-info {
-            padding: 50px 50px;
-            display: flex; flex-direction: column;
-            justify-content: space-between;
-            border-left: 1px solid var(--border);
+            padding: 50px 50px; display: flex; flex-direction: column;
+            justify-content: space-between; border-left: 1px solid var(--border);
         }
         .session-top .session-id {
             font-size: 10px; color: var(--muted);
             display: block; margin-bottom: 10px; text-transform: uppercase;
         }
         .session-top .session-title {
-            font-size: 20px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.08em;
-            line-height: 1.2; margin-bottom: 12px;
+            font-size: 20px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; line-height: 1.2; margin-bottom: 12px;
         }
         .session-top .session-subtitle {
-            font-size: 12px; color: #555;
-            line-height: 1.7; max-width: 340px;
+            font-size: 12px; color: #555; line-height: 1.7; max-width: 340px;
         }
         .session-bottom { display: flex; flex-direction: column; gap: 8px; }
         .spec-row {
             display: flex; justify-content: space-between;
-            font-size: 11px; padding: 7px 0;
-            border-top: 1px solid var(--border);
+            font-size: 11px; padding: 7px 0; border-top: 1px solid var(--border);
         }
         .spec-row .key { color: var(--muted); text-transform: uppercase; }
         .spec-row .val { font-weight: 500; }
         .session-arrow {
-            font-size: 22px; font-weight: 300;
-            align-self: flex-end; margin-top: 20px;
-            opacity: 0; transform: translateX(-8px);
-            transition: opacity 0.3s, transform 0.3s;
+            font-size: 22px; font-weight: 300; align-self: flex-end; margin-top: 20px;
+            opacity: 0; transform: translateX(-8px); transition: opacity 0.3s, transform 0.3s;
         }
         .session:hover .session-arrow { opacity: 1; transform: translateX(0); }
 
-        /* --- DETAIL VIEW --- */
         #detail-view {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100vh;
-            background: white; z-index: 200;
-            overflow-y: auto; display: none; opacity: 0;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: white; z-index: 200; overflow-y: auto; display: none; opacity: 0;
         }
         .detail-nav {
-            position: sticky; top: 0; padding: 30px 40px;
-            z-index: 210; background: rgba(255,255,255,0.92);
-            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; padding: 30px 40px; z-index: 210;
+            background: rgba(255,255,255,0.92); display: flex;
+            justify-content: space-between; align-items: center;
             font-size: 11px; text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border); backdrop-filter: blur(8px);
         }
         .back-btn { cursor: pointer; transition: opacity 0.3s; }
         .back-btn:hover { opacity: 0.5; }
 
-        .detail-body {
-            padding: 70px 40px 100px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .detail-body { padding: 70px 40px 100px; max-width: 1200px; margin: 0 auto; }
+
         .detail-header {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 60px; margin-bottom: 70px;
-            align-items: end; opacity: 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+            margin-bottom: 70px; align-items: end; opacity: 0;
         }
         .detail-header .dh-left .dh-id {
             font-size: 10px; color: var(--muted);
             display: block; margin-bottom: 12px; text-transform: uppercase;
         }
         .detail-header .dh-left h2 {
-            font-size: 28px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            line-height: 1.1; margin-bottom: 16px;
+            font-size: 28px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; line-height: 1.1; margin-bottom: 16px;
         }
         .detail-header .dh-left .dh-desc {
-            font-size: 13px; color: #444;
-            line-height: 1.85; max-width: 420px;
+            font-size: 13px; color: #444; line-height: 1.85; max-width: 420px;
         }
-        .detail-header .dh-right {
-            border-top: 1px solid var(--border); padding-top: 20px;
-        }
+        .detail-header .dh-right { border-top: 1px solid var(--border); padding-top: 20px; }
+
         .detail-hero {
-            width: 100%; height: 600px; object-fit: cover;
-            display: block; margin-bottom: 12px;
-            opacity: 0; transform: translateY(40px);
+            width: 100%; height: 600px; object-fit: cover; display: block;
+            margin-bottom: 12px; opacity: 0; transform: translateY(40px);
             will-change: transform, opacity;
         }
         .detail-hero-caption {
-            font-size: 10px; color: var(--muted);
-            margin-bottom: 50px; text-transform: uppercase;
+            font-size: 10px; color: var(--muted); margin-bottom: 50px; text-transform: uppercase;
         }
 
         .thumb-label {
-            font-size: 10px; color: var(--muted);
-            text-transform: uppercase; margin-bottom: 16px;
+            font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 16px;
         }
         .thumb-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 80px;
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 80px;
         }
         .thumb-grid img {
-            width: 100%; aspect-ratio: 3/4;
-            object-fit: cover; display: block;
+            width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
             filter: grayscale(100%); cursor: pointer;
             transition: filter 0.4s, opacity 0.4s, transform 0.4s;
             opacity: 0.7; will-change: transform, opacity;
         }
-        .thumb-grid img:hover {
-            filter: grayscale(0%); opacity: 1; transform: scale(1.02);
-        }
+        .thumb-grid img:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.02); }
 
-        .detail-footer {
-            text-align: center; padding: 50px 0;
-            border-top: 1px solid var(--border);
-        }
+        .detail-footer { text-align: center; padding: 50px 0; border-top: 1px solid var(--border); }
         .back-works-btn {
-            padding: 10px 28px; border: 1px solid #000;
-            text-transform: uppercase; font-size: 11px;
-            font-family: var(--font-main); cursor: pointer;
+            padding: 10px 28px; border: 1px solid #000; text-transform: uppercase;
+            font-size: 11px; font-family: var(--font-main); cursor: pointer;
             background: white; transition: background 0.3s, color 0.3s;
         }
         .back-works-btn:hover { background: black; color: white; }
 
-        /* --- LIGHTBOX --- */
         #lightbox {
             display: none; position: fixed; inset: 0;
             background: rgba(255,255,255,0.97); z-index: 300;
@@ -226,18 +174,15 @@
         #lightbox.active { display: flex; }
         #lightbox img { max-height: 88vh; max-width: 88vw; display: block; }
         .lb-close {
-            position: fixed; top: 30px; right: 40px;
-            font-size: 11px; text-transform: uppercase;
-            cursor: pointer; font-family: var(--font-main);
-            background: none; border: none; color: #000; transition: opacity 0.3s;
+            position: fixed; top: 30px; right: 40px; font-size: 11px; text-transform: uppercase;
+            cursor: pointer; font-family: var(--font-main); background: none; border: none;
+            color: #000; transition: opacity 0.3s;
         }
         .lb-close:hover { opacity: 0.5; }
 
-        /* --- FOOTER --- */
         footer {
-            padding: 40px; font-size: 10px; color: var(--muted);
-            text-transform: uppercase; display: flex;
-            justify-content: space-between; border-top: 1px solid var(--border);
+            padding: 40px; font-size: 10px; color: var(--muted); text-transform: uppercase;
+            display: flex; justify-content: space-between; border-top: 1px solid var(--border);
         }
 
         @media (max-width: 768px) {
@@ -256,14 +201,12 @@
 </head>
 <body>
 
-    <!-- NAV -->
     <nav>
         <div style="width:200px;"><a href="index.html">← BACK</a></div>
         <div style="width:200px; text-align:center;">M4. CAMPTION</div>
         <div style="width:200px; text-align:right;"><a href="gallery.html">M2. WORKS</a></div>
     </nav>
 
-    <!-- PAGE HEADER -->
     <div class="page-header">
         <div class="page-header-left">
             <div class="label">Selected sessions — ongoing</div>
@@ -279,13 +222,12 @@
         </div>
     </div>
 
-    <!-- SESSIONS -->
     <div class="sessions" id="sessions-list">
 
         <!-- SESSION 01 -->
         <div class="session" onclick="openSession(0)">
             <div class="session-cover">
-                <img src="images/CAMPTION1-2.jpg" alt="Camption 1 cover">
+                <img src="images/CAMPTION1-2.jpg" alt="Shoot 1 cover">
             </div>
             <div class="session-info">
                 <div class="session-top">
@@ -307,10 +249,10 @@
             </div>
         </div>
 
-        <!-- SESSION 02 — openSession(1) ✓ -->
+        <!-- SESSION 02 -->
         <div class="session" onclick="openSession(1)">
             <div class="session-cover">
-                <img src="images/MAR1-2.jpg" alt="Camption 2 cover">
+                <img src="images/MAR1-2.jpg" alt="Shoot 2 cover">
             </div>
             <div class="session-info">
                 <div class="session-top">
@@ -332,6 +274,30 @@
             </div>
         </div>
 
+        <!-- SESSION 03 -->
+        <div class="session" onclick="openSession(2)">
+            <div class="session-cover">
+                <img src="images/NATS1.jpg" alt="Shoot 3 cover">
+            </div>
+            <div class="session-info">
+                <div class="session-top">
+                    <span class="session-id">2024 — 03</span>
+                    <div class="session-title">SHOOT 3</div>
+                    <div class="session-subtitle">
+                        Descripción de la sesión aquí. Edita este texto con los detalles
+                        del shoot, locación, intención y contexto del proyecto.
+                    </div>
+                </div>
+                <div class="session-bottom">
+                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm</span></div>
+                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Canon AE-1</span></div>
+                    <div class="spec-row"><span class="key">Locación</span><span class="val">Monterrey, NL</span></div>
+                    <div class="spec-row"><span class="key">Frames</span><span class="val">36</span></div>
+                    <span class="session-arrow">→</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
@@ -339,7 +305,6 @@
         <span>edsoncanales.art</span>
     </footer>
 
-    <!-- DETAIL VIEW -->
     <div id="detail-view">
         <div class="detail-nav">
             <div class="back-btn" onclick="closeSession()">← BACK</div>
@@ -358,7 +323,6 @@
         </div>
     </div>
 
-    <!-- LIGHTBOX -->
     <div id="lightbox" onclick="closeLightbox()">
         <button class="lb-close">× Close</button>
         <img id="lb-img" src="" alt="">
@@ -411,6 +375,27 @@
                     "images/MAR1-4.jpg",
                     "images/MAR1-7.jpg",
                     "images/MAR1-8.jpg"
+                ]
+            },
+            {
+                id: "2024 — 03",
+                title: "SHOOT 3",
+                desc: "Descripción de la sesión aquí. Edita este texto con los detalles del shoot, locación, intención y contexto del proyecto.",
+                specs: [
+                    { key: "Film",     val: "35mm" },
+                    { key: "Cámara",   val: "Canon AE-1" },
+                    { key: "Locación", val: "Monterrey, NL" },
+                    { key: "Frames",   val: "36" }
+                ],
+                cover:   "images/NATS1.jpg",
+                hero:    "images/NATS1.jpg",
+                caption: "01 / Frame principal — Monterrey, NL",
+                thumbs:  [
+                    "images/NATS1.jpg",
+                    "images/NATS2.jpg",
+                    "images/NATS3.jpg",
+                    "images/NATS4.jpg",
+                    "images/NATS5.png"
                 ]
             }
         ];
