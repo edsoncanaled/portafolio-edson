@@ -1,414 +1,577 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Camption | Edson Canales</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camption | Edson Canales</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-    :root {
-      --bg: #f0ede6;
-      --text: #1a1a1a;
-      --muted: #888;
-      --border: #ccc9c0;
-      --accent: #1a1a1a;
-    }
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --muted: #999;
+            --border: #e8e8e8;
+            --font-main: 'JetBrains Mono', monospace;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 13px;
-      letter-spacing: 0.03em;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ── NAV ── */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 28px 40px;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 100;
-    }
+        body {
+            background: var(--bg);
+            font-family: var(--font-main);
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-    nav a {
-      text-decoration: none;
-      color: var(--text);
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
+        /* --- NAV --- */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            display: flex; justify-content: space-between;
+            padding: 30px 40px; font-size: 11px; z-index: 100;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, white 50%, transparent);
+        }
+        nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        nav a:hover { opacity: 0.5; }
 
-    nav a:hover { color: var(--muted); }
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 130px 40px 60px;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-header .label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
 
-    nav .nav-center {
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+        /* --- SESSION LIST --- */
+        .sessions {
+            padding: 0 40px;
+        }
 
-    /* ── PAGE HEADER ── */
-    .page-header {
-      padding: 60px 40px 20px;
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: 80px;
-    }
+        /* --- SINGLE SESSION CARD --- */
+        .session {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .session:hover { background: #fafafa; }
 
-    .page-header .label {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      margin-bottom: 8px;
-    }
+        /* left: cover image */
+        .session-cover {
+            overflow: hidden;
+        }
+        .session-cover img {
+            width: 100%;
+            height: 420px;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(100%);
+            transition: filter 0.6s ease, transform 0.6s ease;
+        }
+        .session:hover .session-cover img {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
 
-    .page-header h1 {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
+        /* right: info */
+        .session-info {
+            padding: 50px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-left: 1px solid var(--border);
+        }
 
-    /* ── SESSION ENTRY ── */
-    .session {
-      padding: 0 40px 100px;
-      border-bottom: 0.5px solid var(--border);
-      margin-bottom: 80px;
-    }
+        .session-top .session-id {
+            font-size: 10px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .session-top .session-title {
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .session-top .session-subtitle {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.7;
+            max-width: 340px;
+        }
 
-    .session:last-of-type {
-      border-bottom: none;
-    }
+        .session-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 7px 0;
+            border-top: 1px solid var(--border);
+        }
+        .spec-row .key { color: var(--muted); text-transform: uppercase; }
+        .spec-row .val { font-weight: 500; }
 
-    /* meta row */
-    .session-meta {
-      display: flex;
-      gap: 40px;
-      margin-bottom: 40px;
-    }
+        .session-arrow {
+            font-size: 22px;
+            font-weight: 300;
+            align-self: flex-end;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .session:hover .session-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-    .session-meta .year {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-    }
+        /* --- DETAIL VIEW --- */
+        #detail-view {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: white; z-index: 200;
+            overflow-y: auto; display: none; opacity: 0;
+        }
 
-    .session-meta .series {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
+        .detail-nav {
+            position: sticky; top: 0;
+            padding: 30px 40px;
+            z-index: 210;
+            background: rgba(255,255,255,0.92);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+        }
+        .back-btn { cursor: pointer; transition: opacity 0.3s; }
+        .back-btn:hover { opacity: 0.5; }
 
-    /* main layout: hero left, info right */
-    .session-layout {
-      display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 48px;
-      align-items: start;
-    }
+        .detail-body {
+            padding: 70px 40px 100px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
 
-    /* hero image */
-    .hero-wrap {
-      position: relative;
-    }
+        /* detail header */
+        .detail-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 70px;
+            align-items: end;
+            opacity: 0;
+        }
+        .detail-header .dh-left .dh-id {
+            font-size: 10px; color: var(--muted);
+            display: block; margin-bottom: 12px; text-transform: uppercase;
+        }
+        .detail-header .dh-left h2 {
+            font-size: 28px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            line-height: 1.1; margin-bottom: 16px;
+        }
+        .detail-header .dh-left .dh-desc {
+            font-size: 13px; color: #444;
+            line-height: 1.85; max-width: 420px;
+        }
+        .detail-header .dh-right {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
 
-    .hero-wrap img {
-      width: 100%;
-      display: block;
-      filter: grayscale(100%);
-      transition: filter 0.5s ease;
-    }
+        /* hero image in detail */
+        .detail-hero {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0;
+            transform: translateY(40px);
+            will-change: transform, opacity;
+        }
+        .detail-hero-caption {
+            font-size: 10px; color: var(--muted);
+            margin-bottom: 50px; text-transform: uppercase;
+        }
 
-    .hero-wrap:hover img {
-      filter: grayscale(0%);
-    }
+        /* thumb grid */
+        .thumb-label {
+            font-size: 10px; color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .thumb-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 80px;
+        }
+        .thumb-grid img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(100%);
+            cursor: pointer;
+            transition: filter 0.4s, opacity 0.4s, transform 0.4s;
+            opacity: 0.7;
+            will-change: transform, opacity;
+        }
+        .thumb-grid img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.02);
+        }
 
-    .hero-caption {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 10px;
-      letter-spacing: 0.06em;
-    }
+        .detail-footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid var(--border);
+        }
+        .back-works-btn {
+            padding: 10px 28px;
+            border: 1px solid #000;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-family: var(--font-main);
+            cursor: pointer;
+            background: white;
+            transition: background 0.3s, color 0.3s;
+        }
+        .back-works-btn:hover { background: black; color: white; }
 
-    /* right column */
-    .session-right {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.97);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+        #lightbox.active { display: flex; }
+        #lightbox img {
+            max-height: 88vh;
+            max-width: 88vw;
+            display: block;
+        }
+        .lb-close {
+            position: fixed; top: 30px; right: 40px;
+            font-size: 11px; text-transform: uppercase;
+            cursor: pointer; font-family: var(--font-main);
+            background: none; border: none; color: #000;
+            transition: opacity 0.3s;
+        }
+        .lb-close:hover { opacity: 0.5; }
 
-    /* description block */
-    .description h2 {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
+        /* --- FOOTER --- */
+        footer {
+            padding: 40px;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
+        }
 
-    .description p {
-      font-size: 13px;
-      line-height: 1.85;
-      color: #444;
-      letter-spacing: 0.02em;
-    }
-
-    /* specs */
-    .specs {
-      border-top: 0.5px solid var(--border);
-      padding-top: 20px;
-    }
-
-    .spec-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 0.5px solid var(--border);
-      font-size: 11px;
-    }
-
-    .spec-row .spec-key {
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .spec-row .spec-val {
-      letter-spacing: 0.04em;
-    }
-
-    /* thumbnail strip */
-    .thumb-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-
-    .thumb-strip img {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      filter: grayscale(100%);
-      cursor: pointer;
-      transition: filter 0.3s ease, opacity 0.3s ease;
-      opacity: 0.75;
-    }
-
-    .thumb-strip img:hover {
-      filter: grayscale(0%);
-      opacity: 1;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 40px;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    /* ── LIGHTBOX ── */
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(240, 237, 230, 0.96);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .lightbox.active { display: flex; }
-
-    .lightbox img {
-      max-height: 85vh;
-      max-width: 85vw;
-      filter: grayscale(100%);
-      display: block;
-    }
-
-    .lightbox-close {
-      position: fixed;
-      top: 28px;
-      right: 40px;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      text-transform: uppercase;
-      color: var(--text);
-      background: none;
-      border: none;
-      font-family: 'Courier New', monospace;
-    }
-
-    .lightbox-close:hover { color: var(--muted); }
-  </style>
+        @media (max-width: 768px) {
+            .session { grid-template-columns: 1fr; }
+            .session-cover img { height: 260px; }
+            .session-info { border-left: none; border-top: 1px solid var(--border); padding: 30px 20px; }
+            .detail-header { grid-template-columns: 1fr; gap: 30px; }
+            .detail-hero { height: 320px; }
+            .thumb-grid { grid-template-columns: repeat(2, 1fr); }
+            nav { padding: 20px; }
+            .page-header { padding: 100px 20px 40px; }
+            .sessions { padding: 0 20px; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="index.html">← Back</a>
-    <span class="nav-center">M4. Camption</span>
-    <a href="gallery.html">M2. Works</a>
-  </nav>
+    <!-- NAV -->
+    <nav>
+        <div style="width:200px;"><a href="index.html">← BACK</a></div>
+        <div style="width:200px; text-align:center;">M4. CAMPTION</div>
+        <div style="width:200px; text-align:right;"><a href="gallery.html">M2. WORKS</a></div>
+    </nav>
 
-  <!-- PAGE HEADER -->
-  <div class="page-header">
-    <div class="label">Selected sessions — ongoing</div>
-    <h1>Camption</h1>
-  </div>
-
-  <!-- ── SESSION 01 ── -->
-  <div class="session">
-    <div class="session-meta">
-      <span class="year">2024</span>
-      <span class="series">Urban Decay Series</span>
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="label">Selected sessions — ongoing</div>
+        <h1>Camption</h1>
     </div>
 
-    <div class="session-layout">
-      <!-- Hero -->
-      <div class="hero-wrap">
-        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=900&q=80" alt="Urban Decay main shot">
-        <div class="hero-caption">01 / Hero frame — Monterrey, MX</div>
-      </div>
+    <!-- SESSIONS -->
+    <div class="sessions" id="sessions-list">
 
-      <!-- Right -->
-      <div class="session-right">
-
-        <div class="description">
-          <h2>Between Walls</h2>
-          <p>
-            A walk through the forgotten corners of the city. This session explores the tension
-            between architecture and identity — concrete, shadow, and the human body occupying
-            spaces not built for stillness. Shot over two evenings in the industrial district.
-          </p>
+        <!-- SESSION 01 -->
+        <div class="session" onclick="openSession(0)">
+            <div class="session-cover">
+                <img src="images/foto1.jpg" alt="B&W Series cover">
+            </div>
+            <div class="session-info">
+                <div class="session-top">
+                    <span class="session-id">2024 — 01</span>
+                    <div class="session-title">B&W Series</div>
+                    <div class="session-subtitle">
+                        Un recorrido por los márgenes de la ciudad. Concreto, sombra y
+                        presencia humana en espacios que no fueron hechos para la quietud.
+                        Rodado en dos tardes en el distrito industrial.
+                    </div>
+                </div>
+                <div class="session-bottom">
+                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Arista EDU 400</span></div>
+                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Canon AE-1</span></div>
+                    <div class="spec-row"><span class="key">Locación</span><span class="val">Monterrey, NL</span></div>
+                    <div class="spec-row"><span class="key">Frames</span><span class="val">36</span></div>
+                    <span class="session-arrow">→</span>
+                </div>
+            </div>
         </div>
 
-        <div class="specs">
-          <div class="spec-row">
-            <span class="spec-key">Film</span>
-            <span class="spec-val">35mm — Arista EDU 400</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Camera</span>
-            <span class="spec-val">Canon AE-1</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Location</span>
-            <span class="spec-val">Monterrey, Nuevo León</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Frames</span>
-            <span class="spec-val">36</span>
-          </div>
+        <!-- SESSION 02 -->
+        <div class="session" onclick="openSession(1)">
+            <div class="session-cover">
+                <img src="images/foto2.jpg" alt="Soft Hours cover">
+            </div>
+            <div class="session-info">
+                <div class="session-top">
+                    <span class="session-id">2024 — 02</span>
+                    <div class="session-title">Soft Hours</div>
+                    <div class="session-subtitle">
+                        Golden hour llevado al límite. Esta sesión persigue los últimos
+                        quince minutos de luz útil — cuando el cielo se aplana y todo
+                        se vuelve silencioso de la mejor manera posible.
+                    </div>
+                </div>
+                <div class="session-bottom">
+                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Kodak Gold 200</span></div>
+                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Nikon FM2</span></div>
+                    <div class="spec-row"><span class="key">Locación</span><span class="val">San Pedro, NL</span></div>
+                    <div class="spec-row"><span class="key">Frames</span><span class="val">24</span></div>
+                    <span class="session-arrow">→</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Thumb strip -->
-        <div class="thumb-strip">
-          <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=300&q=80" alt="frame 2" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="frame 3" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" alt="frame 4" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=300&q=80" alt="frame 5" onclick="openLightbox(this.src)">
+        <!-- SESSION 03 -->
+        <div class="session" onclick="openSession(2)">
+            <div class="session-cover">
+                <img src="images/foto3.jpg" alt="Crudo cover">
+            </div>
+            <div class="session-info">
+                <div class="session-top">
+                    <span class="session-id">2024 — 03</span>
+                    <div class="session-title">Crudo</div>
+                    <div class="session-subtitle">
+                        Sin retoques, sin poses. Retratos directos bajo luz natural dura.
+                        La idea era encontrar la imagen antes de que el sujeto supiera
+                        que ya había ocurrido.
+                    </div>
+                </div>
+                <div class="session-bottom">
+                    <div class="spec-row"><span class="key">Film</span><span class="val">35mm — Ilford HP5</span></div>
+                    <div class="spec-row"><span class="key">Cámara</span><span class="val">Olympus OM-1</span></div>
+                    <div class="spec-row"><span class="key">Locación</span><span class="val">Centro, MTY</span></div>
+                    <div class="spec-row"><span class="key">Frames</span><span class="val">36</span></div>
+                    <span class="session-arrow">→</span>
+                </div>
+            </div>
         </div>
 
-      </div>
     </div>
-  </div>
 
-  <!-- ── SESSION 02 ── -->
-  <div class="session">
-    <div class="session-meta">
-      <span class="year">2024</span>
-      <span class="series">Natural Light Series</span>
+    <footer>
+        <span>© 2024 Edson Canales</span>
+        <span>edsoncanales.art</span>
+    </footer>
+
+    <!-- DETAIL VIEW -->
+    <div id="detail-view">
+        <div class="detail-nav">
+            <div class="back-btn" onclick="closeSession()">← BACK</div>
+            <div id="detail-nav-title">—</div>
+            <div style="width:120px;"></div>
+        </div>
+        <div class="detail-body">
+            <div class="detail-header" id="detail-header"></div>
+            <img class="detail-hero" id="detail-hero" src="" alt="hero">
+            <div class="detail-hero-caption" id="detail-caption"></div>
+            <div class="thumb-label">— All frames</div>
+            <div class="thumb-grid" id="detail-thumbs"></div>
+            <div class="detail-footer">
+                <button class="back-works-btn" onclick="closeSession()">← Back to Camption</button>
+            </div>
+        </div>
     </div>
 
-    <div class="session-layout">
-      <!-- Hero -->
-      <div class="hero-wrap">
-        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&q=80" alt="Natural light main shot">
-        <div class="hero-caption">01 / Hero frame — Rooftop session</div>
-      </div>
-
-      <!-- Right -->
-      <div class="session-right">
-
-        <div class="description">
-          <h2>Soft Hours</h2>
-          <p>
-            Golden hour pushed past its limit. This session chases the last fifteen minutes of
-            usable light — when the sky turns a dull amber and everything goes flat in the best
-            possible way. Minimal direction, maximum presence.
-          </p>
-        </div>
-
-        <div class="specs">
-          <div class="spec-row">
-            <span class="spec-key">Film</span>
-            <span class="spec-val">35mm — Kodak Gold 200</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Camera</span>
-            <span class="spec-val">Nikon FM2</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Location</span>
-            <span class="spec-val">San Pedro, Nuevo León</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-key">Frames</span>
-            <span class="spec-val">24</span>
-          </div>
-        </div>
-
-        <!-- Thumb strip -->
-        <div class="thumb-strip">
-          <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&q=80" alt="frame 2" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1516726817505-f5ed825624d8?w=300&q=80" alt="frame 3" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&q=80" alt="frame 4" onclick="openLightbox(this.src)">
-          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&q=80" alt="frame 5" onclick="openLightbox(this.src)">
-        </div>
-
-      </div>
+    <!-- LIGHTBOX -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <button class="lb-close">× Close</button>
+        <img id="lb-img" src="" alt="">
     </div>
-  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <span>© 2024 Edson Canales</span>
-    <span>edsoncanales.art</span>
-  </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <button class="lightbox-close" onclick="closeLightbox()">× Close</button>
-    <img id="lightbox-img" src="" alt="expanded frame">
-  </div>
+    <script>
+        // ── DATA — reemplaza los src con tus imágenes reales ──
+        const sessions = [
+            {
+                id: "2024 — 01",
+                title: "B&W Series",
+                desc: "Un recorrido por los márgenes de la ciudad. Concreto, sombra y presencia humana en espacios que no fueron hechos para la quietud. Rodado en dos tardes en el distrito industrial.",
+                specs: [
+                    { key: "Film",     val: "35mm — Arista EDU 400" },
+                    { key: "Cámara",   val: "Canon AE-1" },
+                    { key: "Locación", val: "Monterrey, NL" },
+                    { key: "Frames",   val: "36" }
+                ],
+                cover:  "images/foto1.jpg",
+                hero:   "images/foto1.jpg",
+                caption: "01 / Frame principal — Monterrey, NL",
+                thumbs: ["images/foto2.jpg","images/foto3.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg","images/foto1.jpg"]
+            },
+            {
+                id: "2024 — 02",
+                title: "Soft Hours",
+                desc: "Golden hour llevado al límite. Esta sesión persigue los últimos quince minutos de luz útil — cuando el cielo se aplana y todo se vuelve silencioso de la mejor manera posible.",
+                specs: [
+                    { key: "Film",     val: "35mm — Kodak Gold 200" },
+                    { key: "Cámara",   val: "Nikon FM2" },
+                    { key: "Locación", val: "San Pedro, NL" },
+                    { key: "Frames",   val: "24" }
+                ],
+                cover:  "images/foto2.jpg",
+                hero:   "images/foto2.jpg",
+                caption: "01 / Frame principal — San Pedro, NL",
+                thumbs: ["images/foto3.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"]
+            },
+            {
+                id: "2024 — 03",
+                title: "Crudo",
+                desc: "Sin retoques, sin poses. Retratos directos bajo luz natural dura. La idea era encontrar la imagen antes de que el sujeto supiera que ya había ocurrido.",
+                specs: [
+                    { key: "Film",     val: "35mm — Ilford HP5" },
+                    { key: "Cámara",   val: "Olympus OM-1" },
+                    { key: "Locación", val: "Centro, MTY" },
+                    { key: "Frames",   val: "36" }
+                ],
+                cover:  "images/foto3.jpg",
+                hero:   "images/foto3.jpg",
+                caption: "01 / Frame principal — Centro, MTY",
+                thumbs: ["images/foto1.jpg","images/foto4.jpg","images/foto5.jpg","images/foto6.jpg"]
+            }
+        ];
 
-  <script>
-    function openLightbox(src) {
-      document.getElementById('lightbox-img').src = src;
-      document.getElementById('lightbox').classList.add('active');
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-    }
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeLightbox();
-    });
-  </script>
+        const detailView   = document.getElementById('detail-view');
+        const detailHeader = document.getElementById('detail-header');
+        const detailHero   = document.getElementById('detail-hero');
+        const detailCaption= document.getElementById('detail-caption');
+        const detailThumbs = document.getElementById('detail-thumbs');
+        const detailNavTitle = document.getElementById('detail-nav-title');
+
+        function openSession(idx) {
+            const s = sessions[idx];
+
+            // Build header
+            const specsHtml = s.specs.map(sp =>
+                `<div class="spec-row"><span class="key">${sp.key}</span><span class="val">${sp.val}</span></div>`
+            ).join('');
+
+            detailHeader.innerHTML = `
+                <div class="dh-left">
+                    <span class="dh-id">${s.id}</span>
+                    <h2>${s.title}</h2>
+                    <p class="dh-desc">${s.desc}</p>
+                </div>
+                <div class="dh-right">${specsHtml}</div>
+            `;
+
+            // Hero
+            detailHero.src = s.hero;
+            detailCaption.textContent = s.caption;
+            detailNavTitle.textContent = s.title.toUpperCase();
+
+            // Thumbs
+            detailThumbs.innerHTML = s.thumbs.map(src =>
+                `<img src="${src}" alt="frame" onclick="openLightbox('${src}')">`
+            ).join('');
+
+            // Show
+            detailView.style.display = 'block';
+            detailView.scrollTop = 0;
+
+            ScrollTrigger.getAll().forEach(t => t.kill());
+
+            gsap.fromTo(detailView,   { opacity: 0 }, { opacity: 1, duration: 0.4 });
+            gsap.fromTo(detailHeader, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, delay: 0.15 });
+            gsap.fromTo(detailHero,   { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.9, delay: 0.3 });
+
+            gsap.utils.toArray('#detail-thumbs img').forEach((img, i) => {
+                gsap.fromTo(img,
+                    { opacity: 0, y: 30 },
+                    {
+                        opacity: 0.7, y: 0, duration: 0.7,
+                        scrollTrigger: {
+                            trigger: img,
+                            scroller: '#detail-view',
+                            start: 'top 90%',
+                            toggleActions: 'play none none none'
+                        },
+                        delay: i * 0.05
+                    }
+                );
+            });
+        }
+
+        function closeSession() {
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
+                detailView.style.display = 'none';
+            }});
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lb-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeLightbox(); closeSession(); }
+        });
+    </script>
 
 </body>
 </html>
+
