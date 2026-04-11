@@ -4,147 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edson Canales — Portfolio</title>
-    
     <link rel="icon" href="data:image/svg+xml,...">
-
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Solo ocultamos el cursor si el dispositivo tiene puntero (ratón) */
         @media (pointer: fine) {
-            html, body, a {
-                cursor: none;
-            }
+            html, body, a { cursor: none; }
         }
 
         body {
-            font-family: 'Courier Prime', monospace; 
-            background: #ffffff; 
+            font-family: 'Courier Prime', monospace;
+            background: #ffffff;
             color: #111;
-            /* Usamos svh para mejor soporte en móviles */
             min-height: 100svh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; 
-            padding: clamp(30px, 5vw, 60px); /* Padding fluido */
+            justify-content: space-between;
+            padding: clamp(30px, 5vw, 60px);
             overflow: hidden;
         }
 
-        /* -------- CURSOR OPTIMIZADO -------- */
+        /* ── CURSOR ── */
         .cursor {
-            width: 10px;
-            height: 10px;
-            background-color: #000;
-            border-radius: 50%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 9999;
-            /* Usamos transform para mejor rendimiento */
+            width: 10px; height: 10px;
+            background-color: #000; border-radius: 50%;
+            position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 9999;
             transform: translate3d(-50%, -50%, 0);
-            transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
-                        height 0.3s cubic-bezier(0.23, 1, 0.32, 1), 
+            transition: width 0.3s cubic-bezier(0.23,1,0.32,1),
+                        height 0.3s cubic-bezier(0.23,1,0.32,1),
                         background-color 0.3s;
             will-change: transform;
         }
-
         .cursor.active {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0,0,0,0.2); /* Mayor visibilidad */
+            width: 50px; height: 50px;
+            background-color: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.2);
         }
 
-        /* -------- HEADER -------- */
+        /* ── HEADER ── */
         .header-main {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            z-index: 10;
+            position: relative; z-index: 20;
         }
+        h1.brand-info { font-size: 15px; font-weight: 700; line-height: 1.2; }
 
-        h1.brand-info {
-            font-size: 15px;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .index-list {
-            text-align: right;
-            font-size: 14px;
-            line-height: 1.6;
-            list-style: none;
-        }
-
+        .index-list { text-align: right; font-size: 14px; line-height: 1.6; list-style: none; }
         .index-item {
-            display: flex;
-            justify-content: flex-end;
-            gap: 40px;
+            display: flex; justify-content: flex-end;
+            align-items: center; gap: 40px;
+        }
+        .index-item a {
+            text-decoration: none; color: inherit; outline: none;
+            position: relative; transition: opacity 0.3s;
+        }
+        .index-item a::after {
+            content: ''; position: absolute;
+            bottom: 1px; left: 0; width: 0; height: 1px;
+            background: #111;
+            transition: width 0.35s cubic-bezier(0.23,1,0.32,1);
+        }
+        .index-item:hover a::after { width: 100%; }
+        .index-item .page-num {
+            color: #999; font-size: 13px;
+            transition: color 0.3s; min-width: 36px; text-align: right;
+        }
+        .index-item:hover .page-num { color: #111; }
+
+        /* ── STACK CONTAINER centrado ── */
+        .stack-scene {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 5;
+            width: 500px;
+            height: 300px;
         }
 
-        /* -------- FOOTER -------- */
+        .iso-stack {
+            position: absolute; inset: 0;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.23,1,0.32,1);
+        }
+        .iso-stack.visible { opacity: 1; }
+
+        /* cada foto en la pila isométrica apretada */
+        .iso-stack .photo {
+            position: absolute;
+            width: 130px;
+            height: 170px;
+            overflow: hidden;
+            border: 0.5px solid rgba(0,0,0,0.12);
+            background: #ddd;
+            /* la transformación se aplica vía JS con offset isométrico */
+            transform-origin: center center;
+            transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+        }
+        .iso-stack .photo img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+        }
+
+        /* ── FOOTER ── */
         .footer-portfolio {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            display: flex; align-items: center; gap: 20px;
+            position: relative; z-index: 20;
         }
-
         .arrow {
-            font-size: clamp(40px, 8vw, 80px);
-            font-weight: 300;
+            font-size: clamp(40px, 8vw, 80px); font-weight: 300;
+            transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
         }
-
+        .footer-portfolio:hover .arrow { transform: translateX(12px); }
         .portfolio-title {
-            font-size: clamp(50px, 10vw, 110px); 
-            font-weight: 700;
-            letter-spacing: -0.05em;
-            line-height: 0.8;
+            font-size: clamp(50px, 10vw, 110px);
+            font-weight: 700; letter-spacing: -0.05em; line-height: 0.8;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-            outline: none;
-        }
+        a { text-decoration: none; color: inherit; outline: none; }
 
-        /* Responsive */
         @media(max-width: 900px){
             .header-main { flex-direction: column; gap: 30px; }
             .index-item { justify-content: flex-start; }
-            .cursor { display: none; }
+            .cursor, .stack-scene { display: none; }
         }
     </style>
 </head>
-
 <body>
 
     <div class="cursor" aria-hidden="true"></div>
 
+    <!-- STACK SCENE centrado -->
+    <div class="stack-scene">
+
+        <div class="iso-stack" id="stack-camption">
+            <div class="photo"><img src="images/CAMPTION1.jpg"   alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-1.jpg" alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-2.jpg" alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-3.jpg" alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-4.jpg" alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-5.jpg" alt=""></div>
+            <div class="photo"><img src="images/CAMPTION1-6.jpg" alt=""></div>
+        </div>
+
+        <div class="iso-stack" id="stack-editorials">
+            <div class="photo"><img src="images/foto1.jpg" alt=""></div>
+            <div class="photo"><img src="images/foto2.jpg" alt=""></div>
+            <div class="photo"><img src="images/foto3.jpg" alt=""></div>
+            <div class="photo"><img src="images/foto4.jpg" alt=""></div>
+            <div class="photo"><img src="images/foto5.jpg" alt=""></div>
+            <div class="photo"><img src="images/foto6.jpg" alt=""></div>
+        </div>
+
+        <div class="iso-stack" id="stack-food">
+            <div class="photo"><img src="images/MAR1.jpg"   alt=""></div>
+            <div class="photo"><img src="images/MAR1-2.jpg" alt=""></div>
+            <div class="photo"><img src="images/MAR1-3.jpg" alt=""></div>
+            <div class="photo"><img src="images/MAR1-4.jpg" alt=""></div>
+            <div class="photo"><img src="images/MAR1-7.jpg" alt=""></div>
+            <div class="photo"><img src="images/MAR1-8.jpg" alt=""></div>
+            <div class="photo"><img src="images/NATS1.jpg"  alt=""></div>
+            <div class="photo"><img src="images/NATS2.jpg"  alt=""></div>
+            <div class="photo"><img src="images/NATS3.jpg"  alt=""></div>
+            <div class="photo"><img src="images/NATS4.jpg"  alt=""></div>
+        </div>
+
+    </div>
+
     <header class="header-main">
         <h1 class="brand-info">
             Edson Canales<br>
-            <span style="font-weight: 400;">Photographer</span>
+            <span style="font-weight:400;">Photographer</span>
         </h1>
-
         <ul class="index-list">
-            <li class="index-item">
+            <li class="index-item" data-stack="stack-camption">
                 <a href="CAMPTION.html">CAMPTION</a>
-                <span>3-8</span>
+                <span class="page-num">3-8</span>
             </li>
-            <li class="index-item">
+            <li class="index-item" data-stack="stack-editorials">
                 <a href="gallery.html">Editorials</a>
-                <span>22-25</span>
+                <span class="page-num">22-25</span>
             </li>
-            <li class="index-item">
+            <li class="index-item" data-stack="stack-food">
                 <a href="food&drinks.html">Food & Drinks</a>
-                <span>27-30</span>
+                <span class="page-num">27-30</span>
             </li>
         </ul>
     </header>
@@ -157,24 +204,68 @@
     </footer>
 
     <script>
+        /* ── CURSOR ── */
         const cursor = document.querySelector('.cursor');
-        
-        // Usamos requestAnimationFrame para suavizar el movimiento
-        let mouseX = 0;
-        let mouseY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            // Actualización inmediata con transform (GPU acelerada)
-            cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+        document.addEventListener('mousemove', e => {
+            cursor.style.transform = `translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`;
+        });
+        document.querySelectorAll('a').forEach(l => {
+            l.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            l.addEventListener('mouseleave', () => cursor.classList.remove('active'));
         });
 
-        const links = document.querySelectorAll('a');
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            link.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        /* ── ISO STACK LAYOUT ──
+           Coloca cada foto en posición isométrica apretada:
+           cada carta se desplaza (stepX, stepY) respecto a la anterior
+           y se rota con el mismo ángulo, creando el efecto de mazo visto de canto.
+        */
+        function buildStack(stackEl) {
+            const photos = Array.from(stackEl.querySelectorAll('.photo'));
+            const n      = photos.length;
+
+            // ángulo diagonal isométrico ~-35deg
+            const angle  = -35;
+            const rad    = angle * Math.PI / 180;
+
+            // separación entre cartas (apretado = 10px)
+            const gap    = 10;
+
+            // desplazamiento por índice a lo largo del eje diagonal
+            const stepX  = Math.cos(rad) * gap;
+            const stepY  = Math.sin(rad) * gap;
+
+            // centrar el conjunto
+            const totalX = stepX * (n - 1);
+            const totalY = stepY * (n - 1);
+
+            photos.forEach((photo, i) => {
+                const x = stepX * i - totalX / 2;
+                const y = stepY * i - totalY / 2;
+                photo.style.left = `calc(50% - 65px + ${x}px)`;
+                photo.style.top  = `calc(50% - 85px + ${y}px)`;
+                photo.style.transform = `rotate(${angle}deg)`;
+                photo.style.zIndex = n - i;
+                // stagger de entrada
+                photo.style.transitionDelay = `${i * 0.03}s`;
+            });
+        }
+
+        document.querySelectorAll('.iso-stack').forEach(buildStack);
+
+        /* ── HOVER SWITCH ── */
+        const items   = document.querySelectorAll('.index-item[data-stack]');
+        let   current = null;
+
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                if (current) current.classList.remove('visible');
+                current = document.getElementById(item.dataset.stack);
+                if (current) current.classList.add('visible');
+            });
+            item.addEventListener('mouseleave', () => {
+                if (current) current.classList.remove('visible');
+                current = null;
+            });
         });
     </script>
 </body>
