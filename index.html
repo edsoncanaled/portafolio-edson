@@ -46,69 +46,72 @@
 
         /* ── HEADER ── */
         .header-main {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            position: relative; z-index: 20;
+            display: flex; justify-content: space-between;
+            align-items: flex-start; position: relative; z-index: 20;
         }
         h1.brand-info { font-size: 15px; font-weight: 700; line-height: 1.2; }
 
         .index-list { text-align: right; font-size: 14px; line-height: 1.6; list-style: none; }
-        .index-item {
-            display: flex; justify-content: flex-end;
-            align-items: center; gap: 40px;
-        }
+        .index-item { display: flex; justify-content: flex-end; align-items: center; gap: 40px; }
         .index-item a {
-            text-decoration: none; color: inherit; outline: none;
-            position: relative; transition: opacity 0.3s;
+            text-decoration: none; color: inherit; outline: none; position: relative;
         }
         .index-item a::after {
-            content: ''; position: absolute;
-            bottom: 1px; left: 0; width: 0; height: 1px;
-            background: #111;
+            content: ''; position: absolute; bottom: 1px; left: 0;
+            width: 0; height: 1px; background: #111;
             transition: width 0.35s cubic-bezier(0.23,1,0.32,1);
         }
         .index-item:hover a::after { width: 100%; }
         .index-item .page-num {
-            color: #999; font-size: 13px;
-            transition: color 0.3s; min-width: 36px; text-align: right;
+            color: #999; font-size: 13px; transition: color 0.3s;
+            min-width: 36px; text-align: right;
         }
         .index-item:hover .page-num { color: #111; }
 
-        /* ── STACK CONTAINER centrado ── */
-        .stack-scene {
+        /* ── STRIP ── */
+        .strip-wrap {
             position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            top: 50%;
+            left: 0;
+            width: 100vw;
+            transform: translateY(-50%);
             z-index: 5;
-            width: 500px;
-            height: 300px;
-        }
-
-        .iso-stack {
-            position: absolute; inset: 0;
-            opacity: 0;
-            transition: opacity 0.5s cubic-bezier(0.23,1,0.32,1);
-        }
-        .iso-stack.visible { opacity: 1; }
-
-        /* cada foto en la pila isométrica apretada */
-        .iso-stack .photo {
-            position: absolute;
-            width: 130px;
-            height: 170px;
             overflow: hidden;
-            border: 0.5px solid rgba(0,0,0,0.12);
-            background: #ddd;
-            /* la transformación se aplica vía JS con offset isométrico */
-            transform-origin: center center;
-            transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
+            pointer-events: auto;
         }
-        .iso-stack .photo img {
-            width: 100%; height: 100%;
-            object-fit: cover; display: block;
+
+        .strip {
+            display: flex;
+            gap: 6px;
+            width: max-content;
+            will-change: transform;
         }
+
+        /* cada foto: delgada por defecto, se expande al hover */
+        .thumb {
+            flex: 0 0 auto;
+            width: 40px;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+            transition: width 0.55s cubic-bezier(0.23,1,0.32,1);
+            cursor: none;
+        }
+
+        .thumb:hover { width: 260px; }
+
+        .thumb img {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            width: 260px;          /* ancho real siempre listo */
+            object-fit: cover;
+            display: block;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+
+        .thumb:hover img { filter: grayscale(0%); }
 
         /* ── FOOTER ── */
         .footer-portfolio {
@@ -130,7 +133,10 @@
         @media(max-width: 900px){
             .header-main { flex-direction: column; gap: 30px; }
             .index-item { justify-content: flex-start; }
-            .cursor, .stack-scene { display: none; }
+            .cursor { display: none; }
+            .thumb { width: 28px; height: 160px; }
+            .thumb:hover { width: 180px; }
+            .thumb img { width: 180px; }
         }
     </style>
 </head>
@@ -138,41 +144,9 @@
 
     <div class="cursor" aria-hidden="true"></div>
 
-    <!-- STACK SCENE centrado -->
-    <div class="stack-scene">
-
-        <div class="iso-stack" id="stack-camption">
-            <div class="photo"><img src="images/CAMPTION1.jpg"   alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-1.jpg" alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-2.jpg" alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-3.jpg" alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-4.jpg" alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-5.jpg" alt=""></div>
-            <div class="photo"><img src="images/CAMPTION1-6.jpg" alt=""></div>
-        </div>
-
-        <div class="iso-stack" id="stack-editorials">
-            <div class="photo"><img src="images/foto1.jpg" alt=""></div>
-            <div class="photo"><img src="images/foto2.jpg" alt=""></div>
-            <div class="photo"><img src="images/foto3.jpg" alt=""></div>
-            <div class="photo"><img src="images/foto4.jpg" alt=""></div>
-            <div class="photo"><img src="images/foto5.jpg" alt=""></div>
-            <div class="photo"><img src="images/foto6.jpg" alt=""></div>
-        </div>
-
-        <div class="iso-stack" id="stack-food">
-            <div class="photo"><img src="images/MAR1.jpg"   alt=""></div>
-            <div class="photo"><img src="images/MAR1-2.jpg" alt=""></div>
-            <div class="photo"><img src="images/MAR1-3.jpg" alt=""></div>
-            <div class="photo"><img src="images/MAR1-4.jpg" alt=""></div>
-            <div class="photo"><img src="images/MAR1-7.jpg" alt=""></div>
-            <div class="photo"><img src="images/MAR1-8.jpg" alt=""></div>
-            <div class="photo"><img src="images/NATS1.jpg"  alt=""></div>
-            <div class="photo"><img src="images/NATS2.jpg"  alt=""></div>
-            <div class="photo"><img src="images/NATS3.jpg"  alt=""></div>
-            <div class="photo"><img src="images/NATS4.jpg"  alt=""></div>
-        </div>
-
+    <!-- STRIP AUTO-SCROLL -->
+    <div class="strip-wrap">
+        <div class="strip" id="strip"></div>
     </div>
 
     <header class="header-main">
@@ -181,15 +155,15 @@
             <span style="font-weight:400;">Photographer</span>
         </h1>
         <ul class="index-list">
-            <li class="index-item" data-stack="stack-camption">
+            <li class="index-item">
                 <a href="CAMPTION.html">CAMPTION</a>
                 <span class="page-num">3-8</span>
             </li>
-            <li class="index-item" data-stack="stack-editorials">
+            <li class="index-item">
                 <a href="gallery.html">Editorials</a>
                 <span class="page-num">22-25</span>
             </li>
-            <li class="index-item" data-stack="stack-food">
+            <li class="index-item">
                 <a href="food&drinks.html">Food & Drinks</a>
                 <span class="page-num">27-30</span>
             </li>
@@ -214,59 +188,69 @@
             l.addEventListener('mouseleave', () => cursor.classList.remove('active'));
         });
 
-        /* ── ISO STACK LAYOUT ──
-           Coloca cada foto en posición isométrica apretada:
-           cada carta se desplaza (stepX, stepY) respecto a la anterior
-           y se rota con el mismo ángulo, creando el efecto de mazo visto de canto.
-        */
-        function buildStack(stackEl) {
-            const photos = Array.from(stackEl.querySelectorAll('.photo'));
-            const n      = photos.length;
+        /* ── FOTOS ── */
+        const allPhotos = [
+            'images/CAMPTION1.jpg',
+            'images/CAMPTION1-1.jpg',
+            'images/CAMPTION1-2.jpg',
+            'images/CAMPTION1-3.jpg',
+            'images/CAMPTION1-4.jpg',
+            'images/CAMPTION1-5.jpg',
+            'images/CAMPTION1-6.jpg',
+            'images/MAR1.jpg',
+            'images/MAR1-2.jpg',
+            'images/MAR1-3.jpg',
+            'images/MAR1-4.jpg',
+            'images/MAR1-7.jpg',
+            'images/MAR1-8.jpg',
+            'images/NATS1.jpg',
+            'images/NATS2.jpg',
+            'images/NATS3.jpg',
+            'images/NATS4.jpg',
+            'images/foto1.jpg',
+            'images/foto2.jpg',
+            'images/foto3.jpg',
+            'images/foto4.jpg',
+            'images/foto5.jpg',
+            'images/foto6.jpg',
+        ];
 
-            // ángulo diagonal isométrico ~-35deg
-            const angle  = -35;
-            const rad    = angle * Math.PI / 180;
+        /* duplicar para loop infinito */
+        const loopPhotos = [...allPhotos, ...allPhotos, ...allPhotos];
 
-            // separación entre cartas (apretado = 10px)
-            const gap    = 10;
+        const strip = document.getElementById('strip');
 
-            // desplazamiento por índice a lo largo del eje diagonal
-            const stepX  = Math.cos(rad) * gap;
-            const stepY  = Math.sin(rad) * gap;
-
-            // centrar el conjunto
-            const totalX = stepX * (n - 1);
-            const totalY = stepY * (n - 1);
-
-            photos.forEach((photo, i) => {
-                const x = stepX * i - totalX / 2;
-                const y = stepY * i - totalY / 2;
-                photo.style.left = `calc(50% - 65px + ${x}px)`;
-                photo.style.top  = `calc(50% - 85px + ${y}px)`;
-                photo.style.transform = `rotate(${angle}deg)`;
-                photo.style.zIndex = n - i;
-                // stagger de entrada
-                photo.style.transitionDelay = `${i * 0.03}s`;
-            });
-        }
-
-        document.querySelectorAll('.iso-stack').forEach(buildStack);
-
-        /* ── HOVER SWITCH ── */
-        const items   = document.querySelectorAll('.index-item[data-stack]');
-        let   current = null;
-
-        items.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                if (current) current.classList.remove('visible');
-                current = document.getElementById(item.dataset.stack);
-                if (current) current.classList.add('visible');
-            });
-            item.addEventListener('mouseleave', () => {
-                if (current) current.classList.remove('visible');
-                current = null;
-            });
+        loopPhotos.forEach(src => {
+            const div = document.createElement('div');
+            div.className = 'thumb';
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            div.appendChild(img);
+            strip.appendChild(div);
         });
+
+        /* ── AUTO SCROLL ── */
+        let pos      = 0;
+        let speed    = 0.5;      /* px por frame — ajusta aquí la velocidad */
+        let paused   = false;
+        let raf;
+
+        function tick() {
+            if (!paused) {
+                pos += speed;
+                /* reset suave cuando llega al primer tercio (un set completo) */
+                const totalW = strip.scrollWidth / 3;
+                if (pos >= totalW) pos -= totalW;
+                strip.style.transform = `translateX(-${pos}px)`;
+            }
+            raf = requestAnimationFrame(tick);
+        }
+        raf = requestAnimationFrame(tick);
+
+        /* pausa el scroll mientras el mouse está en el strip */
+        strip.addEventListener('mouseenter', () => { paused = true; });
+        strip.addEventListener('mouseleave', () => { paused = false; });
     </script>
 </body>
 </html>
