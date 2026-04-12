@@ -10,250 +10,298 @@
         :root {
             --bg: #ffffff;
             --text: #000000;
+            --muted: #999;
+            --border: #e8e8e8;
             --font-main: 'JetBrains Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html { 
-            height: 100vh; 
-            overflow: hidden; 
-            background: var(--bg); 
+
+        body {
+            background: var(--bg);
             font-family: var(--font-main);
             color: var(--text);
+            min-height: 100vh;
         }
 
-        /* --- NAVEGACIÓN --- */
+        /* --- NAV --- */
         nav {
-            position: fixed; top: 0; width: 100%; display: flex;
-            justify-content: space-between; padding: 30px 40px;
-            font-size: 11px; z-index: 100; text-transform: uppercase;
-            background: linear-gradient(to bottom, white 50%, transparent);
+            position: fixed; top: 0; width: 100%;
+            display: flex; justify-content: space-between;
+            padding: 30px 40px; font-size: 11px; z-index: 100;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, white 60%, transparent);
         }
         nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
         nav a:hover { opacity: 0.5; }
 
-        /* --- UI TEXTO --- */
-        .ui-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: space-between; align-items: center;
-            padding: 110px 0 80px 0;
-            pointer-events: none; z-index: 10;
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 110px 40px 40px;
+            border-bottom: 0.5px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
-        .text-wrapper { width: 260px; text-align: left; }
-        #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
-        
-        #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-        
-        /* Ajuste para que el link en TITLE sea cliqueable */
-        #project-title { 
-            font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; 
-            pointer-events: auto; /* Habilita clics */
+        .page-header h1 {
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
         }
-        #project-title a { color: inherit; text-decoration: underline; transition: opacity 0.2s; }
-        #project-title a:hover { opacity: 0.6; }
-
-        #project-type { font-size: 11px; color: #666; display: block; }
-
-        /* --- CAROUSEL INFINITO --- */
-        .gallery-viewport {
-            height: 100vh;
-            display: flex; align-items: center;
-            overflow-x: auto; scrollbar-width: none;
-            padding: 0 calc(50vw - 130px);
-            cursor: grab;
-        }
-        .gallery-viewport::-webkit-scrollbar { display: none; }
-        .work-card {
-            flex: 0 0 260px; margin: 0 20px;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
-            transform: scale(0.95); opacity: 0.5; cursor: pointer;
-        }
-        .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
-        .work-card.active { transform: scale(1.05); opacity: 1; }
-
-        /* --- VISTA DETALLE --- */
-        #project-detail-view {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: white; z-index: 200;
-            overflow-y: auto; display: none; opacity: 0;
-        }
-        .detail-nav {
-            position: sticky; top: 0; padding: 30px 40px;
-            z-index: 210; background: rgba(255,255,255,0.9);
-        }
-        .back-btn-top { cursor: pointer; font-size: 11px; border-bottom: 1px solid black; display: inline-block; }
-        .detail-content { padding: 40px 20vw 100px 20vw; display: flex; flex-direction: column; gap: 60px; }
-        
-        .detail-image { 
-            width: 100%; height: auto; 
-            opacity: 0; transform: translateY(50px); 
-            will-change: transform, opacity;
+        .page-header .count {
+            font-size: 10px; color: var(--muted);
+            letter-spacing: 0.08em; text-transform: uppercase;
         }
 
-        .project-footer { text-align: center; padding: 50px 0; border-top: 1px solid #eee; }
-        .back-index-btn { 
-            padding: 10px 25px; border: 1px solid #000; text-transform: uppercase; 
-            font-size: 12px; cursor: pointer; transition: 0.3s;
+        /* --- MASONRY GRID --- */
+        .masonry {
+            columns: 3;
+            column-gap: 6px;
+            padding: 6px 6px 80px;
         }
-        .back-index-btn:hover { background: black; color: white; }
 
-        @media (max-width: 768px) {
-            .detail-content { padding: 40px 20px; }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 6px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .masonry-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(15%);
+            transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.23,1,0.32,1);
+        }
+        .masonry-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.02);
+        }
+
+        /* overlay info */
+        .masonry-item .overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 28px 14px 14px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+        }
+        .masonry-item:hover .overlay { opacity: 1; }
+
+        .overlay .o-series {
+            font-size: 9px; color: rgba(255,255,255,0.7);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            display: block; margin-bottom: 3px;
+        }
+        .overlay .o-title {
+            font-size: 12px; font-weight: 700; color: #fff;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            display: block;
+        }
+
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.97);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #lightbox.active { display: flex; }
+
+        #lightbox img {
+            max-height: 82vh;
+            max-width: 88vw;
+            display: block;
+            object-fit: contain;
+        }
+
+        .lb-meta {
+            margin-top: 16px;
+            text-align: center;
+        }
+        .lb-meta .lb-series {
+            font-size: 10px; color: var(--muted);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            display: block; margin-bottom: 4px;
+        }
+        .lb-meta .lb-title {
+            font-size: 13px; font-weight: 700;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+
+        .lb-close {
+            position: fixed; top: 30px; right: 40px;
+            font-size: 11px; text-transform: uppercase;
+            cursor: pointer; font-family: var(--font-main);
+            background: none; border: none; color: #000;
+            transition: opacity 0.3s; letter-spacing: 0.08em;
+        }
+        .lb-close:hover { opacity: 0.5; }
+
+        .lb-prev, .lb-next {
+            position: fixed; top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px; background: none; border: none;
+            cursor: pointer; font-family: var(--font-main);
+            color: #000; padding: 0 20px;
+            transition: opacity 0.3s;
+        }
+        .lb-prev { left: 10px; }
+        .lb-next { right: 10px; }
+        .lb-prev:hover, .lb-next:hover { opacity: 0.4; }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 30px 40px; font-size: 10px;
+            color: var(--muted); text-transform: uppercase;
+            display: flex; justify-content: space-between;
+            border-top: 0.5px solid var(--border);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .masonry { columns: 2; }
+            nav { padding: 20px; }
+            .page-header { padding: 80px 20px 30px; }
+        }
+        @media (max-width: 500px) {
+            .masonry { columns: 2; column-gap: 4px; padding: 4px 4px 60px; }
+            .masonry-item { margin-bottom: 4px; }
+            nav { padding: 18px 20px; font-size: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <nav id="main-nav">
-        <div style="width: 200px;"><a href="index.html">← BACK</a></div>
-        <div style="width: 200px; text-align: center;">M2. WORKS</div>
-        <div style="width: 200px; text-align: right;">M3. CONTACT</div>
+    <!-- NAV -->
+    <nav>
+        <div style="width:200px;"><a href="index.html">← BACK</a></div>
+        <div style="width:200px; text-align:center;">M2. WORKS</div>
+        <div style="width:200px; text-align:right;"><a href="CAMPTION.html">M4. CAMPTION</a></div>
     </nav>
 
-    <div class="ui-overlay" id="carousel-ui">
-        <div class="text-wrapper">
-            <span id="project-id">---</span>
-            <div id="project-client">SELECT WORK</div>
-        </div>
-        <div class="text-wrapper">
-            <span id="project-title">---</span>
-            <span id="project-type">---</span>
-        </div>
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>Film Series — ABU Coffee</h1>
+        <span class="count" id="photo-count"></span>
     </div>
 
-    <main class="gallery-viewport" id="slider"></main>
+    <!-- MASONRY -->
+    <div class="masonry" id="masonry"></div>
 
-    <div id="project-detail-view">
-        <div class="detail-nav"><div class="back-btn-top" onclick="closeProject()">← BACK </div></div>
-        <div class="detail-content" id="detail-container"></div>
+    <footer>
+        <span>© 2024 Edson Canales</span>
+        <span>edsoncanales.art</span>
+    </footer>
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox">
+        <button class="lb-close" onclick="closeLightbox()">× Close</button>
+        <button class="lb-prev"  onclick="stepLightbox(-1)">←</button>
+        <button class="lb-next"  onclick="stepLightbox(1)">→</button>
+        <img id="lb-img" src="" alt="">
+        <div class="lb-meta">
+            <span class="lb-series" id="lb-series"></span>
+            <span class="lb-title"  id="lb-title"></span>
+        </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <script>
-        const projectsData = [
-            { 
-                id: "2024", 
-                client: "FILM SERIES", 
-                title: '<a href="https://www.instagram.com/abucoffee.mx/?hl=en" target="_blank">@abucoffee.mx</a>', 
-                type: "Arista 400", 
-                cover: "images/cafeteria/foto6c.JPG", 
-                images: ["images/foto1.jpg", "images/foto2.jpg", "images/foto3.jpg", "images/foto4.jpg", "images/foto5.jpg", "images/foto6.jpg"] 
-            },
-            { id: "D002", client: "THE ROLLING STONES", title: "Criss Cross", type: "Music Video", cover: "images/foto2.jpg", images: ["images/foto2.jpg", "images/foto4.jpg"] },
-            { id: "D003", client: "A$AP ROCKY", title: "Fukk Sleep", type: "Music Video", cover: "images/foto3.jpg", images: ["images/foto3.jpg", "images/foto1.jpg"] }
+        /* ── DATA — todas las fotos de cafetería ── */
+        const photos = [
+            { src: 'images/cafeteria/foto1c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto2c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto3c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto4c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto5c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto6c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto7c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto8c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto9c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto10c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto11c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
+            { src: 'images/cafeteria/foto12c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
         ];
 
-        const slider = document.getElementById('slider');
-        const detailView = document.getElementById('project-detail-view');
-        const detailContainer = document.getElementById('detail-container');
+        const masonry = document.getElementById('masonry');
+        document.getElementById('photo-count').textContent = photos.length + ' frames';
 
-        // 1. Inicializar Slider
-        projectsData.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'work-card';
-            div.dataset.id = p.id;
-            div.innerHTML = `<img src="${p.cover}">`;
-            slider.appendChild(div);
-        });
-
-        const originalCards = Array.from(slider.children);
-        originalCards.forEach(c => slider.appendChild(c.cloneNode(true)));
-        originalCards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
-
-        const allCards = document.querySelectorAll('.work-card');
-        slider.scrollLeft = projectsData.length * 300;
-
-        // 2. Lógica de centrado
-        function checkCenter() {
-            let center = window.innerWidth / 2;
-            let closest = null;
-            let minD = Infinity;
-
-            allCards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const d = Math.abs(center - (rect.left + rect.width/2));
-                if (d < minD) { minD = d; closest = card; }
-            });
-
-            allCards.forEach(c => c.classList.remove('active'));
-            if (closest) {
-                closest.classList.add('active');
-                const data = projectsData.find(p => p.id === closest.dataset.id);
-                if(data) {
-                    document.getElementById('project-id').innerText = data.id;
-                    document.getElementById('project-client').innerText = data.client;
-                    // Cambio a innerHTML para soportar el link en TITLE
-                    document.getElementById('project-title').innerHTML = data.title;
-                    document.getElementById('project-type').innerText = data.type;
-                }
-            }
-        }
-
-        slider.addEventListener('scroll', () => {
-            const cardWidth = allCards[0].offsetWidth + 40;
-            const loopWidth = projectsData.length * cardWidth;
-            if (slider.scrollLeft >= loopWidth * 2) slider.scrollLeft -= loopWidth;
-            else if (slider.scrollLeft <= 0) slider.scrollLeft += loopWidth;
-            checkCenter();
-        });
-
-        slider.addEventListener('wheel', e => { e.preventDefault(); slider.scrollLeft += e.deltaY; });
-
-        slider.addEventListener('click', (e) => {
-            const card = e.target.closest('.work-card');
-            if(!card) return;
-            if(!card.classList.contains('active')) {
-                gsap.to(slider, { scrollTo: { x: card.offsetLeft - (window.innerWidth/2) + (card.offsetWidth/2) }, duration: 0.6 });
-            } else {
-                openProject(card.dataset.id);
-            }
-        });
-
-        // 3. Abrir Proyecto
-        function openProject(id) {
-            const data = projectsData.find(p => p.id === id);
-            let imgsHtml = data.images.map(img => `<img src="${img}" class="detail-image">`).join('');
-            
-            detailContainer.innerHTML = `
-                <div class="header-anim" style="text-align:center; margin-bottom:40px; opacity:0;">
-                    <h1 style="font-size:24px;">${data.client}</h1>
-                    <p style="color:#666; margin-top:10px; font-size:12px;">${data.title} — ${data.type}</p>
+        /* construir grid */
+        photos.forEach((p, i) => {
+            const item = document.createElement('div');
+            item.className = 'masonry-item';
+            item.innerHTML = `
+                <img src="${p.src}" alt="${p.title}" loading="lazy">
+                <div class="overlay">
+                    <span class="o-series">${p.series}</span>
+                    <span class="o-title">${p.title}</span>
                 </div>
-                ${imgsHtml}
-                <div class="project-footer"><div class="back-index-btn" onclick="closeProject()">Back to Works</div></div>
             `;
+            item.addEventListener('click', () => openLightbox(i));
+            masonry.appendChild(item);
+        });
 
-            detailView.style.display = 'block';
-            gsap.to(detailView, { opacity: 1, duration: 0.5 });
-            gsap.to(".header-anim", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 });
-
-            gsap.utils.toArray(".detail-image").forEach((img) => {
-                gsap.to(img, {
-                    opacity: 1, y: 0, duration: 1, ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: img,
-                        scroller: "#project-detail-view",
-                        start: "top 85%",
-                        toggleActions: "play none none none"
-                    }
-                });
+        /* reveal al scroll con IntersectionObserver (sin GSAP necesario) */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, idx) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, (Array.from(masonry.children).indexOf(entry.target) % 3) * 80);
+                    observer.unobserve(entry.target);
+                }
             });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.masonry-item').forEach(el => observer.observe(el));
+
+        /* ── LIGHTBOX ── */
+        let currentIdx = 0;
+
+        function openLightbox(idx) {
+            currentIdx = idx;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
         }
 
-        function closeProject() {
-            ScrollTrigger.getAll().forEach(t => t.kill());
-            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
-                detailView.style.display = 'none';
-                detailView.scrollTop = 0;
-            }});
+        function updateLightbox() {
+            const p   = photos[currentIdx];
+            const img = document.getElementById('lb-img');
+            img.style.opacity = '0';
+            img.src = p.src;
+            img.onload = () => { img.style.transition = 'opacity 0.3s'; img.style.opacity = '1'; };
+            document.getElementById('lb-series').textContent = p.series;
+            document.getElementById('lb-title').textContent  = p.title;
         }
 
-        window.onload = checkCenter;
+        function stepLightbox(dir) {
+            currentIdx = (currentIdx + dir + photos.length) % photos.length;
+            updateLightbox();
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape')      closeLightbox();
+            if (e.key === 'ArrowRight')  stepLightbox(1);
+            if (e.key === 'ArrowLeft')   stepLightbox(-1);
+        });
     </script>
 </body>
 </html>
+
