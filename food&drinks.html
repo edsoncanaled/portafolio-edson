@@ -74,6 +74,7 @@
             transform: translateY(0);
         }
 
+        /* foto */
         .masonry-item img {
             width: 100%;
             height: auto;
@@ -84,6 +85,29 @@
         .masonry-item:hover img {
             filter: grayscale(0%);
             transform: scale(1.02);
+        }
+
+        /* video */
+        .masonry-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.23,1,0.32,1);
+        }
+        .masonry-item:hover video {
+            transform: scale(1.02);
+        }
+
+        /* badge de video */
+        .video-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            font-size: 9px; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #fff;
+            background: rgba(0,0,0,0.45);
+            padding: 3px 8px;
+            pointer-events: none;
         }
 
         /* overlay info */
@@ -121,16 +145,17 @@
         }
         #lightbox.active { display: flex; }
 
-        #lightbox img {
+        #lightbox img, #lightbox video {
             max-height: 82vh;
             max-width: 88vw;
             display: block;
             object-fit: contain;
         }
+        #lb-video { display: none; }
+        #lb-img   { display: none; }
 
         .lb-meta {
-            margin-top: 16px;
-            text-align: center;
+            margin-top: 16px; text-align: center;
         }
         .lb-meta .lb-series {
             font-size: 10px; color: var(--muted);
@@ -186,20 +211,17 @@
 </head>
 <body>
 
-    <!-- NAV -->
     <nav>
         <div style="width:200px;"><a href="index.html">← BACK</a></div>
         <div style="width:200px; text-align:center;">M2. WORKS</div>
         <div style="width:200px; text-align:right;"><a href="CAMPTION.html">M4. CAMPTION</a></div>
     </nav>
 
-    <!-- PAGE HEADER -->
     <div class="page-header">
         <h1>Film Series — ABU Coffee</h1>
         <span class="count" id="photo-count"></span>
     </div>
 
-    <!-- MASONRY -->
     <div class="masonry" id="masonry"></div>
 
     <footer>
@@ -212,7 +234,8 @@
         <button class="lb-close" onclick="closeLightbox()">× Close</button>
         <button class="lb-prev"  onclick="stepLightbox(-1)">←</button>
         <button class="lb-next"  onclick="stepLightbox(1)">→</button>
-        <img id="lb-img" src="" alt="">
+        <img   id="lb-img"   src="" alt="">
+        <video id="lb-video" autoplay loop muted playsinline></video>
         <div class="lb-meta">
             <span class="lb-series" id="lb-series"></span>
             <span class="lb-title"  id="lb-title"></span>
@@ -220,56 +243,90 @@
     </div>
 
     <script>
-        /* ── DATA — todas las fotos de cafetería ── */
-        const photos = [
-            { src: 'images/cafeteria/foto1c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto2c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto3c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto4c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto5c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto6c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto7c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto8c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto9c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto10c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto11c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
-            { src: 'images/cafeteria/foto12c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
+        /*
+         * Intercalar videos entre fotos:
+         * foto1-4 → video1 → foto5-8 → video2 → foto9-10 → video3 → foto11-12
+         */
+        const items = [
+            { type: 'photo', src: 'images/cafeteria/foto1c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto2c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto3c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto4c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'video', src: 'images/cafeteria/0126(1).mp4', series: '2024 — ABU Coffee', title: 'Behind the lens' },
+            { type: 'photo', src: 'images/cafeteria/foto5c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto6c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto7c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto8c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'video', src: 'images/cafeteria/0203.mp4',    series: '2024 — ABU Coffee', title: 'Behind the lens' },
+            { type: 'photo', src: 'images/cafeteria/foto9c.JPG',  series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto10c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'video', src: 'images/cafeteria/0210(2).mp4', series: '2024 — ABU Coffee', title: 'Behind the lens' },
+            { type: 'photo', src: 'images/cafeteria/foto11c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
+            { type: 'photo', src: 'images/cafeteria/foto12c.JPG', series: '2024 — ABU Coffee', title: 'Film Series' },
         ];
 
         const masonry = document.getElementById('masonry');
-        document.getElementById('photo-count').textContent = photos.length + ' frames';
+        document.getElementById('photo-count').textContent = items.length + ' frames';
 
         /* construir grid */
-        photos.forEach((p, i) => {
+        items.forEach((p, i) => {
             const item = document.createElement('div');
             item.className = 'masonry-item';
-            item.innerHTML = `
-                <img src="${p.src}" alt="${p.title}" loading="lazy">
-                <div class="overlay">
-                    <span class="o-series">${p.series}</span>
-                    <span class="o-title">${p.title}</span>
-                </div>
+
+            if (p.type === 'video') {
+                const vid = document.createElement('video');
+                vid.src         = p.src;
+                vid.autoplay    = true;
+                vid.loop        = true;
+                vid.muted       = true;
+                vid.playsInline = true;
+                vid.setAttribute('playsinline', '');
+                vid.setAttribute('muted', '');
+
+                const badge = document.createElement('div');
+                badge.className   = 'video-badge';
+                badge.textContent = '▶ Video';
+
+                item.appendChild(vid);
+                item.appendChild(badge);
+            } else {
+                const img   = document.createElement('img');
+                img.src     = p.src;
+                img.alt     = p.title;
+                img.loading = 'lazy';
+                item.appendChild(img);
+            }
+
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.innerHTML = `
+                <span class="o-series">${p.series}</span>
+                <span class="o-title">${p.title}</span>
             `;
+            item.appendChild(overlay);
+
             item.addEventListener('click', () => openLightbox(i));
             masonry.appendChild(item);
         });
 
-        /* reveal al scroll con IntersectionObserver (sin GSAP necesario) */
+        /* reveal al scroll */
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, idx) => {
+            entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, (Array.from(masonry.children).indexOf(entry.target) % 3) * 80);
+                    const idx = Array.from(masonry.children).indexOf(entry.target);
+                    setTimeout(() => entry.target.classList.add('visible'), (idx % 3) * 80);
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.08 });
 
         document.querySelectorAll('.masonry-item').forEach(el => observer.observe(el));
 
         /* ── LIGHTBOX ── */
         let currentIdx = 0;
+
+        const lbImg   = document.getElementById('lb-img');
+        const lbVideo = document.getElementById('lb-video');
 
         function openLightbox(idx) {
             currentIdx = idx;
@@ -278,30 +335,43 @@
         }
 
         function updateLightbox() {
-            const p   = photos[currentIdx];
-            const img = document.getElementById('lb-img');
-            img.style.opacity = '0';
-            img.src = p.src;
-            img.onload = () => { img.style.transition = 'opacity 0.3s'; img.style.opacity = '1'; };
+            const p = items[currentIdx];
             document.getElementById('lb-series').textContent = p.series;
             document.getElementById('lb-title').textContent  = p.title;
+
+            if (p.type === 'video') {
+                lbImg.style.display   = 'none';
+                lbVideo.style.display = 'block';
+                lbVideo.src           = p.src;
+                lbVideo.load();
+                lbVideo.play();
+            } else {
+                lbVideo.style.display = 'none';
+                lbVideo.pause();
+                lbImg.style.display   = 'block';
+                lbImg.style.opacity   = '0';
+                lbImg.src             = p.src;
+                lbImg.onload = () => { lbImg.style.transition = 'opacity 0.3s'; lbImg.style.opacity = '1'; };
+            }
         }
 
         function stepLightbox(dir) {
-            currentIdx = (currentIdx + dir + photos.length) % photos.length;
+            currentIdx = (currentIdx + dir + items.length) % items.length;
             updateLightbox();
         }
 
         function closeLightbox() {
+            lbVideo.pause();
             document.getElementById('lightbox').classList.remove('active');
         }
 
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape')      closeLightbox();
-            if (e.key === 'ArrowRight')  stepLightbox(1);
-            if (e.key === 'ArrowLeft')   stepLightbox(-1);
+            if (e.key === 'Escape')     closeLightbox();
+            if (e.key === 'ArrowRight') stepLightbox(1);
+            if (e.key === 'ArrowLeft')  stepLightbox(-1);
         });
     </script>
 </body>
 </html>
+
 
