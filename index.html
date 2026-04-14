@@ -54,23 +54,20 @@
 
         .index-list { text-align: right; font-size: clamp(12px, 2vw, 14px); line-height: 1.6; list-style: none; }
         .index-item { display: flex; justify-content: flex-end; align-items: center; gap: clamp(20px, 3vw, 40px); }
-        .index-item a {
-            text-decoration: none; color: inherit; outline: none; position: relative;
-        }
+        .index-item a { text-decoration: none; color: inherit; outline: none; position: relative; }
         .index-item a::after {
             content: ''; position: absolute; bottom: 1px; left: 0;
             width: 0; height: 1px; background: #111;
             transition: width 0.35s cubic-bezier(0.23,1,0.32,1);
         }
-        .index-item:hover a::after,
-        .index-item:focus-within a::after { width: 100%; }
+        .index-item:hover a::after { width: 100%; }
         .index-item .page-num {
             color: #999; font-size: clamp(11px, 1.5vw, 13px);
             transition: color 0.3s; min-width: 28px; text-align: right;
         }
         .index-item:hover .page-num { color: #111; }
 
-        /* ── STRIP ── */
+        /* ── STRIP WRAP ── */
         .strip-wrap {
             position: fixed;
             top: 50%;
@@ -78,15 +75,21 @@
             width: 100vw;
             transform: translateY(-50%);
             z-index: 5;
-            overflow: hidden;
+            /* scroll nativo en touch */
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
             pointer-events: auto;
         }
+        .strip-wrap::-webkit-scrollbar { display: none; }
 
         .strip {
             display: flex;
             gap: 4px;
             width: max-content;
-            will-change: transform;
+            /* en desktop: el translateX lo maneja JS.
+               en touch: el scroll lo maneja el navegador */
         }
 
         /* ── THUMB ── */
@@ -100,7 +103,6 @@
             cursor: none;
         }
 
-        /* en touch: ancho expandido más pequeño */
         .thumb.expanded,
         .thumb:hover { width: clamp(160px, 20vw, 260px); }
 
@@ -115,11 +117,10 @@
             transition: filter 0.5s ease;
             pointer-events: none;
         }
-
         .thumb.expanded img,
         .thumb:hover img { filter: grayscale(0%); }
 
-        /* ── INFO BADGE (aparece al hover/tap) ── */
+        /* ── INFO BADGE ── */
         .thumb-info {
             position: absolute;
             bottom: 0; left: 0;
@@ -146,12 +147,8 @@
             font-size: 10px; color: #999;
             margin-top: 4px; display: block;
         }
-
         .thumb.expanded .thumb-info,
-        .thumb:hover .thumb-info {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .thumb:hover .thumb-info { opacity: 1; transform: translateY(0); }
 
         /* ── FOOTER ── */
         .footer-portfolio {
@@ -170,7 +167,6 @@
 
         a { text-decoration: none; color: inherit; outline: none; }
 
-        /* ── MOBILE ADJUSTMENTS ── */
         @media (max-width: 600px) {
             .header-main { flex-direction: column; gap: 20px; }
             .index-item { justify-content: flex-start; }
@@ -183,7 +179,7 @@
 
     <div class="cursor" aria-hidden="true"></div>
 
-    <div class="strip-wrap">
+    <div class="strip-wrap" id="strip-wrap">
         <div class="strip" id="strip"></div>
     </div>
 
@@ -228,51 +224,63 @@
             });
         }
 
-        /* ── DATA — cada foto con su info y destino ── */
-        const photos = [
-            /* CAMPTION shoot 1 */
-            { src: 'images/CAMPTION1.jpg',   project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-1.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-2.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-3.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-4.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-5.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            { src: 'images/CAMPTION1-6.jpg', project: 'Camption',  shoot: 'B&W Series',  href: 'CAMPTION.html' },
-            /* MAR shoot */
-            { src: 'images/MAR1.jpg',        project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            { src: 'images/MAR1-2.jpg',      project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            { src: 'images/MAR1-3.jpg',      project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            { src: 'images/MAR1-4.jpg',      project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            { src: 'images/MAR1-7.jpg',      project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            { src: 'images/MAR1-8.jpg',      project: 'Camption',  shoot: 'Shoot 2',     href: 'CAMPTION.html' },
-            /* NATS shoot */
-            { src: 'images/NATS1.jpg',       project: 'Camption',  shoot: 'Shoot 3',     href: 'CAMPTION.html' },
-            { src: 'images/NATS2.jpg',       project: 'Camption',  shoot: 'Shoot 3',     href: 'CAMPTION.html' },
-            { src: 'images/NATS3.jpg',       project: 'Camption',  shoot: 'Shoot 3',     href: 'CAMPTION.html' },
-            { src: 'images/NATS4.jpg',       project: 'Camption',  shoot: 'Shoot 3',     href: 'CAMPTION.html' },
-            /* Editorials */
-            { src: 'images/foto1.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
-            { src: 'images/foto2.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
-            { src: 'images/foto3.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
-            { src: 'images/foto4.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
-            { src: 'images/foto5.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
-            { src: 'images/foto6.jpg',       project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+        /* ── DATA por sesión ── */
+        const camption = [
+            { src: 'images/CAMPTION1.jpg',   project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-1.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-2.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-3.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-4.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-5.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/CAMPTION1-6.jpg', project: 'Camption', shoot: 'B&W Series', href: 'CAMPTION.html' },
+            { src: 'images/MAR1.jpg',        project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/MAR1-2.jpg',      project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/MAR1-3.jpg',      project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/MAR1-4.jpg',      project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/MAR1-7.jpg',      project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/MAR1-8.jpg',      project: 'Camption', shoot: 'Shoot 2',    href: 'CAMPTION.html' },
+            { src: 'images/NATS1.jpg',       project: 'Camption', shoot: 'Shoot 3',    href: 'CAMPTION.html' },
+            { src: 'images/NATS2.jpg',       project: 'Camption', shoot: 'Shoot 3',    href: 'CAMPTION.html' },
+            { src: 'images/NATS3.jpg',       project: 'Camption', shoot: 'Shoot 3',    href: 'CAMPTION.html' },
+            { src: 'images/NATS4.jpg',       project: 'Camption', shoot: 'Shoot 3',    href: 'CAMPTION.html' },
         ];
 
-        /* triplicar para loop infinito */
+        const editorials = [
+            { src: 'images/foto1.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+            { src: 'images/foto2.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+            { src: 'images/foto3.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+            { src: 'images/foto4.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+            { src: 'images/foto5.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+            { src: 'images/foto6.jpg', project: 'Editorials', shoot: 'Editorials', href: 'gallery.html' },
+        ];
+
+        /* ── INTERCALAR — alterna 2 de camption, 1 de editorial ── */
+        function interleave(a, b) {
+            const result = [];
+            let ai = 0, bi = 0;
+            while (ai < a.length || bi < b.length) {
+                if (ai < a.length) result.push(a[ai++]);
+                if (ai < a.length) result.push(a[ai++]);
+                if (bi < b.length) result.push(b[bi++]);
+            }
+            return result;
+        }
+
+        const photos     = interleave(camption, editorials);
         const loopPhotos = [...photos, ...photos, ...photos];
-        const strip = document.getElementById('strip');
+
+        const strip   = document.getElementById('strip');
+        const wrap    = document.getElementById('strip-wrap');
         const isTouch = window.matchMedia('(pointer: coarse)').matches;
 
         loopPhotos.forEach(data => {
-            const div = document.createElement('div');
+            const div  = document.createElement('div');
             div.className = 'thumb';
 
-            const img = document.createElement('img');
-            img.src = data.src;
-            img.alt = data.shoot;
+            const img  = document.createElement('img');
+            img.src    = data.src;
+            img.alt    = data.shoot;
 
-            /* info badge */
             const info = document.createElement('div');
             info.className = 'thumb-info';
             info.innerHTML = `
@@ -285,51 +293,60 @@
             div.appendChild(info);
             strip.appendChild(div);
 
-            /* navegar al hacer clic o tap */
-            div.addEventListener('click', () => {
-                window.location.href = data.href;
-            });
+            div.addEventListener('click', () => { window.location.href = data.href; });
 
-            /* en touch: primer tap expande, segundo tap navega */
             if (isTouch) {
                 div.addEventListener('touchstart', (e) => {
                     if (!div.classList.contains('expanded')) {
                         e.preventDefault();
-                        /* colapsar cualquier otro abierto */
                         document.querySelectorAll('.thumb.expanded').forEach(t => {
                             if (t !== div) t.classList.remove('expanded');
                         });
                         div.classList.add('expanded');
                     }
-                    /* segundo tap navega (se deja el click handler) */
                 }, { passive: false });
             }
         });
 
-        /* ── AUTO SCROLL ── */
-        let pos    = 0;
-        let speed  = 0.5;
-        let paused = false;
+        /* ── SCROLL ── */
+        if (isTouch) {
+            /* MÓVIL: scroll nativo del navegador, sin JS de posición */
+            /* Centrar el inicio en el segundo set para simular infinito */
+            window.addEventListener('load', () => {
+                const oneSet = strip.scrollWidth / 3;
+                wrap.scrollLeft = oneSet;
+            });
 
-        function tick() {
-            if (!paused) {
-                pos += speed;
-                const totalW = strip.scrollWidth / 3;
-                if (pos >= totalW) pos -= totalW;
-                strip.style.transform = `translateX(-${pos}px)`;
+            /* loop infinito con scroll nativo */
+            wrap.addEventListener('scroll', () => {
+                const oneSet = strip.scrollWidth / 3;
+                if (wrap.scrollLeft >= oneSet * 2) wrap.scrollLeft -= oneSet;
+                else if (wrap.scrollLeft <= 0)      wrap.scrollLeft += oneSet;
+            });
+
+        } else {
+            /* DESKTOP: auto-scroll JS */
+            let pos    = 0;
+            let speed  = 0.5;
+            let paused = false;
+
+            function tick() {
+                if (!paused) {
+                    pos += speed;
+                    const totalW = strip.scrollWidth / 3;
+                    if (pos >= totalW) pos -= totalW;
+                    strip.style.transform = `translateX(-${pos}px)`;
+                }
+                requestAnimationFrame(tick);
             }
             requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
 
-        /* pausa en desktop hover */
-        strip.addEventListener('mouseenter', () => { paused = true; });
-        strip.addEventListener('mouseleave', () => {
-            paused = false;
-            /* colapsar cualquier thumb abierto al salir */
-            document.querySelectorAll('.thumb.expanded').forEach(t => t.classList.remove('expanded'));
-        });
+            wrap.addEventListener('mouseenter', () => { paused = true; });
+            wrap.addEventListener('mouseleave', () => {
+                paused = false;
+                document.querySelectorAll('.thumb.expanded').forEach(t => t.classList.remove('expanded'));
+            });
+        }
     </script>
 </body>
 </html>
-
