@@ -10,10 +10,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
-@media (pointer:fine){
-    html,body,a{cursor:none;}
-}
-
 body{
     font-family:'Courier Prime', monospace;
     background:#fff;
@@ -24,27 +20,6 @@ body{
     justify-content:space-between;
     padding:clamp(30px,5vw,60px);
     overflow:hidden;
-    opacity:0;
-    transition:opacity .6s ease;
-}
-
-body.loaded{
-    opacity:1;
-}
-
-/* CURSOR */
-.cursor{
-    width:10px;height:10px;
-    background:#000;border-radius:50%;
-    position:fixed;top:0;left:0;
-    pointer-events:none;z-index:9999;
-    transform:translate(-50%,-50%);
-    transition:all .3s cubic-bezier(.23,1,.32,1);
-}
-.cursor.active{
-    width:50px;height:50px;
-    background:rgba(0,0,0,.05);
-    border:1px solid rgba(0,0,0,.2);
 }
 
 /* HEADER */
@@ -52,69 +27,40 @@ body.loaded{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    z-index:20;
 }
 
 .brand-info{
     font-size:15px;
     font-weight:700;
-    line-height:1.2;
 }
 
-/* NAV MAGAZINE */
+/* NAV CARDS */
 .index-list{
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:12px;
 }
 
 .index-item{
     display:flex;
-    justify-content:flex-end;
+    justify-content:space-between;
     align-items:center;
-    gap:40px;
+    padding:10px 14px;
+    border:1px solid rgba(0,0,0,0.1);
+    background:#fafafa;
     text-decoration:none;
     color:inherit;
-    position:relative;
-    opacity:0.6;
     transition:all .3s ease;
 }
 
-.index-item span:first-child::before{
-    content:'→';
-    margin-right:10px;
-    opacity:0;
-    transform:translateX(-5px);
-    transition:.3s;
-}
-
 .index-item:hover{
-    opacity:1;
+    background:#111;
+    color:#fff;
     transform:translateX(-6px);
 }
 
-.index-item:hover span:first-child::before{
-    opacity:1;
-    transform:translateX(0);
-}
-
-.index-item::after{
-    content:'';
-    position:absolute;
-    bottom:-2px;
-    left:0;
-    width:0;
-    height:1px;
-    background:#111;
-    transition:width .35s cubic-bezier(.23,1,.32,1);
-}
-
-.index-item:hover::after{
-    width:100%;
-}
-
 .page-num{
-    color:#999;
+    opacity:0.5;
     font-size:13px;
 }
 
@@ -125,7 +71,6 @@ body.loaded{
     left:0;
     width:100vw;
     transform:translateY(-50%);
-    z-index:5;
     overflow:hidden;
 }
 
@@ -133,7 +78,6 @@ body.loaded{
     display:flex;
     gap:6px;
     width:max-content;
-    will-change:transform;
 }
 
 .thumb{
@@ -141,54 +85,44 @@ body.loaded{
     height:220px;
     overflow:hidden;
     position:relative;
-    transition:width .55s cubic-bezier(.23,1,.32,1);
+    transition:width .5s ease;
 }
 
-.thumb:hover{width:260px;}
+.thumb:hover{
+    width:260px;
+}
 
 .thumb img{
     position:absolute;
-    top:0;left:0;
-    width:260px;height:100%;
+    width:260px;
+    height:100%;
     object-fit:cover;
     filter:grayscale(100%);
-    transition:.5s;
+    transition:.4s;
 }
 
-.thumb:hover img{filter:grayscale(0%);}
+.thumb:hover img{
+    filter:grayscale(0%);
+}
 
 /* FOOTER */
 .footer-portfolio{
     display:flex;
     align-items:center;
     gap:20px;
-    z-index:20;
-}
-
-.arrow{
-    font-size:clamp(40px,8vw,80px);
-    transition:.4s;
-}
-
-.footer-portfolio:hover .arrow{
-    transform:translateX(12px);
 }
 
 .portfolio-title{
     font-size:clamp(50px,10vw,110px);
     font-weight:700;
-    letter-spacing:-0.05em;
 }
 
 /* MOBILE */
 @media(max-width:900px){
-    .cursor{display:none;}
-
     .thumb{
         width:28px;
         height:160px;
     }
-
     .thumb img{
         width:180px;
     }
@@ -196,12 +130,6 @@ body.loaded{
 </style>
 </head>
 <body>
-
-<div class="cursor"></div>
-
-<div class="strip-wrap">
-    <div class="strip" id="strip"></div>
-</div>
 
 <header class="header-main">
     <h1 class="brand-info">
@@ -225,79 +153,68 @@ body.loaded{
     </nav>
 </header>
 
+<div class="strip-wrap">
+    <div class="strip" id="strip"></div>
+</div>
+
 <footer class="footer-portfolio">
-    <span class="arrow">→</span>
+    <span>→</span>
     <span class="portfolio-title">Portfolio</span>
 </footer>
 
 <script>
-/* FADE IN */
-window.addEventListener('load',()=>{
-    document.body.classList.add('loaded');
-});
-
-/* TRANSICIÓN ENTRE PÁGINAS */
-document.querySelectorAll('a').forEach(link=>{
-    link.addEventListener('click',function(e){
-        e.preventDefault();
-        const href=this.getAttribute('href');
-
-        document.body.style.opacity=0;
-
-        setTimeout(()=>{
-            window.location=href;
-        },400);
-    });
-});
-
-/* CURSOR */
-const cursor=document.querySelector('.cursor');
-const isTouch=window.matchMedia("(pointer:coarse)").matches;
-
-if(!isTouch){
-    document.addEventListener('mousemove',e=>{
-        cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
-    });
-
-    document.querySelectorAll('a').forEach(link=>{
-        link.addEventListener('mouseenter',()=>cursor.classList.add('active'));
-        link.addEventListener('mouseleave',()=>cursor.classList.remove('active'));
-    });
-}
-
-/* FOTOS */
-const photos=[
-'images/CAMPTION1.jpg','images/CAMPTION1-1.jpg','images/CAMPTION1-2.jpg',
-'images/CAMPTION1-3.jpg','images/MAR1.jpg','images/MAR1-2.jpg',
-'images/NATS1.jpg','images/foto1.jpg','images/foto2.jpg'
+/* IMÁGENES OPTIMIZADAS */
+const photos = [
+'images/CAMPTION1.webp',
+'images/CAMPTION1-1.webp',
+'images/CAMPTION1-2.webp',
+'images/MAR1.webp',
+'images/NATS1.webp',
+'images/foto1.webp',
+'images/foto2.webp'
 ];
 
-const strip=document.getElementById('strip');
-const loop=[...photos,...photos,...photos];
+const strip = document.getElementById('strip');
+
+/* SOLO duplicamos 2 veces (optimizado) */
+const loop = [...photos, ...photos];
 
 loop.forEach(src=>{
-    const div=document.createElement('div');
-    div.className='thumb';
-    const img=document.createElement('img');
-    img.src=src;
+    const div = document.createElement('div');
+    div.className = 'thumb';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = "lazy";
+    img.decoding = "async";
+
     div.appendChild(img);
     strip.appendChild(div);
 });
 
-/* AUTO SCROLL */
-let pos=0;
+/* SCROLL CON INERCIA (LERP) */
+let current = 0;
+let target = 0;
+const speed = 0.05;
 
-function tick(){
-    pos+=0.5;
-    const total=strip.scrollWidth/3;
+function animate(){
+    target += 0.4; // velocidad base
 
-    if(pos>=total) pos-=total;
+    current += (target - current) * speed;
 
-    strip.style.transform=`translateX(-${pos}px)`;
+    const total = strip.scrollWidth / 2;
 
-    requestAnimationFrame(tick);
+    if(current >= total){
+        current -= total;
+        target -= total;
+    }
+
+    strip.style.transform = `translateX(-${current}px)`;
+
+    requestAnimationFrame(animate);
 }
-tick();
+
+animate();
 </script>
 
 </body>
