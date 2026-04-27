@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Archive</title>
+<title>Edson Canales — Portfolio</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
@@ -14,8 +14,8 @@ body{
   font-family:'Courier Prime',monospace;
   background:#fff;
   color:#111;
-  height:200vh;
-  overflow:hidden;
+  height:300vh;
+  overflow-x:hidden;
 }
 
 /* CURSOR */
@@ -39,7 +39,7 @@ body{
   font-size:12px;
 }
 
-/* STAGE */
+/* ===== DESKTOP 3D ===== */
 .stage{
   position:fixed;
   top:50%;left:50%;
@@ -54,11 +54,9 @@ body{
   transform-style:preserve-3d;
 }
 
-/* CARDS */
 .card{
   position:absolute;
   width:220px;height:300px;
-  transform-style:preserve-3d;
   transition:transform .6s cubic-bezier(.23,1,.32,1);
   cursor:pointer;
 }
@@ -67,14 +65,54 @@ body{
   width:100%;height:100%;
   object-fit:cover;
   border-radius:6px;
-  box-shadow:0 25px 60px rgba(0,0,0,0.18);
+  box-shadow:0 20px 40px rgba(0,0,0,0.12);
 }
 
 .meta{
   position:absolute;
-  bottom:-18px;
+  bottom:-20px;
+  left:0;
   font-size:10px;
   opacity:.6;
+}
+
+/* ===== MOBILE ===== */
+.mobile-strip{
+  display:none;
+}
+
+@media (max-width:768px){
+
+  body{
+    height:auto;
+    overflow:auto;
+  }
+
+  .stage{
+    display:none;
+  }
+
+  .mobile-strip{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:120px 20px;
+    scroll-snap-type:x mandatory;
+  }
+
+  .mobile-card{
+    flex:0 0 auto;
+    width:65vw;
+    height:80vw;
+    scroll-snap-align:center;
+  }
+
+  .mobile-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:6px;
+  }
 }
 </style>
 </head>
@@ -85,144 +123,104 @@ body{
 
 <div class="header">
   <div>Edson Canales<br>Photographer</div>
-  <div>Archive</div>
+  <div>Portfolio</div>
 </div>
 
+<!-- DESKTOP -->
 <div class="stage">
   <div class="gallery" id="gallery"></div>
 </div>
+
+<!-- MOBILE -->
+<div class="mobile-strip" id="mobile-strip"></div>
 
 <script>
 
 /* CURSOR */
 const cursor=document.querySelector('.cursor');
+
 document.addEventListener('mousemove',e=>{
-  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`
+  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+});
+
+document.querySelectorAll('a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('active'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('active'));
 });
 
 /* IMÁGENES */
 const photos=[
-  'images/CAMPTION1.jpg',
-  'images/CAMPTION1-1.jpg',
-  'images/CAMPTION1-2.jpg',
-  'images/CAMPTION1-3.jpg',
-  'images/CAMPTION1-4.jpg',
-  'images/CAMPTION1-5.jpg',
-  'images/CAMPTION1-6.jpg',
-  'images/MAR1.jpg',
-  'images/MAR1-2.jpg',
-  'images/MAR1-3.jpg',
-  'images/MAR1-4.jpg',
-  'images/MAR1-7.jpg',
-  'images/MAR1-8.jpg',
-  'images/NATS1.jpg',
-  'images/NATS2.jpg',
-  'images/NATS3.jpg',
-  'images/NATS4.jpg'
+  "images/CAMPTION1.jpg",
+  "images/CAMPTION1-1.jpg",
+  "images/CAMPTION1-2.jpg",
+  "images/CAMPTION1-3.jpg",
+  "images/CAMPTION1-4.jpg",
+  "images/CAMPTION1-5.jpg",
+  "images/CAMPTION1-6.jpg",
+  "images/MAR1.jpg",
+  "images/MAR1-2.jpg",
+  "images/MAR1-3.jpg",
+  "images/MAR1-4.jpg",
+  "images/MAR1-7.jpg",
+  "images/MAR1-8.jpg",
+  "images/NATS1.jpg",
+  "images/NATS2.jpg",
+  "images/NATS3.jpg",
+  "images/NATS4.jpg"
 ];
 
 const gallery=document.getElementById('gallery');
 
 /* CREAR CARDS */
-photos.forEach(src=>{
+photos.forEach((src,i)=>{
   const card=document.createElement('div');
   card.className='card';
 
   const img=document.createElement('img');
   img.src=src;
 
-  const meta=document.createElement('div');
-  meta.className='meta';
-  meta.textContent='CAMPTION';
-
   card.appendChild(img);
-  card.appendChild(meta);
   gallery.appendChild(card);
+
+  card.addEventListener('click',()=>{
+    if(card.classList.contains('active')){
+      window.location.href='CAMPTION.html';
+    }else{
+      currentIndex=i;
+      targetOffset=i*240;
+    }
+  });
 });
 
 const cards=document.querySelectorAll('.card');
 
 /* ESTADO */
-let offset = 0;
-let target = 0;
-let velocity = 0;
-let currentIndex = 0;
-
-const spacing = 180; // distancia entre imágenes
-
-/* CLICK */
-cards.forEach((card,i)=>{
-  card.addEventListener('click',()=>{
-    if(currentIndex===i){
-      window.location.href='CAMPTION.html';
-    }else{
-      currentIndex=i;
-      target = i * spacing;
-    }
-  });
-});
-
-/* DRAG */
-let down=false,startX=0;
-
-document.addEventListener('mousedown',e=>{
-  down=true;
-  startX=e.clientX;
-});
-
-document.addEventListener('mouseup',()=>down=false);
-
-document.addEventListener('mousemove',e=>{
-  if(!down)return;
-
-  const dx=e.clientX-startX;
-  velocity=dx*0.2;
-  target-=dx;
-  startX=e.clientX;
-});
-
-/* LOOP INFINITO REAL */
-function normalizeOffset(){
-  const max = photos.length * spacing;
-
-  if(offset > max){
-    offset -= max;
-    target -= max;
-  }
-
-  if(offset < -max){
-    offset += max;
-    target += max;
-  }
-}
+let currentIndex=0;
+let targetOffset=0;
+let currentOffset=0;
 
 /* ANIMACIÓN */
 function animate(){
 
-  velocity *= 0.9;
-  offset += (target - offset)*0.08 + velocity;
-
-  normalizeOffset();
+  currentOffset += (targetOffset-currentOffset)*0.08;
 
   cards.forEach((card,i)=>{
 
-    const base = i * spacing;
-    const x = base - offset;
+    const x = i*240 - currentOffset;
+    const z = Math.abs(i-currentIndex)*-120;
 
-    /* DIAGONAL */
-    const y = x * 0.25;
-    const z = -Math.abs(x) * 0.15;
+    const isActive = i===currentIndex;
 
-    const isActive = Math.abs(x) < spacing/2;
+    card.classList.toggle('active', isActive);
 
-    card.style.transform = `
-      translate3d(${x}px, ${y}px, ${z}px)
-      rotateY(${x * 0.05}deg)
-      scale(1)
+    card.style.transform=`
+      translateX(${x}px)
+      translateZ(${z}px)
+      rotateY(${isActive?0:-35}deg)
+      scale(${isActive?1.2:1})
     `;
 
-    card.style.opacity = isActive ? 1 : 0.6;
-    card.style.zIndex = 1000 - Math.abs(x);
+    card.style.opacity = isActive ? 1 : 0.5;
 
   });
 
@@ -230,6 +228,24 @@ function animate(){
 }
 
 animate();
+
+/* ===== MOBILE ===== */
+const mobileStrip=document.getElementById('mobile-strip');
+
+photos.forEach(src=>{
+  const div=document.createElement('div');
+  div.className='mobile-card';
+
+  const img=document.createElement('img');
+  img.src=src;
+
+  div.appendChild(img);
+  mobileStrip.appendChild(div);
+
+  div.addEventListener('click',()=>{
+    window.location.href='CAMPTION.html';
+  });
+});
 
 </script>
 
