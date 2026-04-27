@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Gallery</title>
+<title>Edson Canales — Portfolio</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
@@ -14,74 +14,85 @@ body{
   font-family:'Courier Prime',monospace;
   background:#fff;
   color:#111;
-  height:100vh;
-  overflow:hidden;
+  height:300vh;
+  overflow-x:hidden;
+}
+
+/* CURSOR */
+.cursor{
+  width:10px;height:10px;background:#000;border-radius:50%;
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:.2s;
+}
+.cursor.active{
+  width:40px;height:40px;
+  background:rgba(0,0,0,.08);
 }
 
 /* HEADER */
 .header{
-  position:absolute;
+  position:fixed;
   top:40px;left:40px;right:40px;
   display:flex;justify-content:space-between;
-  font-size:12px;
   z-index:10;
+  font-size:12px;
 }
 
 /* STAGE */
 .stage{
-  position:absolute;
+  position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  perspective:2000px;
-  width:100%;
-  display:flex;
-  justify-content:center;
+  perspective:1800px;
+  width:100vw;height:100vh;
+  display:flex;align-items:center;justify-content:center;
 }
 
-/* GALERÍA */
 .gallery{
   position:relative;
-  width:1000px;
-  height:400px;
   transform-style:preserve-3d;
 }
 
-/* TARJETAS */
+/* CARDS */
 .card{
   position:absolute;
-  width:180px;
-  height:260px;
-  left:50%;
-  top:50%;
-  transform-origin:center center;
-  transition:transform .8s cubic-bezier(.23,1,.32,1);
+  width:200px;height:280px;
+  transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.23,1,.32,1);
+  cursor:pointer;
 }
 
 .card img{
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   object-fit:cover;
   border-radius:6px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  box-shadow:0 20px 50px rgba(0,0,0,0.15);
 }
 
-/* TEXTO */
 .meta{
   position:absolute;
-  bottom:-22px;
-  width:100%;
-  text-align:center;
+  bottom:-18px;
+  left:0;
   font-size:10px;
+  letter-spacing:.08em;
   opacity:.6;
+}
+
+/* HOVER */
+.card:hover{
+  z-index:999;
 }
 </style>
 </head>
 
 <body>
 
+<div class="cursor"></div>
+
 <div class="header">
   <div>Edson Canales<br>Photographer</div>
-  <div>Archive</div>
+  <div>Portfolio</div>
 </div>
 
 <div class="stage">
@@ -90,8 +101,23 @@ body{
 
 <script>
 
-/* 🔥 TODAS TUS IMÁGENES */
-const photos = [
+/* CURSOR */
+const cursor=document.querySelector('.cursor');
+
+document.addEventListener('mousemove',e=>{
+  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+});
+
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('.card')) cursor.classList.add('active');
+});
+
+document.addEventListener('mouseout',e=>{
+  if(e.target.closest('.card')) cursor.classList.remove('active');
+});
+
+/* DATA (todas tus imágenes) */
+const photos=[
   'images/CAMPTION1.jpg',
   'images/CAMPTION1-1.jpg',
   'images/CAMPTION1-2.jpg',
@@ -111,85 +137,99 @@ const photos = [
   'images/NATS4.jpg'
 ];
 
-const gallery = document.getElementById('gallery');
+const gallery=document.getElementById('gallery');
 
-/* CREAR */
+/* CREAR CARDS */
 photos.forEach((src,i)=>{
-  const card = document.createElement('div');
-  card.className = 'card';
+  const card=document.createElement('div');
+  card.className='card';
 
-  const img = document.createElement('img');
-  img.src = src;
+  const img=document.createElement('img');
+  img.src=src;
 
-  const meta = document.createElement('div');
-  meta.className = 'meta';
-  meta.textContent = 'CAMPTION';
+  const meta=document.createElement('div');
+  meta.className='meta';
+  meta.textContent='CAMPTION';
 
   card.appendChild(img);
   card.appendChild(meta);
   gallery.appendChild(card);
 });
 
-const cards = document.querySelectorAll('.card');
+const cards=document.querySelectorAll('.card');
 
-let current = 0;
-let target = 0;
-let angle = 0;
+/* ESTADO */
+let currentIndex=0;
+let targetOffset=0;
+let currentOffset=0;
+let velocity=0;
 
-/* CLICK DOBLE LÓGICA */
+/* CLICK (doble comportamiento) */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
-    if(current === i){
-      window.location.href = 'CAMPTION.html';
+
+    if(currentIndex===i){
+      window.location.href='CAMPTION.html';
     }else{
-      current = i;
-      target = i;
+      currentIndex=i;
+      targetOffset=i*220; // más juntas
     }
+
   });
 });
 
 /* DRAG */
-let down=false,startX=0;
+let isDragging=false;
+let startX=0;
 
 document.addEventListener('mousedown',e=>{
-  down=true;
+  isDragging=true;
   startX=e.clientX;
 });
 
-document.addEventListener('mouseup',()=>down=false);
+document.addEventListener('mouseup',()=>{
+  isDragging=false;
+});
 
 document.addEventListener('mousemove',e=>{
-  if(!down)return;
-  const dx = e.clientX - startX;
-  target -= dx * 0.01;
-  startX = e.clientX;
+  if(!isDragging)return;
+
+  const dx=e.clientX-startX;
+  velocity=dx*0.15;
+  targetOffset-=dx;
+  startX=e.clientX;
+});
+
+/* SCROLL */
+window.addEventListener('scroll',()=>{
+  targetOffset+=window.scrollY*0.01;
 });
 
 /* ANIMACIÓN */
 function animate(){
 
-  angle += (target - angle) * 0.08;
+  velocity*=0.9;
+  currentOffset+=(targetOffset-currentOffset)*0.08 + velocity;
 
   cards.forEach((card,i)=>{
 
-    const offset = i - angle;
+    const baseX=i*220; // MÁS JUNTAS
+    const x=baseX-currentOffset;
 
-    const rotateY = offset * 12;     // curva
-    const translateZ = -Math.abs(offset) * 80; // profundidad
-    const translateX = offset * 90;  // separación
+    const z=-i*140; // profundidad
+    const isActive=i===currentIndex;
 
-    const scale = i === current ? 1.2 : 0.9;
-
-    card.style.transform = `
-      translate(-50%, -50%)
-      rotateY(${rotateY}deg)
-      translateX(${translateX}px)
-      translateZ(${translateZ}px)
-      scale(${scale})
+    card.style.transform=`
+      translateX(${x}px)
+      translateZ(${z}px)
+      rotateY(${isActive?0:-22}deg)
+      scale(${isActive?1.3:1})
     `;
 
-    card.style.opacity = Math.abs(offset) > 6 ? 0 : 1;
-    card.style.zIndex = 100 - Math.abs(offset);
+    card.style.opacity=isActive?1:0.5;
+    card.style.filter=`blur(${isActive?0:i*0.4}px)`;
+    card.style.zIndex=isActive?999:i;
+
   });
 
   requestAnimationFrame(animate);
