@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Portfolio</title>
-
+<title>Edson Canales — Premium Gallery</title>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -15,28 +14,26 @@ body{
   background:#fff;
   color:#111;
   height:300vh;
-  overflow-x:hidden;
+  overflow:hidden;
 }
 
-/* CURSOR */
+/* CURSOR PRO */
 .cursor{
-  width:10px;height:10px;background:#000;border-radius:50%;
+  width:12px;height:12px;border:1px solid #000;border-radius:50%;
   position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:.2s;
+  transition:all .25s cubic-bezier(.23,1,.32,1);
 }
 .cursor.active{
-  width:40px;height:40px;
-  background:rgba(0,0,0,.08);
+  width:60px;height:60px;
+  background:rgba(0,0,0,.04);
 }
 
 /* HEADER */
 .header{
-  position:fixed;
-  top:40px;left:40px;right:40px;
+  position:fixed;top:40px;left:40px;right:40px;
   display:flex;justify-content:space-between;
-  z-index:10;
-  font-size:12px;
+  z-index:20;font-size:12px;
 }
 
 /* STAGE */
@@ -44,7 +41,7 @@ body{
   position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  perspective:1600px;
+  perspective:1800px;
   width:100vw;height:100vh;
   display:flex;align-items:center;justify-content:center;
 }
@@ -56,32 +53,59 @@ body{
 
 .card{
   position:absolute;
-  width:220px;height:300px;
+  width:240px;height:340px;
   transform-style:preserve-3d;
-  transition:transform .6s cubic-bezier(.23,1,.32,1);
+  transition:transform .8s cubic-bezier(.23,1,.32,1);
   cursor:pointer;
 }
 
 .card img{
-  width:100%;height:100%;
-  object-fit:cover;
-  border-radius:6px;
-  box-shadow:0 20px 40px rgba(0,0,0,0.12);
+  width:100%;height:100%;object-fit:cover;
+  border-radius:8px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.15);
 }
 
 .meta{
   position:absolute;
-  bottom:-20px;
+  bottom:-24px;
   left:0;
   font-size:10px;
-  letter-spacing:.08em;
-  opacity:.6;
+  letter-spacing:.12em;
+  opacity:.5;
 }
 
-/* HOVER */
-.card:hover{
-  z-index:999;
+/* FULLSCREEN VIEW */
+.viewer{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .6s ease;
+  z-index:50;
 }
+
+.viewer.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.viewer img{
+  max-width:80vw;
+  max-height:80vh;
+  object-fit:contain;
+}
+
+.close{
+  position:absolute;
+  top:40px;right:40px;
+  font-size:14px;
+  cursor:pointer;
+}
+
 </style>
 </head>
 
@@ -91,33 +115,31 @@ body{
 
 <div class="header">
   <div>Edson Canales<br>Photographer</div>
-  <div>Portfolio</div>
+  <div>Archive</div>
 </div>
 
 <div class="stage">
   <div class="gallery" id="gallery"></div>
 </div>
 
+<div class="viewer" id="viewer">
+  <div class="close" id="close">CLOSE</div>
+  <img id="viewer-img" src="">
+</div>
+
 <script>
 
 /* CURSOR */
 const cursor=document.querySelector('.cursor');
-
 document.addEventListener('mousemove',e=>{
   cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
-});
-
-document.querySelectorAll('a, .card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cursor.classList.add('active'));
-  el.addEventListener('mouseleave',()=>cursor.classList.remove('active'));
 });
 
 /* DATA */
 const photos=[
   {src:'images/CAMPTION1.jpg',title:'B&W Series'},
-  {src:'images/CAMPTION1-1.jpg',title:'B&W Series'},
-  {src:'images/CAMPTION1-2.jpg',title:'B&W Series'},
-  {src:'images/CAMPTION1-3.jpg',title:'B&W Series'},
+  {src:'images/CAMPTION1-1.jpg',title:'B&W'},
+  {src:'images/CAMPTION1-2.jpg',title:'B&W'},
   {src:'images/MAR1.jpg',title:'Shoot 2'},
   {src:'images/MAR1-2.jpg',title:'Shoot 2'},
   {src:'images/NATS1.jpg',title:'Shoot 3'},
@@ -126,7 +148,6 @@ const photos=[
 
 const gallery=document.getElementById('gallery');
 
-/* CREAR CARDS */
 photos.forEach((p,i)=>{
   const card=document.createElement('div');
   card.className='card';
@@ -145,77 +166,77 @@ photos.forEach((p,i)=>{
 
 const cards=document.querySelectorAll('.card');
 
-/* ESTADO */
-let currentIndex=0;
-let targetOffset=0;
+let current=0;
+let target=0;
 let currentOffset=0;
-let scrollInfluence=0;
+let velocity=0;
 
 /* CLICK */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
-    currentIndex=i;
-    targetOffset=i*260;
+    current=i;
+    target=i*280;
+    openViewer(photos[i].src);
   });
 });
 
-/* SCROLL */
-window.addEventListener('scroll',()=>{
-  scrollInfluence=window.scrollY*0.4;
-});
-
-/* DRAG (MOUSE) */
-let isDragging=false;
-let startX=0;
+/* DRAG */
+let down=false,startX=0;
 
 document.addEventListener('mousedown',e=>{
-  isDragging=true;
-  startX=e.clientX;
+  down=true;startX=e.clientX;
 });
 
-document.addEventListener('mouseup',()=>{
-  isDragging=false;
-});
+document.addEventListener('mouseup',()=>down=false);
 
 document.addEventListener('mousemove',e=>{
-  if(!isDragging)return;
-  const delta=(e.clientX-startX)*0.8;
-  targetOffset-=delta;
+  if(!down)return;
+  let dx=e.clientX-startX;
+  velocity=dx*0.1;
+  target-=dx;
   startX=e.clientX;
 });
 
-/* ANIMACIÓN */
+/* INERCIA */
 function animate(){
-
-  /* inercia */
-  currentOffset += (targetOffset-currentOffset)*0.08;
+  velocity*=0.92;
+  currentOffset += (target-currentOffset)*0.08 + velocity;
 
   cards.forEach((card,i)=>{
-
-    const baseX=i*260;
-
-    const x=baseX-currentOffset-scrollInfluence;
-    const z=-i*180;
-
-    const isActive=i===currentIndex;
+    const x=i*280-currentOffset;
+    const z=-i*220;
+    const active=i===current;
 
     card.style.transform=`
       translateX(${x}px)
       translateZ(${z}px)
-      rotateY(${isActive?0:-25}deg)
-      scale(${isActive?1.25:1})
+      rotateY(${active?0:-28}deg)
+      scale(${active?1.3:1})
     `;
 
-    card.style.filter=`blur(${isActive?0:i*0.6}px)`;
-    card.style.opacity=isActive?1:Math.max(0.3,1-i*0.08);
-    card.style.zIndex=isActive?999:i;
-
+    card.style.opacity=active?1:0.4;
+    card.style.filter=`blur(${active?0:i*0.8}px)`;
+    card.style.zIndex=active?999:i;
   });
 
   requestAnimationFrame(animate);
 }
 
 animate();
+
+/* VIEWER */
+const viewer=document.getElementById('viewer');
+const viewerImg=document.getElementById('viewer-img');
+const close=document.getElementById('close');
+
+function openViewer(src){
+  viewer.classList.add('active');
+  viewerImg.src=src;
+}
+
+close.addEventListener('click',()=>{
+  viewer.classList.remove('active');
+});
 
 </script>
 
