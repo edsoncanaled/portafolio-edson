@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Portfolio</title>
+<title>Edson Canales — Gallery</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
@@ -14,75 +14,70 @@ body{
   font-family:'Courier Prime',monospace;
   background:#fff;
   color:#111;
-  height:300vh;
-  overflow-x:hidden;
-}
-
-/* CURSOR */
-.cursor{
-  width:12px;height:12px;border:1px solid #000;border-radius:50%;
-  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:.25s;
-}
-.cursor.active{
-  width:50px;height:50px;
-  background:rgba(0,0,0,.05);
+  height:100vh;
+  overflow:hidden;
 }
 
 /* HEADER */
 .header{
-  position:fixed;
+  position:absolute;
   top:40px;left:40px;right:40px;
   display:flex;justify-content:space-between;
-  z-index:20;font-size:12px;
+  font-size:12px;
+  z-index:10;
 }
 
 /* STAGE */
 .stage{
-  position:fixed;
+  position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  perspective:1800px;
-  width:100vw;height:100vh;
-  display:flex;align-items:center;justify-content:center;
+  perspective:2000px;
+  width:100%;
+  display:flex;
+  justify-content:center;
 }
 
+/* GALERÍA */
 .gallery{
   position:relative;
+  width:1000px;
+  height:400px;
   transform-style:preserve-3d;
 }
 
+/* TARJETAS */
 .card{
   position:absolute;
-  width:240px;height:340px;
-  transform-style:preserve-3d;
+  width:180px;
+  height:260px;
+  left:50%;
+  top:50%;
+  transform-origin:center center;
   transition:transform .8s cubic-bezier(.23,1,.32,1);
-  cursor:pointer;
 }
 
 .card img{
-  width:100%;height:100%;
+  width:100%;
+  height:100%;
   object-fit:cover;
-  border-radius:8px;
-  box-shadow:0 30px 80px rgba(0,0,0,0.15);
+  border-radius:6px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
 }
 
+/* TEXTO */
 .meta{
   position:absolute;
-  bottom:-24px;
-  left:0;
+  bottom:-22px;
+  width:100%;
+  text-align:center;
   font-size:10px;
-  letter-spacing:.12em;
-  opacity:.5;
+  opacity:.6;
 }
-
 </style>
 </head>
 
 <body>
-
-<div class="cursor"></div>
 
 <div class="header">
   <div>Edson Canales<br>Photographer</div>
@@ -95,69 +90,61 @@ body{
 
 <script>
 
-/* CURSOR */
-const cursor=document.querySelector('.cursor');
-
-document.addEventListener('mousemove',e=>{
-  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
-});
-
-document.querySelectorAll('.card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cursor.classList.add('active'));
-  el.addEventListener('mouseleave',()=>cursor.classList.remove('active'));
-});
-
-/* DATA */
-const photos=[
-  {src:'images/CAMPTION1.jpg',type:'camption'},
-  {src:'images/CAMPTION1-1.jpg',type:'camption'},
-  {src:'images/CAMPTION1-2.jpg',type:'camption'},
-  {src:'images/MAR1.jpg',type:'camption'},
-  {src:'images/MAR1-2.jpg',type:'camption'},
-  {src:'images/NATS1.jpg',type:'camption'},
-  {src:'images/NATS2.jpg',type:'camption'}
+/* 🔥 TODAS TUS IMÁGENES */
+const photos = [
+  'images/CAMPTION1.jpg',
+  'images/CAMPTION1-1.jpg',
+  'images/CAMPTION1-2.jpg',
+  'images/CAMPTION1-3.jpg',
+  'images/CAMPTION1-4.jpg',
+  'images/CAMPTION1-5.jpg',
+  'images/CAMPTION1-6.jpg',
+  'images/MAR1.jpg',
+  'images/MAR1-2.jpg',
+  'images/MAR1-3.jpg',
+  'images/MAR1-4.jpg',
+  'images/MAR1-7.jpg',
+  'images/MAR1-8.jpg',
+  'images/NATS1.jpg',
+  'images/NATS2.jpg',
+  'images/NATS3.jpg',
+  'images/NATS4.jpg'
 ];
 
-const gallery=document.getElementById('gallery');
+const gallery = document.getElementById('gallery');
 
-/* CREAR CARDS */
-photos.forEach((p,i)=>{
-  const card=document.createElement('div');
-  card.className='card';
+/* CREAR */
+photos.forEach((src,i)=>{
+  const card = document.createElement('div');
+  card.className = 'card';
 
-  const img=document.createElement('img');
-  img.src=p.src;
+  const img = document.createElement('img');
+  img.src = src;
 
-  const meta=document.createElement('div');
-  meta.className='meta';
-  meta.textContent=p.type.toUpperCase();
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.textContent = 'CAMPTION';
 
   card.appendChild(img);
   card.appendChild(meta);
   gallery.appendChild(card);
 });
 
-const cards=document.querySelectorAll('.card');
+const cards = document.querySelectorAll('.card');
 
-/* ESTADO */
-let current=0;
-let target=0;
-let currentOffset=0;
-let velocity=0;
+let current = 0;
+let target = 0;
+let angle = 0;
 
-/* CLICK (doble comportamiento) */
+/* CLICK DOBLE LÓGICA */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
-
     if(current === i){
-      // segundo click → navegar
       window.location.href = 'CAMPTION.html';
-    } else {
-      // primer click → centrar
+    }else{
       current = i;
-      target = i * 280;
+      target = i;
     }
-
   });
 });
 
@@ -173,41 +160,36 @@ document.addEventListener('mouseup',()=>down=false);
 
 document.addEventListener('mousemove',e=>{
   if(!down)return;
-
-  let dx=e.clientX-startX;
-  velocity=dx*0.1;
-  target-=dx;
-  startX=e.clientX;
-});
-
-/* SCROLL */
-window.addEventListener('scroll',()=>{
-  target += window.scrollY * 0.01;
+  const dx = e.clientX - startX;
+  target -= dx * 0.01;
+  startX = e.clientX;
 });
 
 /* ANIMACIÓN */
 function animate(){
 
-  velocity *= 0.92;
-  currentOffset += (target-currentOffset)*0.08 + velocity;
+  angle += (target - angle) * 0.08;
 
   cards.forEach((card,i)=>{
 
-    const x=i*280-currentOffset;
-    const z=-i*220;
-    const active=i===current;
+    const offset = i - angle;
 
-    card.style.transform=`
-      translateX(${x}px)
-      translateZ(${z}px)
-      rotateY(${active?0:-28}deg)
-      scale(${active?1.25:1})
+    const rotateY = offset * 12;     // curva
+    const translateZ = -Math.abs(offset) * 80; // profundidad
+    const translateX = offset * 90;  // separación
+
+    const scale = i === current ? 1.2 : 0.9;
+
+    card.style.transform = `
+      translate(-50%, -50%)
+      rotateY(${rotateY}deg)
+      translateX(${translateX}px)
+      translateZ(${translateZ}px)
+      scale(${scale})
     `;
 
-    card.style.opacity=active?1:0.4;
-    card.style.filter=`blur(${active?0:i*0.8}px)`;
-    card.style.zIndex=active?999:i;
-
+    card.style.opacity = Math.abs(offset) > 6 ? 0 : 1;
+    card.style.zIndex = 100 - Math.abs(offset);
   });
 
   requestAnimationFrame(animate);
