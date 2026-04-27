@@ -1,355 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edson Canales — Portfolio</title>
-    <link rel="icon" href="data:image/svg+xml,...">
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edson Canales — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Courier Prime',monospace;
+  background:#fff;
+  color:#111;
+  height:300vh;
+}
 
-        @media (pointer: fine) { html, body, a { cursor: none; } }
+/* CURSOR */
+.cursor{
+  width:10px;height:10px;background:#000;border-radius:50%;
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+}
 
-        body {
-            font-family: 'Courier Prime', monospace;
-            background: #fff;
-            color: #111;
-            min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: clamp(20px, 4vw, 60px);
-            overflow: hidden;
-        }
+/* HEADER */
+.header-main{
+  position:fixed;top:40px;left:40px;right:40px;
+  display:flex;justify-content:space-between;z-index:10;
+}
 
-        /* ── CURSOR ── */
-        .cursor {
-            width: 10px; height: 10px; background: #000; border-radius: 50%;
-            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-            transform: translate3d(-50%,-50%,0);
-            transition: width .3s cubic-bezier(.23,1,.32,1), height .3s cubic-bezier(.23,1,.32,1), background-color .3s;
-            will-change: transform;
-        }
-        .cursor.active { width: 50px; height: 50px; background: rgba(0,0,0,.05); border: 1px solid rgba(0,0,0,.2); }
-        @media (pointer: coarse) { .cursor { display: none; } }
+/* STAGE 3D */
+.stage{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  perspective:1400px;
+  width:100vw;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+}
 
-        /* ── HEADER ── */
-        .header-main { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 20; }
-        h1.brand-info { font-size: clamp(12px,2vw,15px); font-weight: 700; line-height: 1.2; }
-        .index-list { text-align: right; font-size: clamp(12px,2vw,14px); line-height: 1.6; list-style: none; }
-        .index-item { display: flex; justify-content: flex-end; align-items: center; gap: clamp(20px,3vw,40px); }
-        .index-item a { text-decoration: none; color: inherit; outline: none; position: relative; }
-        .index-item a::after { content: ''; position: absolute; bottom: 1px; left: 0; width: 0; height: 1px; background: #111; transition: width .35s cubic-bezier(.23,1,.32,1); }
-        .index-item:hover a::after { width: 100%; }
-        .index-item .page-num { color: #999; font-size: clamp(11px,1.5vw,13px); transition: color .3s; min-width: 28px; text-align: right; }
-        .index-item:hover .page-num { color: #111; }
+.gallery{
+  position:relative;
+  transform-style:preserve-3d;
+}
 
-        /* ── STAGE — área central ── */
-        .stage {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100vw;
-            pointer-events: none;
-        }
+.card{
+  position:absolute;
+  width:220px;height:300px;
+  transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.23,1,.32,1), filter .4s;
+}
 
-        /* foto destacada central */
-        .featured-wrap {
-            position: relative;
-            width: clamp(120px, 16vw, 220px);
-            height: clamp(160px, 22vw, 300px);
-            margin-bottom: 10px;
-            overflow: hidden;
-            pointer-events: auto;
-        }
-        .featured-wrap img {
-            position: absolute; inset: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity .6s ease;
-        }
-        .featured-wrap img.active { opacity: 1; }
+.card img{
+  width:100%;height:100%;object-fit:cover;
+  border-radius:6px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.12);
+}
 
-        /* info bajo la foto destacada */
-        .featured-info {
-            text-align: center;
-            margin-bottom: 14px;
-            pointer-events: auto;
-            min-height: 32px;
-        }
-        .featured-info .fi-project { font-size: 9px; color: #999; letter-spacing: .1em; text-transform: uppercase; display: block; }
-        .featured-info .fi-shoot   { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; display: block; margin-top: 2px; }
+.meta{
+  position:absolute;
+  bottom:-22px;
+  left:0;
+  font-size:10px;
+  letter-spacing:.08em;
+  opacity:.6;
+}
 
-        /* ── STRIP ── */
-        .strip-wrap {
-            width: 100vw;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-            pointer-events: auto;
-            /* scroll snapping */
-            scroll-snap-type: x mandatory;
-        }
-        .strip-wrap::-webkit-scrollbar { display: none; }
+.card:hover{
+  transform:rotateY(0deg) scale(1.12) !important;
+  z-index:999;
+}
 
-        .strip {
-            display: flex;
-            gap: 6px;
-            width: max-content;
-            padding: 0 calc(50vw - 40px); /* centra el primer thumb */
-        }
-
-        /* ── THUMB — más ancho ── */
-        .thumb {
-            flex: 0 0 auto;
-            width: 60px;   /* antes 36px */
-            height: clamp(100px, 15vw, 160px);
-            overflow: hidden;
-            position: relative;
-            transition: width .5s cubic-bezier(.23,1,.32,1), opacity .3s;
-            scroll-snap-align: center;
-            opacity: .55;
-        }
-        .thumb.active-thumb {
-            width: clamp(80px, 12vw, 130px);
-            opacity: 1;
-        }
-        .thumb img {
-            position: absolute; top: 0; left: 0;
-            height: 100%;
-            width: clamp(80px, 12vw, 130px);
-            object-fit: cover; display: block;
-            filter: grayscale(60%);
-            transition: filter .4s;
-            pointer-events: none;
-        }
-        .thumb.active-thumb img { filter: grayscale(0%); }
-
-        /* ── FOOTER ── */
-        .footer-portfolio { display: flex; align-items: center; gap: clamp(12px,2vw,20px); position: relative; z-index: 20; }
-        .arrow { font-size: clamp(28px,6vw,80px); font-weight: 300; transition: transform .4s cubic-bezier(.23,1,.32,1); }
-        .footer-portfolio:hover .arrow { transform: translateX(12px); }
-        .portfolio-title { font-size: clamp(36px,8vw,110px); font-weight: 700; letter-spacing: -.05em; line-height: .8; }
-
-        a { text-decoration: none; color: inherit; outline: none; }
-
-        @media (max-width: 600px) {
-            .header-main { flex-direction: column; gap: 20px; }
-            .index-item { justify-content: flex-start; }
-            .strip { padding: 0 calc(50vw - 30px); }
-        }
-    </style>
+</style>
 </head>
 <body>
 
-    <div class="cursor" aria-hidden="true"></div>
+<div class="cursor"></div>
 
-    <!-- STAGE: foto central + info + strip -->
-    <div class="stage">
-        <div class="featured-wrap" id="featured-wrap">
-            <img id="feat-a" src="" alt="">
-            <img id="feat-b" src="" alt="">
-        </div>
-        <div class="featured-info">
-            <span class="fi-project" id="fi-project"></span>
-            <span class="fi-shoot"   id="fi-shoot"></span>
-        </div>
-        <div class="strip-wrap" id="strip-wrap">
-            <div class="strip" id="strip"></div>
-        </div>
-    </div>
+<header class="header-main">
+  <div>Edson Canales<br><span style="font-weight:400">Photographer</span></div>
+  <div>Portfolio</div>
+</header>
 
-    <header class="header-main">
-        <h1 class="brand-info">Edson Canales<br><span style="font-weight:400">Photographer</span></h1>
-        <ul class="index-list">
-            <li class="index-item"><a href="CAMPTION.html">CAMPTION</a><span class="page-num">3-8</span></li>
-            <li class="index-item"><a href="gallery.html">Editorials</a><span class="page-num">22-25</span></li>
-            <li class="index-item"><a href="food&drinks.html">Food & Drinks</a><span class="page-num">27-30</span></li>
-        </ul>
-    </header>
+<div class="stage">
+  <div class="gallery" id="gallery"></div>
+</div>
 
-    <footer class="footer-portfolio">
-        <span class="arrow">→</span>
-        <span class="portfolio-title">Portfolio</span>
-    </footer>
+<script>
 
-    <script>
-        /* ── CURSOR ── */
-        const cursor = document.querySelector('.cursor');
-        if (cursor) {
-            document.addEventListener('mousemove', e => {
-                cursor.style.transform = `translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`;
-            });
-            document.querySelectorAll('a').forEach(l => {
-                l.addEventListener('mouseenter', () => cursor.classList.add('active'));
-                l.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-            });
-        }
+/* CURSOR */
+const cursor=document.querySelector('.cursor');
+document.addEventListener('mousemove',e=>{
+  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+});
 
-        /* ── DATA ── */
-        const camption = [
-            { src:'images/CAMPTION1.jpg',   project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-1.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-2.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-3.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-4.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-5.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/CAMPTION1-6.jpg', project:'Camption', shoot:'B&W Series', href:'CAMPTION.html' },
-            { src:'images/MAR1.jpg',        project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/MAR1-2.jpg',      project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/MAR1-3.jpg',      project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/MAR1-4.jpg',      project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/MAR1-7.jpg',      project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/MAR1-8.jpg',      project:'Camption', shoot:'Shoot 2',    href:'CAMPTION.html' },
-            { src:'images/NATS1.jpg',       project:'Camption', shoot:'Shoot 3',    href:'CAMPTION.html' },
-            { src:'images/NATS2.jpg',       project:'Camption', shoot:'Shoot 3',    href:'CAMPTION.html' },
-            { src:'images/NATS3.jpg',       project:'Camption', shoot:'Shoot 3',    href:'CAMPTION.html' },
-            { src:'images/NATS4.jpg',       project:'Camption', shoot:'Shoot 3',    href:'CAMPTION.html' },
-        ];
-        const editorials = [
-            { src:'images/foto1.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-            { src:'images/foto2.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-            { src:'images/foto3.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-            { src:'images/foto4.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-            { src:'images/foto5.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-            { src:'images/foto6.jpg', project:'Editorials', shoot:'Editorials', href:'gallery.html' },
-        ];
+/* DATA (reuse your images) */
+const photos=[
+  {src:'images/CAMPTION1.jpg',title:'Camption — B&W'},
+  {src:'images/CAMPTION1-1.jpg',title:'Camption'},
+  {src:'images/CAMPTION1-2.jpg',title:'Camption'},
+  {src:'images/CAMPTION1-3.jpg',title:'Camption'},
+  {src:'images/CAMPTION1-4.jpg',title:'Camption'},
+  {src:'images/MAR1.jpg',title:'Shoot 2'},
+  {src:'images/MAR1-2.jpg',title:'Shoot 2'},
+  {src:'images/NATS1.jpg',title:'Shoot 3'},
+  {src:'images/NATS2.jpg',title:'Shoot 3'}
+];
 
-        /* intercalar 2 camption : 1 editorial */
-        function interleave(a, b) {
-            const r = []; let ai = 0, bi = 0;
-            while (ai < a.length || bi < b.length) {
-                if (ai < a.length) r.push(a[ai++]);
-                if (ai < a.length) r.push(a[ai++]);
-                if (bi < b.length) r.push(b[bi++]);
-            }
-            return r;
-        }
-        const photos = interleave(camption, editorials);
+const gallery=document.getElementById('gallery');
 
-        /* ── PRELOAD primeras 8 fotos para carga rápida ── */
-        photos.slice(0, 8).forEach(p => {
-            const l = document.createElement('link');
-            l.rel = 'preload'; l.as = 'image'; l.href = p.src;
-            document.head.appendChild(l);
-        });
+photos.forEach((p,i)=>{
+  const card=document.createElement('div');
+  card.classList.add('card');
 
-        /* ── CONSTRUIR STRIP (sin triplicar — el loop lo manejamos con scroll) ── */
-        const strip = document.getElementById('strip');
-        const wrap  = document.getElementById('strip-wrap');
-        const thumbEls = [];
+  const img=document.createElement('img');
+  img.src=p.src;
 
-        photos.forEach((data, i) => {
-            const div = document.createElement('div');
-            div.className = 'thumb';
+  const meta=document.createElement('div');
+  meta.classList.add('meta');
+  meta.textContent=p.title;
 
-            const img = document.createElement('img');
-            img.src     = data.src;
-            img.alt     = data.shoot;
-            img.loading = i < 8 ? 'eager' : 'lazy'; /* primeras 8 eager, resto lazy */
-            img.decoding = 'async';
+  card.appendChild(img);
+  card.appendChild(meta);
+  gallery.appendChild(card);
+});
 
-            div.appendChild(img);
-            strip.appendChild(div);
-            thumbEls.push({ el: div, data, idx: i });
+const cards=document.querySelectorAll('.card');
 
-            div.addEventListener('click', () => selectThumb(i));
-        });
+function update(){
+  const scroll=window.scrollY;
 
-        /* ── FOTO DESTACADA CENTRAL — crossfade ── */
-        const featA = document.getElementById('feat-a');
-        const featB = document.getElementById('feat-b');
-        const fiProject = document.getElementById('fi-project');
-        const fiShoot   = document.getElementById('fi-shoot');
-        let useA = true;
+  cards.forEach((card,i)=>{
+    const x=i*260 - scroll*0.6;
+    const z=-i*180;
+    const rot=-25;
 
-        function setFeatured(data) {
-            const next = useA ? featA : featB;
-            const prev = useA ? featB : featA;
-            next.src = data.src;
-            next.onload = () => {
-                next.classList.add('active');
-                prev.classList.remove('active');
-                useA = !useA;
-            };
-            fiProject.textContent = data.project;
-            fiShoot.textContent   = data.shoot;
-        }
+    const depthFactor=Math.max(0,1 - i*0.08);
 
-        /* ── SELECCIONAR THUMB — centra en el strip y actualiza featured ── */
-        let currentIdx = 0;
-        let autoTimer;
+    card.style.transform=`translateX(${x}px) translateZ(${z}px) rotateY(${rot}deg)`;
+    card.style.opacity=depthFactor;
+    card.style.filter=`blur(${i*0.5}px)`;
+  });
 
-        function selectThumb(idx, navigate) {
-            /* quitar activo anterior */
-            thumbEls.forEach(t => t.el.classList.remove('active-thumb'));
+  requestAnimationFrame(update);
+}
 
-            currentIdx = idx;
-            const { el, data } = thumbEls[idx];
-            el.classList.add('active-thumb');
+update();
 
-            /* scroll suave al centro */
-            const thumbLeft   = el.offsetLeft;
-            const thumbWidth  = el.offsetWidth;
-            const wrapWidth   = wrap.offsetWidth;
-            wrap.scrollTo({ left: thumbLeft - wrapWidth / 2 + thumbWidth / 2, behavior: 'smooth' });
+</script>
 
-            /* actualizar foto central */
-            setFeatured(data);
-
-            /* si se hace clic navegar al proyecto */
-            if (navigate) window.location.href = data.href;
-
-            /* reiniciar timer automático */
-            clearInterval(autoTimer);
-            autoTimer = setInterval(autoAdvance, 4000);
-        }
-
-        function autoAdvance() {
-            const next = (currentIdx + 1) % photos.length;
-            selectThumb(next);
-        }
-
-        /* ── INICIAR ── */
-        setFeatured(photos[0]);
-        thumbEls[0].el.classList.add('active-thumb');
-        autoTimer = setInterval(autoAdvance, 4000);
-
-        /* clic en thumb: primer clic = seleccionar, segundo clic = navegar */
-        thumbEls.forEach(({ el, idx }) => {
-            el.addEventListener('click', () => {
-                if (el.classList.contains('active-thumb')) {
-                    window.location.href = thumbEls[idx].data.href;
-                } else {
-                    selectThumb(idx);
-                }
-            });
-        });
-
-        /* ── TOUCH: detener auto mientras se scrollea ── */
-        wrap.addEventListener('touchstart', () => clearInterval(autoTimer), { passive: true });
-        wrap.addEventListener('touchend', () => {
-            /* detectar thumb más cercano al centro después de scroll */
-            setTimeout(() => {
-                const wrapCenter = wrap.scrollLeft + wrap.offsetWidth / 2;
-                let closest = 0, minD = Infinity;
-                thumbEls.forEach(({ el }, i) => {
-                    const d = Math.abs(el.offsetLeft + el.offsetWidth / 2 - wrapCenter);
-                    if (d < minD) { minD = d; closest = i; }
-                });
-                selectThumb(closest);
-            }, 150);
-        }, { passive: true });
-    </script>
 </body>
 </html>
+
 
 
