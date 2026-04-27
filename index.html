@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Premium Gallery</title>
+<title>Edson Canales — Portfolio</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -14,24 +15,25 @@ body{
   background:#fff;
   color:#111;
   height:300vh;
-  overflow:hidden;
+  overflow-x:hidden;
 }
 
-/* CURSOR PRO */
+/* CURSOR */
 .cursor{
   width:12px;height:12px;border:1px solid #000;border-radius:50%;
   position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:all .25s cubic-bezier(.23,1,.32,1);
+  transition:.25s;
 }
 .cursor.active{
-  width:60px;height:60px;
-  background:rgba(0,0,0,.04);
+  width:50px;height:50px;
+  background:rgba(0,0,0,.05);
 }
 
 /* HEADER */
 .header{
-  position:fixed;top:40px;left:40px;right:40px;
+  position:fixed;
+  top:40px;left:40px;right:40px;
   display:flex;justify-content:space-between;
   z-index:20;font-size:12px;
 }
@@ -60,7 +62,8 @@ body{
 }
 
 .card img{
-  width:100%;height:100%;object-fit:cover;
+  width:100%;height:100%;
+  object-fit:cover;
   border-radius:8px;
   box-shadow:0 30px 80px rgba(0,0,0,0.15);
 }
@@ -72,38 +75,6 @@ body{
   font-size:10px;
   letter-spacing:.12em;
   opacity:.5;
-}
-
-/* FULLSCREEN VIEW */
-.viewer{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .6s ease;
-  z-index:50;
-}
-
-.viewer.active{
-  opacity:1;
-  pointer-events:auto;
-}
-
-.viewer img{
-  max-width:80vw;
-  max-height:80vh;
-  object-fit:contain;
-}
-
-.close{
-  position:absolute;
-  top:40px;right:40px;
-  font-size:14px;
-  cursor:pointer;
 }
 
 </style>
@@ -122,32 +93,34 @@ body{
   <div class="gallery" id="gallery"></div>
 </div>
 
-<div class="viewer" id="viewer">
-  <div class="close" id="close">CLOSE</div>
-  <img id="viewer-img" src="">
-</div>
-
 <script>
 
 /* CURSOR */
 const cursor=document.querySelector('.cursor');
+
 document.addEventListener('mousemove',e=>{
   cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
 });
 
+document.querySelectorAll('.card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('active'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('active'));
+});
+
 /* DATA */
 const photos=[
-  {src:'images/CAMPTION1.jpg',title:'B&W Series'},
-  {src:'images/CAMPTION1-1.jpg',title:'B&W'},
-  {src:'images/CAMPTION1-2.jpg',title:'B&W'},
-  {src:'images/MAR1.jpg',title:'Shoot 2'},
-  {src:'images/MAR1-2.jpg',title:'Shoot 2'},
-  {src:'images/NATS1.jpg',title:'Shoot 3'},
-  {src:'images/NATS2.jpg',title:'Shoot 3'}
+  {src:'images/CAMPTION1.jpg',type:'camption'},
+  {src:'images/CAMPTION1-1.jpg',type:'camption'},
+  {src:'images/CAMPTION1-2.jpg',type:'camption'},
+  {src:'images/MAR1.jpg',type:'camption'},
+  {src:'images/MAR1-2.jpg',type:'camption'},
+  {src:'images/NATS1.jpg',type:'camption'},
+  {src:'images/NATS2.jpg',type:'camption'}
 ];
 
 const gallery=document.getElementById('gallery');
 
+/* CREAR CARDS */
 photos.forEach((p,i)=>{
   const card=document.createElement('div');
   card.className='card';
@@ -157,7 +130,7 @@ photos.forEach((p,i)=>{
 
   const meta=document.createElement('div');
   meta.className='meta';
-  meta.textContent=p.title;
+  meta.textContent=p.type.toUpperCase();
 
   card.appendChild(img);
   card.appendChild(meta);
@@ -166,17 +139,25 @@ photos.forEach((p,i)=>{
 
 const cards=document.querySelectorAll('.card');
 
+/* ESTADO */
 let current=0;
 let target=0;
 let currentOffset=0;
 let velocity=0;
 
-/* CLICK */
+/* CLICK (doble comportamiento) */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
-    current=i;
-    target=i*280;
-    openViewer(photos[i].src);
+
+    if(current === i){
+      // segundo click → navegar
+      window.location.href = 'CAMPTION.html';
+    } else {
+      // primer click → centrar
+      current = i;
+      target = i * 280;
+    }
+
   });
 });
 
@@ -184,25 +165,34 @@ cards.forEach((card,i)=>{
 let down=false,startX=0;
 
 document.addEventListener('mousedown',e=>{
-  down=true;startX=e.clientX;
+  down=true;
+  startX=e.clientX;
 });
 
 document.addEventListener('mouseup',()=>down=false);
 
 document.addEventListener('mousemove',e=>{
   if(!down)return;
+
   let dx=e.clientX-startX;
   velocity=dx*0.1;
   target-=dx;
   startX=e.clientX;
 });
 
-/* INERCIA */
+/* SCROLL */
+window.addEventListener('scroll',()=>{
+  target += window.scrollY * 0.01;
+});
+
+/* ANIMACIÓN */
 function animate(){
-  velocity*=0.92;
+
+  velocity *= 0.92;
   currentOffset += (target-currentOffset)*0.08 + velocity;
 
   cards.forEach((card,i)=>{
+
     const x=i*280-currentOffset;
     const z=-i*220;
     const active=i===current;
@@ -211,32 +201,19 @@ function animate(){
       translateX(${x}px)
       translateZ(${z}px)
       rotateY(${active?0:-28}deg)
-      scale(${active?1.3:1})
+      scale(${active?1.25:1})
     `;
 
     card.style.opacity=active?1:0.4;
     card.style.filter=`blur(${active?0:i*0.8}px)`;
     card.style.zIndex=active?999:i;
+
   });
 
   requestAnimationFrame(animate);
 }
 
 animate();
-
-/* VIEWER */
-const viewer=document.getElementById('viewer');
-const viewerImg=document.getElementById('viewer-img');
-const close=document.getElementById('close');
-
-function openViewer(src){
-  viewer.classList.add('active');
-  viewerImg.src=src;
-}
-
-close.addEventListener('click',()=>{
-  viewer.classList.remove('active');
-});
 
 </script>
 
