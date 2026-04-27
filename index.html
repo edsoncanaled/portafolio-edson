@@ -4,105 +4,147 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales — Archive</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
+:root{
+  --card-w: 200px;
+  --card-h: 270px;
+  --gap: 14px; /* espacio visible entre cards en el eje diagonal */
+}
+
 body{
   font-family:'Courier Prime',monospace;
-  background:#fff;
+  background:#f0ede8;
   color:#111;
+  overflow:hidden;
+  height:100vh;
+  width:100vw;
+}
+
+/* ── HEADER ── */
+.header{
+  position:fixed;
+  top:36px;left:40px;right:40px;
+  display:flex;justify-content:space-between;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  z-index:20;
+  mix-blend-mode:multiply;
+  opacity:.7;
+}
+
+/* ── CANVAS DE LA GALERÍA ── */
+.stage{
+  position:fixed;
+  inset:0;
   overflow:hidden;
 }
 
-/* HEADER */
-.header{
-  position:fixed;
-  top:40px;left:40px;right:40px;
-  display:flex;justify-content:space-between;
-  font-size:12px;
-  z-index:10;
+/* el contenedor que realmente se mueve */
+#track{
+  position:absolute;
+  /* se posiciona dinámicamente por JS */
+  will-change:transform;
 }
 
-/* STAGE */
-.stage{
-  position:fixed;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  perspective:1600px;
-  width:100vw;height:100vh;
-  display:flex;align-items:center;justify-content:center;
-}
-
-.gallery{
-  position:relative;
-  transform-style:preserve-3d;
-}
-
-/* CARD */
+/* ── CARD ── */
 .card{
   position:absolute;
-  width:220px;height:300px;
+  width:var(--card-w);
+  height:var(--card-h);
   cursor:pointer;
-  transition:transform .6s cubic-bezier(.23,1,.32,1);
+  /* cada card se coloca en la diagonal via JS */
+  will-change:transform,opacity;
+  transition:opacity .4s ease, box-shadow .4s ease;
 }
 
 .card img{
-  width:100%;height:100%;
+  width:100%;
+  height:100%;
   object-fit:cover;
-  border-radius:6px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+  border-radius:3px;
+  display:block;
+  /* sombra de profundidad */
+  box-shadow:
+    2px 2px 0 rgba(0,0,0,.08),
+    6px 6px 0 rgba(0,0,0,.06),
+    12px 12px 20px rgba(0,0,0,.18);
 }
 
-/* TEXTO */
+/* borde inferior tipo polaroid */
+.card::after{
+  content:'';
+  position:absolute;
+  bottom:-3px;left:3px;right:-3px;
+  height:100%;
+  background:rgba(0,0,0,.06);
+  border-radius:3px;
+  z-index:-1;
+  transform:skewY(.4deg);
+}
+
 .meta{
   position:absolute;
-  bottom:-22px;
+  bottom:-20px;
   left:0;
-  font-size:10px;
-  letter-spacing:.08em;
-  opacity:.6;
-  transition:.3s;
+  font-size:9px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  opacity:0;
+  transition:opacity .4s;
+  white-space:nowrap;
 }
 
-.card.active .meta{
-  opacity:1;
+.card.active .meta{ opacity:.55; }
+.card.active img{
+  box-shadow:
+    2px 2px 0 rgba(0,0,0,.1),
+    8px 8px 0 rgba(0,0,0,.07),
+    20px 20px 40px rgba(0,0,0,.28);
 }
 
-/* MOBILE */
-.mobile-strip{display:none;}
+/* instrucción sutil */
+.hint{
+  position:fixed;
+  bottom:36px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  opacity:.3;
+  z-index:20;
+}
 
-@media (max-width:768px){
-
-  body{overflow:auto;}
-
+/* ── MOBILE ── */
+@media(max-width:768px){
   .stage{display:none;}
-
+  .hint{display:none;}
   .mobile-strip{
     display:flex;
     gap:12px;
     overflow-x:auto;
-    padding:120px 20px;
+    padding:110px 20px 40px;
+    -webkit-overflow-scrolling:touch;
   }
-
   .mobile-card{
     flex:0 0 auto;
-    width:65vw;
-    height:80vw;
+    width:65vw;height:80vw;
+    border-radius:4px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0,.18);
   }
-
-  .mobile-card img{
-    width:100%;height:100%;
-    object-fit:cover;
-    border-radius:6px;
-  }
-
+  .mobile-card img{width:100%;height:100%;object-fit:cover;display:block;}
+}
+@media(min-width:769px){
+  .mobile-strip{display:none;}
 }
 </style>
 </head>
-
 <body>
 
 <div class="header">
@@ -110,137 +152,232 @@ body{
   <div>Archive</div>
 </div>
 
-<div class="stage">
-  <div class="gallery" id="gallery"></div>
+<div class="stage" id="stage">
+  <div id="track"></div>
 </div>
 
 <div class="mobile-strip" id="mobile-strip"></div>
 
-<script>
+<div class="hint">← drag or scroll →</div>
 
-/* DATA CON TEXTO */
-let basePhotos = [
-  {src:'images/CAMPTION1.jpg', text:'B&W Series'},
+<script>
+/* ─────────────────────────────────────────
+   DATOS
+───────────────────────────────────────── */
+const basePhotos = [
+  {src:'images/CAMPTION1.jpg',   text:'B&W Series'},
   {src:'images/CAMPTION1-1.jpg', text:'Industrial Silence'},
   {src:'images/CAMPTION1-2.jpg', text:'Concrete Frames'},
   {src:'images/CAMPTION1-3.jpg', text:'Urban Shadows'},
-  {src:'images/MAR1.jpg', text:'Coastal Light'},
-  {src:'images/MAR1-2.jpg', text:'Salt & Wind'},
-  {src:'images/NATS1.jpg', text:'Still Movement'},
-  {src:'images/NATS2.jpg', text:'Natural Study'},
-  {src:'images/NATS3.jpg', text:'Field Notes'},
-  {src:'images/NATS4.jpg', text:'Soft Horizon'}
+  {src:'images/MAR1.jpg',        text:'Coastal Light'},
+  {src:'images/MAR1-2.jpg',      text:'Salt & Wind'},
+  {src:'images/NATS1.jpg',       text:'Still Movement'},
+  {src:'images/NATS2.jpg',       text:'Natural Study'},
+  {src:'images/NATS3.jpg',       text:'Field Notes'},
+  {src:'images/NATS4.jpg',       text:'Soft Horizon'}
 ];
 
-/* 🔀 DESORDENAR */
-basePhotos = basePhotos.sort(()=>Math.random()-0.5);
+/* Fisher-Yates shuffle — más aleatorio que sort(random) */
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+const photos = shuffle(basePhotos);
+const N = photos.length;
 
-/* ♾️ CLONAR */
-const photos = [...basePhotos, ...basePhotos, ...basePhotos];
+/* ─────────────────────────────────────────
+   LAYOUT DIAGONAL
+   Cada card se desplaza (STEP_X, STEP_Y) px
+   respecto a la anterior — efecto isométrico
+───────────────────────────────────────── */
+const CARD_W = 200;
+const CARD_H = 270;
+const STEP_X = 148;   // avance horizontal entre cards
+const STEP_Y = -68;   // avance vertical   (negativo = sube)
 
-const gallery=document.getElementById('gallery');
+/* cuántas copias necesitamos para llenar pantalla + buffer */
+const COPIES = 7;     // 7 × 10 = 70 cards en el DOM
+const TOTAL  = N * COPIES;
 
-/* CREAR */
-photos.forEach((p,i)=>{
-  const card=document.createElement('div');
+const track  = document.getElementById('track');
+const stage  = document.getElementById('stage');
+
+/* crear nodos */
+const allCards = [];
+for(let i=0;i<TOTAL;i++){
+  const p    = photos[i % N];
+  const card = document.createElement('div');
   card.className='card';
 
-  const img=document.createElement('img');
-  img.src=p.src;
+  const img  = document.createElement('img');
+  img.src    = p.src;
+  img.alt    = p.text;
 
-  const meta=document.createElement('div');
+  const meta = document.createElement('div');
   meta.className='meta';
   meta.textContent=p.text;
 
   card.appendChild(img);
   card.appendChild(meta);
-  gallery.appendChild(card);
+  track.appendChild(card);
+  allCards.push({el:card, idx:i});
 
   card.addEventListener('click',()=>{
     if(card.classList.contains('active')){
       window.location.href='CAMPTION.html';
-    }else{
-      currentIndex=i;
-      targetOffset=i*200;
     }
   });
-});
-
-const cards=document.querySelectorAll('.card');
-
-/* ESTADO */
-let currentIndex=Math.floor(photos.length/2);
-let targetOffset=currentIndex*200;
-let currentOffset=targetOffset;
-
-/* LOOP INVISIBLE */
-function normalizeLoop(){
-  const total = basePhotos.length;
-
-  if(currentIndex < total){
-    currentIndex += total;
-    targetOffset = currentIndex*200;
-    currentOffset = targetOffset;
-  }
-
-  if(currentIndex >= total*2){
-    currentIndex -= total;
-    targetOffset = currentIndex*200;
-    currentOffset = targetOffset;
-  }
 }
 
-/* ANIMACIÓN */
-function animate(){
+/* ─────────────────────────────────────────
+   POSICIONAMIENTO
+   La "tira" diagonal tiene un paso definido.
+   Ponemos el origen en el centro de la pantalla
+   y cada card en su posición fija dentro del track.
+───────────────────────────────────────── */
+function positionCards(){
+  allCards.forEach(({el},i)=>{
+    el.style.left = (i * STEP_X) + 'px';
+    el.style.top  = (i * STEP_Y) + 'px';
+  });
+}
+positionCards();
 
-  currentOffset += (targetOffset-currentOffset)*0.08;
+/* ancho total de la tira (un ciclo completo) */
+const CYCLE_PX = N * STEP_X;
 
-  normalizeLoop();
+/* ─────────────────────────────────────────
+   ESTADO DE SCROLL
+───────────────────────────────────────── */
+let offset    = CYCLE_PX * 3;   // empezar en el medio del buffer
+let velocity  = 0;
+let isDragging= false;
+let dragStart = 0;
+let dragOffset= 0;
+let raf;
 
-  cards.forEach((card,i)=>{
+/* centro de pantalla */
+const cx = ()=> window.innerWidth  / 2 - CARD_W / 2;
+const cy = ()=> window.innerHeight / 2 - CARD_H / 2;
 
-    const x = i*200 - currentOffset;
-    const dist = Math.abs(i-currentIndex);
+/* ─────────────────────────────────────────
+   RENDER LOOP
+───────────────────────────────────────── */
+function render(){
+  /* suavizado inercial cuando no se arrastra */
+  if(!isDragging){
+    velocity *= 0.92;
+    offset   += velocity;
+  }
 
-    const y = x*0.25; // diagonal
-    const z = -dist*100;
+  /* ── loop infinito sin salto ──
+     Mantenemos offset siempre dentro de [CYCLE_PX*2, CYCLE_PX*5]
+     Hay 7 copias (0-6); los rangos 2-4 son el "núcleo" que usamos.
+     Cuando salimos, teletransportamos exactamente un ciclo:
+     visualmente idéntico porque las imágenes se repiten. */
+  if(offset < CYCLE_PX * 2) offset += CYCLE_PX;
+  if(offset > CYCLE_PX * 5) offset -= CYCLE_PX;
 
-    const isActive = i===currentIndex;
+  /* mover el track */
+  const tx = cx() - offset;
+  const ty = cy() - (offset / STEP_X) * (-STEP_Y);
+  track.style.transform=`translate(${tx}px,${ty}px)`;
 
-    card.classList.toggle('active',isActive);
+  /* card activa = la más cercana al centro de pantalla */
+  const screenCX = window.innerWidth  / 2;
+  const screenCY = window.innerHeight / 2;
+  let   minDist  = Infinity;
+  let   activeEl = null;
 
-    card.style.transform=`
-      translate3d(${x}px,${y}px,${z}px)
-      rotateY(${isActive?0:-25}deg)
-    `;
+  allCards.forEach(({el},i)=>{
+    const cardX = tx + i*STEP_X + CARD_W/2;
+    const cardY = ty + i*STEP_Y + CARD_H/2;   // STEP_Y es negativo
+    const dist  = Math.hypot(cardX-screenCX, cardY-screenCY);
 
-    card.style.opacity = isActive?1:0.5;
-    card.style.zIndex = 1000-dist;
+    /* fade por distancia */
+    const fadeDist = Math.abs(cardX - screenCX);
+    const alpha = Math.max(0, 1 - fadeDist/700);
+    el.style.opacity = alpha;
 
+    if(dist < minDist){ minDist=dist; activeEl=el; }
   });
 
-  requestAnimationFrame(animate);
+  allCards.forEach(({el})=>el.classList.toggle('active', el===activeEl));
+
+  raf = requestAnimationFrame(render);
 }
+render();
 
-animate();
-
-/* MOBILE */
-const mobileStrip=document.getElementById('mobile-strip');
-
-basePhotos.forEach(p=>{
-  const div=document.createElement('div');
-  div.className='mobile-card';
-
-  const img=document.createElement('img');
-  img.src=p.src;
-
-  div.appendChild(img);
-  mobileStrip.appendChild(div);
-
-  div.onclick=()=>window.location.href='CAMPTION.html';
+/* ─────────────────────────────────────────
+   EVENTOS — Mouse drag
+───────────────────────────────────────── */
+stage.addEventListener('mousedown',e=>{
+  isDragging=true;
+  dragStart =e.clientX;
+  dragOffset=offset;
+  velocity  =0;
+  stage.style.cursor='grabbing';
 });
 
-</script>
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  const dx = e.clientX - dragStart;
+  offset   = dragOffset - dx;
+});
 
+window.addEventListener('mouseup',e=>{
+  if(!isDragging)return;
+  isDragging=false;
+  velocity  = -(e.clientX - dragStart) * 0.04;
+  stage.style.cursor='';
+});
+
+/* ─────────────────────────────────────────
+   EVENTOS — Touch
+───────────────────────────────────────── */
+stage.addEventListener('touchstart',e=>{
+  isDragging=true;
+  dragStart =e.touches[0].clientX;
+  dragOffset=offset;
+  velocity  =0;
+},{passive:true});
+
+stage.addEventListener('touchmove',e=>{
+  if(!isDragging)return;
+  const dx=e.touches[0].clientX-dragStart;
+  offset=dragOffset-dx;
+},{passive:true});
+
+stage.addEventListener('touchend',e=>{
+  isDragging=false;
+  velocity= -(e.changedTouches[0].clientX-dragStart)*0.05;
+});
+
+/* ─────────────────────────────────────────
+   EVENTOS — Rueda
+───────────────────────────────────────── */
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  velocity += e.deltaY * 0.6 + e.deltaX * 0.6;
+},{passive:false});
+
+/* ─────────────────────────────────────────
+   MOBILE STRIP
+───────────────────────────────────────── */
+const mobileStrip=document.getElementById('mobile-strip');
+photos.forEach(p=>{
+  const div=document.createElement('div');
+  div.className='mobile-card';
+  const img=document.createElement('img');
+  img.src=p.src; img.alt=p.text;
+  div.appendChild(img);
+  mobileStrip.appendChild(div);
+  div.onclick=()=>window.location.href='CAMPTION.html';
+});
+</script>
 </body>
 </html>
