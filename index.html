@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edson Canales — Portfolio</title>
+<title>Edson Canales — Archive</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 
@@ -14,8 +14,8 @@ body{
   font-family:'Courier Prime',monospace;
   background:#fff;
   color:#111;
-  height:300vh;
-  overflow-x:hidden;
+  height:200vh;
+  overflow:hidden;
 }
 
 /* CURSOR */
@@ -44,7 +44,7 @@ body{
   position:fixed;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  perspective:1800px;
+  perspective:1600px;
   width:100vw;height:100vh;
   display:flex;align-items:center;justify-content:center;
 }
@@ -57,7 +57,7 @@ body{
 /* CARDS */
 .card{
   position:absolute;
-  width:200px;height:280px;
+  width:220px;height:300px;
   transform-style:preserve-3d;
   transition:transform .6s cubic-bezier(.23,1,.32,1);
   cursor:pointer;
@@ -67,21 +67,14 @@ body{
   width:100%;height:100%;
   object-fit:cover;
   border-radius:6px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+  box-shadow:0 25px 60px rgba(0,0,0,0.18);
 }
 
 .meta{
   position:absolute;
   bottom:-18px;
-  left:0;
   font-size:10px;
-  letter-spacing:.08em;
   opacity:.6;
-}
-
-/* HOVER */
-.card:hover{
-  z-index:999;
 }
 </style>
 </head>
@@ -92,7 +85,7 @@ body{
 
 <div class="header">
   <div>Edson Canales<br>Photographer</div>
-  <div>Portfolio</div>
+  <div>Archive</div>
 </div>
 
 <div class="stage">
@@ -103,44 +96,29 @@ body{
 
 /* CURSOR */
 const cursor=document.querySelector('.cursor');
-
 document.addEventListener('mousemove',e=>{
-  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+  cursor.style.transform=`translate(${e.clientX}px,${e.clientY}px)`
 });
 
-document.addEventListener('mouseover',e=>{
-  if(e.target.closest('.card')) cursor.classList.add('active');
-});
-
-document.addEventListener('mouseout',e=>{
-  if(e.target.closest('.card')) cursor.classList.remove('active');
-});
-
-/* DATA (todas tus imágenes) */
-const photos=[
+/* IMÁGENES */
+const basePhotos=[
   'images/CAMPTION1.jpg',
   'images/CAMPTION1-1.jpg',
   'images/CAMPTION1-2.jpg',
   'images/CAMPTION1-3.jpg',
-  'images/CAMPTION1-4.jpg',
-  'images/CAMPTION1-5.jpg',
-  'images/CAMPTION1-6.jpg',
   'images/MAR1.jpg',
   'images/MAR1-2.jpg',
-  'images/MAR1-3.jpg',
-  'images/MAR1-4.jpg',
-  'images/MAR1-7.jpg',
-  'images/MAR1-8.jpg',
   'images/NATS1.jpg',
-  'images/NATS2.jpg',
-  'images/NATS3.jpg',
-  'images/NATS4.jpg'
+  'images/NATS2.jpg'
 ];
+
+/* DUPLICAR PARA LOOP */
+const photos=[...basePhotos,...basePhotos,...basePhotos];
 
 const gallery=document.getElementById('gallery');
 
-/* CREAR CARDS */
-photos.forEach((src,i)=>{
+/* CREAR */
+photos.forEach(src=>{
   const card=document.createElement('div');
   card.className='card';
 
@@ -159,76 +137,70 @@ photos.forEach((src,i)=>{
 const cards=document.querySelectorAll('.card');
 
 /* ESTADO */
-let currentIndex=0;
-let targetOffset=0;
-let currentOffset=0;
+let offset=0;
+let target=0;
 let velocity=0;
+let currentIndex=0;
 
-/* CLICK (doble comportamiento) */
+/* CLICK DOBLE */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
-
     if(currentIndex===i){
       window.location.href='CAMPTION.html';
     }else{
       currentIndex=i;
-      targetOffset=i*220; // más juntas
+      target=i*240;
     }
-
   });
 });
 
 /* DRAG */
-let isDragging=false;
-let startX=0;
+let down=false,startX=0;
 
 document.addEventListener('mousedown',e=>{
-  isDragging=true;
+  down=true;
   startX=e.clientX;
 });
 
-document.addEventListener('mouseup',()=>{
-  isDragging=false;
-});
+document.addEventListener('mouseup',()=>down=false);
 
 document.addEventListener('mousemove',e=>{
-  if(!isDragging)return;
+  if(!down)return;
 
   const dx=e.clientX-startX;
-  velocity=dx*0.15;
-  targetOffset-=dx;
+  velocity=dx*0.2;
+  target-=dx;
   startX=e.clientX;
-});
-
-/* SCROLL */
-window.addEventListener('scroll',()=>{
-  targetOffset+=window.scrollY*0.01;
 });
 
 /* ANIMACIÓN */
 function animate(){
 
   velocity*=0.9;
-  currentOffset+=(targetOffset-currentOffset)*0.08 + velocity;
+  offset += (target-offset)*0.08 + velocity;
+
+  const totalWidth = basePhotos.length * 240;
+
+  /* LOOP INFINITO */
+  if(offset > totalWidth) offset -= totalWidth;
+  if(offset < 0) offset += totalWidth;
 
   cards.forEach((card,i)=>{
 
-    const baseX=i*220; // MÁS JUNTAS
-    const x=baseX-currentOffset;
+    const x = (i*240 - offset) % totalWidth;
 
-    const z=-i*140; // profundidad
-    const isActive=i===currentIndex;
+    const centered = x - totalWidth/2;
 
-    card.style.transform=`
-      translateX(${x}px)
-      translateZ(${z}px)
-      rotateY(${isActive?0:-22}deg)
-      scale(${isActive?1.3:1})
+    const isActive = Math.abs(centered) < 120;
+
+    card.style.transform = `
+      translateX(${centered}px)
+      rotateY(${centered * 0.08}deg)
+      scale(1)
     `;
 
-    card.style.opacity=isActive?1:0.5;
-    card.style.filter=`blur(${isActive?0:i*0.4}px)`;
-    card.style.zIndex=isActive?999:i;
+    card.style.opacity = isActive ? 1 : 0.5;
+    card.style.zIndex = 1000 - Math.abs(centered);
 
   });
 
