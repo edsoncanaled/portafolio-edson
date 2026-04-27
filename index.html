@@ -101,23 +101,29 @@ document.addEventListener('mousemove',e=>{
 });
 
 /* IMÁGENES */
-const basePhotos=[
+const photos=[
   'images/CAMPTION1.jpg',
   'images/CAMPTION1-1.jpg',
   'images/CAMPTION1-2.jpg',
   'images/CAMPTION1-3.jpg',
+  'images/CAMPTION1-4.jpg',
+  'images/CAMPTION1-5.jpg',
+  'images/CAMPTION1-6.jpg',
   'images/MAR1.jpg',
   'images/MAR1-2.jpg',
+  'images/MAR1-3.jpg',
+  'images/MAR1-4.jpg',
+  'images/MAR1-7.jpg',
+  'images/MAR1-8.jpg',
   'images/NATS1.jpg',
-  'images/NATS2.jpg'
+  'images/NATS2.jpg',
+  'images/NATS3.jpg',
+  'images/NATS4.jpg'
 ];
-
-/* DUPLICAR PARA LOOP */
-const photos=[...basePhotos,...basePhotos,...basePhotos];
 
 const gallery=document.getElementById('gallery');
 
-/* CREAR */
+/* CREAR CARDS */
 photos.forEach(src=>{
   const card=document.createElement('div');
   card.className='card';
@@ -137,19 +143,21 @@ photos.forEach(src=>{
 const cards=document.querySelectorAll('.card');
 
 /* ESTADO */
-let offset=0;
-let target=0;
-let velocity=0;
-let currentIndex=0;
+let offset = 0;
+let target = 0;
+let velocity = 0;
+let currentIndex = 0;
 
-/* CLICK DOBLE */
+const spacing = 180; // distancia entre imágenes
+
+/* CLICK */
 cards.forEach((card,i)=>{
   card.addEventListener('click',()=>{
     if(currentIndex===i){
       window.location.href='CAMPTION.html';
     }else{
       currentIndex=i;
-      target=i*240;
+      target = i * spacing;
     }
   });
 });
@@ -173,34 +181,48 @@ document.addEventListener('mousemove',e=>{
   startX=e.clientX;
 });
 
+/* LOOP INFINITO REAL */
+function normalizeOffset(){
+  const max = photos.length * spacing;
+
+  if(offset > max){
+    offset -= max;
+    target -= max;
+  }
+
+  if(offset < -max){
+    offset += max;
+    target += max;
+  }
+}
+
 /* ANIMACIÓN */
 function animate(){
 
-  velocity*=0.9;
-  offset += (target-offset)*0.08 + velocity;
+  velocity *= 0.9;
+  offset += (target - offset)*0.08 + velocity;
 
-  const totalWidth = basePhotos.length * 240;
-
-  /* LOOP INFINITO */
-  if(offset > totalWidth) offset -= totalWidth;
-  if(offset < 0) offset += totalWidth;
+  normalizeOffset();
 
   cards.forEach((card,i)=>{
 
-    const x = (i*240 - offset) % totalWidth;
+    const base = i * spacing;
+    const x = base - offset;
 
-    const centered = x - totalWidth/2;
+    /* DIAGONAL */
+    const y = x * 0.25;
+    const z = -Math.abs(x) * 0.15;
 
-    const isActive = Math.abs(centered) < 120;
+    const isActive = Math.abs(x) < spacing/2;
 
     card.style.transform = `
-      translateX(${centered}px)
-      rotateY(${centered * 0.08}deg)
+      translate3d(${x}px, ${y}px, ${z}px)
+      rotateY(${x * 0.05}deg)
       scale(1)
     `;
 
-    card.style.opacity = isActive ? 1 : 0.5;
-    card.style.zIndex = 1000 - Math.abs(centered);
+    card.style.opacity = isActive ? 1 : 0.6;
+    card.style.zIndex = 1000 - Math.abs(x);
 
   });
 
