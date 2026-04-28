@@ -216,55 +216,56 @@ let dragging = false, drag0=0, off0=0;
 
 function render(){
   if(!dragging){
-    /* snap: jalar suavemente hacia la card más cercana */
+    /* snap suave hacia la card más cercana */
     const nearest = Math.round(offset / STEP) * STEP;
-    velocity += (nearest - offset) * 0.08;
-    velocity *= 0.78;
+    velocity += (nearest - offset) * 0.06;
+    velocity *= 0.75;
     offset   += velocity;
   }
 
+  /* loop infinito */
   if(offset < CYCLE*3) offset += CYCLE;
   if(offset > CYCLE*8) offset -= CYCLE;
 
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const cx = vw / 2;
-  const cy = vh / 2 + vh * PY;
-
+  const vw       = window.innerWidth;
+  const vh       = window.innerHeight;
+  const cx       = vw / 2;
+  const cy       = vh / 2 + vh * PY;
   const activeIdx = Math.round(offset / STEP);
+  const GAP       = CARD_W * 1.6; /* espacio a cada lado de la activa */
 
-  allCards.forEach((el,i)=>{
-    const isActive = i === activeIdx;
-    const GAP      = CARD_W * 1.4; /* espacio extra a cada lado de la activa */
+  allCards.forEach((el, i)=>{
+    /* distancia en índices desde la card activa */
+    const rel    = i - activeIdx;
+    const absRel = Math.abs(rel);
 
+    /* ocultar cards muy lejanas para performance */
+    if(absRel > 12){ el.style.opacity = 0; return; }
+
+    const isActive = rel === 0;
+
+    /* posición en el eje de la tira:
+       activa → d=0 (centro exacto)
+       demás  → desplazadas por STEP + GAP extra a cada lado */
     let d;
     if(isActive){
-      d = 0; /* la activa SIEMPRE en el centro exacto */
+      d = 0;
     } else {
-      /* posición relativa al activo en unidades de índice */
-      const rel = i - activeIdx;
-      /* gap: las de la derecha suman GAP, las de la izquierda restan GAP */
       const sign = rel > 0 ? 1 : -1;
       d = rel * STEP + sign * GAP;
     }
 
-    const sx = cx + d * COS;
-    const sy = cy + d * SIN;
-
-    const isActive = i === activeIdx;
-    const scale    = isActive ? 1.18 : 1;
+    const sx    = cx + d * COS;
+    const sy    = cy + d * SIN;
+    const scale = isActive ? 1.15 : 1;
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
-       rotateX(${RX}deg)
-       rotateY(${RY}deg)
-       rotateZ(${RZ}deg)
+       rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
        scale(${scale})`;
 
-    el.style.zIndex     = isActive ? 999 : i;
-    const absd          = Math.abs(d);
-    el.style.opacity    = isActive ? 1 : Math.max(0.08, 1 - absd / (STEP * 8));
-    el.style.transition = 'opacity .35s';
+    el.style.zIndex  = isActive ? 999 : 500 - absRel;
+    el.style.opacity = isActive ? 1 : Math.max(0.08, 1 - absRel * 0.15);
     el.classList.toggle('active', isActive);
   });
 
