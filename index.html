@@ -160,13 +160,20 @@ header {
   background: rgba(242, 238, 228, 0.72);
   backdrop-filter: blur(3px) brightness(1.08);
   -webkit-backdrop-filter: blur(3px) brightness(1.08);
-  /* textura porosa — grano visible como papel albanene real */
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeBlend in='SourceGraphic' mode='multiply'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23grain)' opacity='0.18'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='pore'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23pore)' opacity='0.10'/%3E%3C/svg%3E");
   transition: opacity 1s ease;
-  /* borde sutil como hoja física */
   box-shadow: inset 0 0 80px rgba(200,190,170,0.3);
+}
+
+#intro::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.10;
+  mix-blend-mode: multiply;
+}
 }
 
 #intro.hide {
@@ -199,7 +206,17 @@ header {
   margin-top: 20px;
 }
 
-#intro .intro-hint {
+#intro .intro-bio {
+  font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: .04em;
+  color: #1a1a1a;
+  opacity: .55;
+  margin-top: 24px;
+  max-width: 320px;
+  text-align: center;
+  font-weight: 400;
+}
   position: absolute;
   bottom: 36px;
   font-size: 9px;
@@ -246,6 +263,7 @@ header {
   <div class="intro-content">
     <div class="intro-name">Edson<br>Canales</div>
     <div class="intro-sub">Photographer — Archive</div>
+    <div class="intro-bio">Hola, soy Edson Canales. Soy un fotógrafo regio independiente enfocado en fotografía conceptual. Mi interés se centra en la fotografía análoga explorando lo documental y retratos.</div>
   </div>
   <div class="intro-hint">Toca para entrar</div>
 </div>
