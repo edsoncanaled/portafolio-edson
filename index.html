@@ -231,7 +231,14 @@ function render(){
   const activeIdx = Math.round(offset / STEP);
 
   allCards.forEach((el,i)=>{
-    const d  = i * STEP - offset;
+    /* gap extra alrededor de la card activa:
+       las cards a la derecha del activo se empujan +GAP
+       las cards a la izquierda se empujan -GAP */
+    const GAP  = STEP * 7;
+    const raw  = i * STEP - offset;
+    const sign = raw > 0 ? 1 : raw < 0 ? -1 : 0;
+    const d    = raw + sign * GAP;
+
     const sx = cx + d * COS;
     const sy = cy + d * SIN;
 
