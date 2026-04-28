@@ -156,7 +156,7 @@ const N        = photos.length;
 const isMobile = window.innerWidth <= 768;
 
 /* card 7:5 landscape */
-const CARD_W = isMobile ? 200 : 300;
+const CARD_W = isMobile ? 130 : 220;
 const CARD_H = Math.round(CARD_W * 5/7);
 
 /* rotación del playground */
@@ -172,7 +172,7 @@ const SIN = Math.sin(RAD);
           y entre la card activa y el grupo derecho
 */
 const STACK_STEP = Math.round(CARD_W * 0.07); /* muy solapadas */
-const GAP        = CARD_W * 1.1;              /* espacio a cada lado de la activa */
+const GAP        = CARD_W * 1.2;              /* espacio a cada lado de la activa */
 
 const COPIES = 9;
 const TOTAL  = N * COPIES;
