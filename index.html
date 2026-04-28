@@ -216,7 +216,10 @@ let dragging = false, drag0=0, off0=0;
 
 function render(){
   if(!dragging){
-    velocity *= 0.94;
+    /* snap: jalar suavemente hacia la card más cercana */
+    const nearest = Math.round(offset / STEP) * STEP;
+    velocity += (nearest - offset) * 0.08;
+    velocity *= 0.78;
     offset   += velocity;
   }
 
@@ -280,7 +283,9 @@ window.addEventListener('mousemove',e=>{
 window.addEventListener('mouseup',e=>{
   if(!dragging)return;
   dragging=false;
-  velocity=-(e.clientX-drag0)*0.07;
+  const vel = -(e.clientX-drag0)*0.07;
+  const nearest = Math.round((offset + vel * 8) / STEP) * STEP;
+  velocity = (nearest - offset) * 0.12;
 });
 
 canvas.addEventListener('touchstart',e=>{
@@ -293,7 +298,10 @@ canvas.addEventListener('touchmove',e=>{
 },{passive:false});
 canvas.addEventListener('touchend',e=>{
   dragging=false;
-  velocity=-(e.changedTouches[0].clientX-drag0)*0.07;
+  const vel = -(e.changedTouches[0].clientX-drag0)*0.07;
+  /* snap a la card más cercana */
+  const nearest = Math.round((offset + vel * 8) / STEP) * STEP;
+  velocity = (nearest - offset) * 0.12;
 });
 
 canvas.addEventListener('wheel',e=>{
