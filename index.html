@@ -361,9 +361,14 @@ const CARD_H = Math.round(CARD_W * 5/7);
 
 /* rotación del playground */
 const RX = -37, RY = -44, RZ = -1;
-const RAD = RZ * Math.PI/180;
-const COS = Math.cos(RAD);
-const SIN = Math.sin(RAD);
+
+/*
+  Ángulo real de la tira en pantalla — independiente de RZ.
+  -30deg da la diagonal arriba-derecha a abajo-izquierda del GIF.
+*/
+const STRIP_ANGLE = -30 * Math.PI / 180;
+const COS = Math.cos(STRIP_ANGLE);
+const SIN = Math.sin(STRIP_ANGLE);
 
 /*
   LAYOUT — igual que el GIF:
@@ -374,7 +379,7 @@ const SIN = Math.sin(RAD);
 const STACK_STEP = Math.round(CARD_W * 0.05); /* muy solapadas */
 const GAP        = CARD_W * 1.2;              /* espacio a cada lado de la activa */
 
-const COPIES = 9;
+const COPIES = 13;
 const TOTAL  = N * COPIES;
 const CYCLE  = N * STACK_STEP;
 
@@ -462,9 +467,7 @@ function render(){
     }
 
     const sx = cx + d * COS;
-    /* inclinación del conjunto: arriba-derecha a abajo-izquierda como en el GIF */
-    const TILT = 0.55;
-    const sy = cy + d * SIN - d * TILT + liftY;
+    const sy = cy + d * SIN + liftY;
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
