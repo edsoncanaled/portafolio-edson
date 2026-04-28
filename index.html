@@ -1,149 +1,139 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales — Archive</title>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-:root{
-  --card-w: 200px;
-  --card-h: 270px;
-  --gap: 14px; /* espacio visible entre cards en el eje diagonal */
-}
-
 body{
-  font-family:'Courier Prime',monospace;
-  background:#f0ede8;
-  color:#111;
-  overflow:hidden;
-  height:100vh;
-  width:100vw;
+font-family:‘Courier Prime’,monospace;
+background:#f0ede8;
+color:#111;
+overflow:hidden;
+height:100vh;
+width:100vw;
 }
 
-/* ── HEADER ── */
 .header{
-  position:fixed;
-  top:36px;left:40px;right:40px;
-  display:flex;justify-content:space-between;
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  z-index:20;
-  mix-blend-mode:multiply;
-  opacity:.7;
+position:fixed;
+top:36px;left:40px;right:40px;
+display:flex;justify-content:space-between;
+font-size:11px;
+letter-spacing:.1em;
+text-transform:uppercase;
+z-index:20;
+opacity:.6;
 }
 
-/* ── CANVAS DE LA GALERÍA ── */
 .stage{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
+position:fixed;
+inset:0;
+overflow:hidden;
+cursor:grab;
 }
+.stage:active{ cursor:grabbing; }
 
-/* el contenedor que realmente se mueve */
 #track{
-  position:absolute;
-  /* se posiciona dinámicamente por JS */
-  will-change:transform;
+position:absolute;
+top:0;left:0;
+will-change:transform;
 }
 
-/* ── CARD ── */
 .card{
-  position:absolute;
-  width:var(--card-w);
-  height:var(--card-h);
-  cursor:pointer;
-  /* cada card se coloca en la diagonal via JS */
-  will-change:transform,opacity;
-  transition:opacity .4s ease, box-shadow .4s ease;
+position:absolute;
+width:190px;
+cursor:pointer;
+will-change:opacity;
 }
 
 .card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:3px;
-  display:block;
-  /* sombra de profundidad */
-  box-shadow:
-    2px 2px 0 rgba(0,0,0,.08),
-    6px 6px 0 rgba(0,0,0,.06),
-    12px 12px 20px rgba(0,0,0,.18);
+width:190px;
+height:255px;
+object-fit:cover;
+border-radius:3px;
+display:block;
+box-shadow:
+4px 4px 0 rgba(0,0,0,.07),
+10px 10px 28px rgba(0,0,0,.18);
+transition:box-shadow .3s;
 }
 
-/* borde inferior tipo polaroid */
-.card::after{
-  content:'';
-  position:absolute;
-  bottom:-3px;left:3px;right:-3px;
-  height:100%;
-  background:rgba(0,0,0,.06);
-  border-radius:3px;
-  z-index:-1;
-  transform:skewY(.4deg);
+.card.active img{
+box-shadow:
+4px 4px 0 rgba(0,0,0,.1),
+16px 16px 40px rgba(0,0,0,.28);
 }
 
 .meta{
-  position:absolute;
-  bottom:-20px;
-  left:0;
-  font-size:9px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  opacity:0;
-  transition:opacity .4s;
-  white-space:nowrap;
+margin-top:8px;
+font-size:9px;
+letter-spacing:.14em;
+text-transform:uppercase;
+opacity:0;
+transition:opacity .4s;
+white-space:nowrap;
+color:#111;
 }
+.card.active .meta{ opacity:.6; }
 
-.card.active .meta{ opacity:.55; }
-.card.active img{
-  box-shadow:
-    2px 2px 0 rgba(0,0,0,.1),
-    8px 8px 0 rgba(0,0,0,.07),
-    20px 20px 40px rgba(0,0,0,.28);
-}
-
-/* instrucción sutil */
 .hint{
-  position:fixed;
-  bottom:36px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:9px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  opacity:.3;
-  z-index:20;
+position:fixed;
+bottom:30px;
+left:50%;
+transform:translateX(-50%);
+font-size:9px;
+letter-spacing:.18em;
+text-transform:uppercase;
+opacity:.25;
+z-index:20;
+pointer-events:none;
 }
 
-/* ── MOBILE ── */
+/* MOBILE */
 @media(max-width:768px){
-  .stage{display:none;}
-  .hint{display:none;}
-  .mobile-strip{
-    display:flex;
-    gap:12px;
-    overflow-x:auto;
-    padding:110px 20px 40px;
-    -webkit-overflow-scrolling:touch;
-  }
-  .mobile-card{
-    flex:0 0 auto;
-    width:65vw;height:80vw;
-    border-radius:4px;
-    overflow:hidden;
-    box-shadow:0 8px 24px rgba(0,0,0,.18);
-  }
-  .mobile-card img{width:100%;height:100%;object-fit:cover;display:block;}
+.stage,.hint{ display:none; }
+body{ overflow:auto; }
+
+.mobile-strip{
+display:flex;
+flex-direction:column;
+gap:32px;
+padding:100px 28px 60px;
 }
+
+.mobile-card{
+display:flex;
+flex-direction:column;
+gap:8px;
+cursor:pointer;
+}
+
+.mobile-card img{
+width:100%;
+height:72vw;
+object-fit:cover;
+border-radius:4px;
+box-shadow:0 8px 24px rgba(0,0,0,.15);
+display:block;
+}
+
+.mobile-card .mobile-meta{
+font-size:10px;
+letter-spacing:.14em;
+text-transform:uppercase;
+opacity:.55;
+}
+}
+
 @media(min-width:769px){
-  .mobile-strip{display:none;}
+.mobile-strip{ display:none; }
 }
 </style>
+
 </head>
 <body>
 
@@ -158,12 +148,9 @@ body{
 
 <div class="mobile-strip" id="mobile-strip"></div>
 
-<div class="hint">← drag or scroll →</div>
+<div class="hint">← arrastra o usa la rueda →</div>
 
 <script>
-/* ─────────────────────────────────────────
-   DATOS
-───────────────────────────────────────── */
 const basePhotos = [
   {src:'images/CAMPTION1.jpg',   text:'B&W Series'},
   {src:'images/CAMPTION1-1.jpg', text:'Industrial Silence'},
@@ -177,7 +164,6 @@ const basePhotos = [
   {src:'images/NATS4.jpg',       text:'Soft Horizon'}
 ];
 
-/* Fisher-Yates shuffle — más aleatorio que sort(random) */
 function shuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
@@ -186,198 +172,151 @@ function shuffle(arr){
   }
   return a;
 }
-const photos = shuffle(basePhotos);
-const N = photos.length;
 
-/* ─────────────────────────────────────────
-   LAYOUT DIAGONAL
-   Cada card se desplaza (STEP_X, STEP_Y) px
-   respecto a la anterior — efecto isométrico
-───────────────────────────────────────── */
-const CARD_W = 200;
-const CARD_H = 270;
-const STEP_X = 148;   // avance horizontal entre cards
-const STEP_Y = -68;   // avance vertical   (negativo = sube)
+const photos  = shuffle(basePhotos);
+const N       = photos.length;
+const CARD_W  = 190;
+const CARD_H  = 255;
+const STEP_X  = 155;
+const STEP_Y  = -70;
+const COPIES  = 9;
+const TOTAL   = N * COPIES;
+const CYCLE   = N * STEP_X;
 
-/* cuántas copias necesitamos para llenar pantalla + buffer */
-const COPIES = 7;     // 7 × 10 = 70 cards en el DOM
-const TOTAL  = N * COPIES;
-
-const track  = document.getElementById('track');
-const stage  = document.getElementById('stage');
-
-/* crear nodos */
+const track = document.getElementById('track');
+const stage = document.getElementById('stage');
 const allCards = [];
+
 for(let i=0;i<TOTAL;i++){
   const p    = photos[i % N];
   const card = document.createElement('div');
   card.className='card';
 
-  const img  = document.createElement('img');
-  img.src    = p.src;
-  img.alt    = p.text;
+  const img=document.createElement('img');
+  img.src=p.src; img.alt=p.text;
 
-  const meta = document.createElement('div');
+  const meta=document.createElement('div');
   meta.className='meta';
   meta.textContent=p.text;
 
   card.appendChild(img);
   card.appendChild(meta);
   track.appendChild(card);
-  allCards.push({el:card, idx:i});
+  allCards.push(card);
 
   card.addEventListener('click',()=>{
-    if(card.classList.contains('active')){
+    if(card.classList.contains('active'))
       window.location.href='CAMPTION.html';
-    }
   });
 }
 
-/* ─────────────────────────────────────────
-   POSICIONAMIENTO
-   La "tira" diagonal tiene un paso definido.
-   Ponemos el origen en el centro de la pantalla
-   y cada card en su posición fija dentro del track.
-───────────────────────────────────────── */
-function positionCards(){
-  allCards.forEach(({el},i)=>{
-    el.style.left = (i * STEP_X) + 'px';
-    el.style.top  = (i * STEP_Y) + 'px';
-  });
-}
-positionCards();
+/* posición fija de cada card en el track */
+allCards.forEach((card,i)=>{
+  card.style.left = (i*STEP_X)+'px';
+  card.style.top  = (i*STEP_Y)+'px';
+});
 
-/* ancho total de la tira (un ciclo completo) */
-const CYCLE_PX = N * STEP_X;
+/* empezar centrado en el card del medio */
+const CENTER_IDX = Math.floor(TOTAL/2);
+let offset   = CENTER_IDX * STEP_X;
+let velocity = 0;
+let dragging = false, dragX0=0, dragOff0=0;
 
-/* ─────────────────────────────────────────
-   ESTADO DE SCROLL
-───────────────────────────────────────── */
-let offset    = CYCLE_PX * 3;   // empezar en el medio del buffer
-let velocity  = 0;
-let isDragging= false;
-let dragStart = 0;
-let dragOffset= 0;
-let raf;
-
-/* centro de pantalla */
-const cx = ()=> window.innerWidth  / 2 - CARD_W / 2;
-const cy = ()=> window.innerHeight / 2 - CARD_H / 2;
-
-/* ─────────────────────────────────────────
-   RENDER LOOP
-───────────────────────────────────────── */
 function render(){
-  /* suavizado inercial cuando no se arrastra */
-  if(!isDragging){
-    velocity *= 0.92;
+  if(!dragging){
+    velocity *= 0.90;
     offset   += velocity;
   }
 
-  /* ── loop infinito sin salto ──
-     Mantenemos offset siempre dentro de [CYCLE_PX*2, CYCLE_PX*5]
-     Hay 7 copias (0-6); los rangos 2-4 son el "núcleo" que usamos.
-     Cuando salimos, teletransportamos exactamente un ciclo:
-     visualmente idéntico porque las imágenes se repiten. */
-  if(offset < CYCLE_PX * 2) offset += CYCLE_PX;
-  if(offset > CYCLE_PX * 5) offset -= CYCLE_PX;
+  /* loop sin salto — mantenerse en zona central del buffer */
+  if(offset < CYCLE*3) offset += CYCLE;
+  if(offset > CYCLE*6) offset -= CYCLE;
 
-  /* mover el track */
-  const tx = cx() - offset;
-  const ty = cy() - (offset / STEP_X) * (-STEP_Y);
-  track.style.transform=`translate(${tx}px,${ty}px)`;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
-  /* card activa = la más cercana al centro de pantalla */
-  const screenCX = window.innerWidth  / 2;
-  const screenCY = window.innerHeight / 2;
-  let   minDist  = Infinity;
-  let   activeEl = null;
+  /*
+    Queremos que la card cuyo centro horizontal sea "offset"
+    aparezca centrada en pantalla.
+    card_screen_x = trackX + i*STEP_X  → para la activa: trackX + offset = vw/2 - CARD_W/2
+    → trackX = vw/2 - CARD_W/2 - offset
 
-  allCards.forEach(({el},i)=>{
-    const cardX = tx + i*STEP_X + CARD_W/2;
-    const cardY = ty + i*STEP_Y + CARD_H/2;   // STEP_Y es negativo
-    const dist  = Math.hypot(cardX-screenCX, cardY-screenCY);
+    Para Y: la proporción del desplazamiento diagonal es STEP_Y/STEP_X
+    → trackY = vh/2 - CARD_H/2 - offset*(STEP_Y/STEP_X)
+  */
+  const trackX = vw/2 - CARD_W/2 - offset;
+  const trackY = vh/2 - CARD_H/2 - offset*(STEP_Y/STEP_X);
 
-    /* fade por distancia */
-    const fadeDist = Math.abs(cardX - screenCX);
-    const alpha = Math.max(0, 1 - fadeDist/700);
-    el.style.opacity = alpha;
+  track.style.transform=`translate(${trackX}px,${trackY}px)`;
 
-    if(dist < minDist){ minDist=dist; activeEl=el; }
+  /* card activa */
+  const cx=vw/2;
+  let minD=Infinity, activeCard=null;
+
+  allCards.forEach((card,i)=>{
+    const sx = trackX + i*STEP_X + CARD_W/2;
+    const dist = Math.abs(sx-cx);
+    card.style.opacity = Math.max(0.12, 1-dist/550);
+    if(dist<minD){ minD=dist; activeCard=card; }
   });
 
-  allCards.forEach(({el})=>el.classList.toggle('active', el===activeEl));
-
-  raf = requestAnimationFrame(render);
+  allCards.forEach(c=>c.classList.toggle('active',c===activeCard));
+  requestAnimationFrame(render);
 }
 render();
 
-/* ─────────────────────────────────────────
-   EVENTOS — Mouse drag
-───────────────────────────────────────── */
+/* mouse */
 stage.addEventListener('mousedown',e=>{
-  isDragging=true;
-  dragStart =e.clientX;
-  dragOffset=offset;
-  velocity  =0;
-  stage.style.cursor='grabbing';
+  dragging=true; dragX0=e.clientX; dragOff0=offset; velocity=0;
 });
-
 window.addEventListener('mousemove',e=>{
-  if(!isDragging)return;
-  const dx = e.clientX - dragStart;
-  offset   = dragOffset - dx;
+  if(!dragging)return;
+  offset=dragOff0-(e.clientX-dragX0);
 });
-
 window.addEventListener('mouseup',e=>{
-  if(!isDragging)return;
-  isDragging=false;
-  velocity  = -(e.clientX - dragStart) * 0.04;
-  stage.style.cursor='';
+  if(!dragging)return;
+  dragging=false;
+  velocity=-(e.clientX-dragX0)*0.05;
 });
 
-/* ─────────────────────────────────────────
-   EVENTOS — Touch
-───────────────────────────────────────── */
+/* touch */
 stage.addEventListener('touchstart',e=>{
-  isDragging=true;
-  dragStart =e.touches[0].clientX;
-  dragOffset=offset;
-  velocity  =0;
+  dragging=true; dragX0=e.touches[0].clientX; dragOff0=offset; velocity=0;
 },{passive:true});
-
 stage.addEventListener('touchmove',e=>{
-  if(!isDragging)return;
-  const dx=e.touches[0].clientX-dragStart;
-  offset=dragOffset-dx;
+  if(!dragging)return;
+  offset=dragOff0-(e.touches[0].clientX-dragX0);
 },{passive:true});
-
 stage.addEventListener('touchend',e=>{
-  isDragging=false;
-  velocity= -(e.changedTouches[0].clientX-dragStart)*0.05;
+  dragging=false;
+  velocity=-(e.changedTouches[0].clientX-dragX0)*0.06;
 });
 
-/* ─────────────────────────────────────────
-   EVENTOS — Rueda
-───────────────────────────────────────── */
+/* wheel */
 stage.addEventListener('wheel',e=>{
   e.preventDefault();
-  velocity += e.deltaY * 0.6 + e.deltaX * 0.6;
+  velocity+=(e.deltaY+e.deltaX)*0.7;
 },{passive:false});
 
-/* ─────────────────────────────────────────
-   MOBILE STRIP
-───────────────────────────────────────── */
+/* mobile strip */
 const mobileStrip=document.getElementById('mobile-strip');
 photos.forEach(p=>{
   const div=document.createElement('div');
   div.className='mobile-card';
+
   const img=document.createElement('img');
   img.src=p.src; img.alt=p.text;
+
+  const label=document.createElement('div');
+  label.className='mobile-meta';
+  label.textContent=p.text;
+
   div.appendChild(img);
+  div.appendChild(label);
   mobileStrip.appendChild(div);
   div.onclick=()=>window.location.href='CAMPTION.html';
 });
 </script>
+
 </body>
 </html>
