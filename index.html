@@ -216,7 +216,7 @@ let dragging = false, drag0=0, off0=0;
 
 function render(){
   if(!dragging){
-    velocity *= 0.91;
+    velocity *= 0.94;
     offset   += velocity;
   }
 
@@ -255,7 +255,7 @@ function render(){
     el.style.zIndex     = isActive ? 999 : i;
     const absd          = Math.abs(d);
     el.style.opacity    = isActive ? 1 : Math.max(0.08, 1 - absd / (STEP * 8));
-    el.style.transition = 'transform .35s cubic-bezier(.23,1,.32,1), opacity .35s';
+    el.style.transition = 'opacity .35s';
     el.classList.toggle('active', isActive);
   });
 
