@@ -23,15 +23,82 @@ body:active { cursor:grabbing; }
 
 header {
 position:fixed;
-top:28px; left:28px;
+top:0; left:0; right:0;
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+padding:24px 28px;
+z-index:100;
+pointer-events:none;
+}
+
+.nav-name {
 font-size:10px;
 letter-spacing:.12em;
 text-transform:uppercase;
 line-height:1.8;
 opacity:.45;
-z-index:30;
-pointer-events:none;
 }
+
+/* botón menú */
+.menu-btn {
+font-size:10px;
+letter-spacing:.14em;
+text-transform:uppercase;
+opacity:.5;
+cursor:pointer;
+pointer-events:all;
+transition:opacity .2s;
+background:none;
+border:none;
+font-family:‘Courier Prime’,monospace;
+color:#111;
+padding:0;
+}
+.menu-btn:hover { opacity:1; }
+
+/* overlay menú */
+#menu-overlay {
+position:fixed;
+inset:0;
+background:#e8e5e0;
+z-index:90;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:flex-end;
+padding-right:28px;
+opacity:0;
+pointer-events:none;
+transition:opacity .35s;
+}
+#menu-overlay.open {
+opacity:1;
+pointer-events:all;
+}
+
+#menu-overlay a {
+font-size:clamp(28px, 7vw, 52px);
+letter-spacing:.04em;
+text-transform:uppercase;
+color:#111;
+text-decoration:none;
+opacity:.18;
+line-height:1.4;
+transition:opacity .2s;
+transform:translateY(20px);
+transition:opacity .3s, transform .3s;
+}
+#menu-overlay.open a {
+opacity:.18;
+transform:translateY(0);
+}
+#menu-overlay a:hover { opacity:1; }
+
+/* stagger delay */
+#menu-overlay a:nth-child(1) { transition-delay:.05s; }
+#menu-overlay a:nth-child(2) { transition-delay:.10s; }
+#menu-overlay a:nth-child(3) { transition-delay:.15s; }
 
 #canvas {
 position:fixed;
@@ -97,9 +164,15 @@ z-index:30;
 <body>
 
 <header>
-  Edson Canales&nbsp;/&nbsp;Photographer<br>
-  Archive
+  <div class="nav-name">Edson Canales<br>Photographer</div>
+  <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">Menu</button>
 </header>
+
+<div id="menu-overlay">
+  <a href="CAMPTION.html">Camption</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="food&drinks.html">Food &amp; Drinks</a>
+</div>
 
 <div id="canvas"></div>
 <div class="hint">← arrastra →</div>
@@ -323,6 +396,15 @@ canvas.addEventListener('wheel',e=>{
   e.preventDefault();
   velocity+=(e.deltaY+e.deltaX)*0.8;
 },{passive:false});
+</script>
+
+<script>
+function toggleMenu(){
+  const overlay = document.getElementById('menu-overlay');
+  const btn     = document.getElementById('menu-btn');
+  const isOpen  = overlay.classList.toggle('open');
+  btn.textContent = isOpen ? 'Close' : 'Menu';
+}
 </script>
 
 </body>
