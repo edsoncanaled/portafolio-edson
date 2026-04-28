@@ -37,6 +37,11 @@ header {
   text-transform:uppercase;
   line-height:1.8;
   opacity:.45;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  pointer-events:none;
 }
 
 /* botón menú hamburguesa */
@@ -436,7 +441,7 @@ function render(){
     const absRel = Math.abs(rel);
 
     /* ocultar lejanas */
-    if(absRel > N*2){ el.style.opacity=0; return; }
+    if(absRel > N*3){ el.style.opacity=0; return; }
 
     const isActive = rel === 0;
 
@@ -472,7 +477,7 @@ function render(){
                     : rel > 0  ? 1000 - rel
                     :            500 + absRel;
 
-    el.style.opacity = isActive ? 1 : Math.max(0.1, 1 - absRel*0.12);
+    el.style.opacity = isActive ? 1 : Math.max(0.08, 1 - absRel*0.06);
     el.classList.toggle('active', isActive);
   });
 
