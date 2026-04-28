@@ -5,37 +5,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales — Archive</title>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-:root {
-–bg: #e8e5e0;
-–fg: #111;
-–card-w: 260px;
-–card-h: 174px; /* landscape, ratio ~3:2 */
-}
 
 html, body {
 width:100%; height:100%;
 overflow:hidden;
-background:var(–bg);
-color:var(–fg);
+background:#e8e5e0;
+color:#111;
 font-family:‘Courier Prime’, monospace;
 cursor:grab;
 user-select:none;
+-webkit-user-select:none;
 }
 body:active { cursor:grabbing; }
 
 /* ── HEADER ── */
 header {
 position:fixed;
-top:32px; left:36px;
+top:28px; left:28px;
 font-size:10px;
 letter-spacing:.12em;
 text-transform:uppercase;
-line-height:1.7;
-opacity:.55;
+line-height:1.8;
+opacity:.5;
 z-index:30;
 pointer-events:none;
 }
@@ -44,120 +38,75 @@ pointer-events:none;
 #scene {
 position:fixed;
 inset:0;
-perspective: 1200px;
-perspective-origin: 50% 42%;
+perspective:1000px;
+perspective-origin:50% 44%;
+overflow:hidden;
 }
 
-/* el plano 3D que rota como isométrico */
+/* plano isométrico — mismo en desktop y mobile */
 #iso-plane {
 position:absolute;
 top:50%; left:50%;
-transform-style: preserve-3d;
-/* rotación isométrica fija — coincide con el GIF de referencia */
-transform: translate(-50%,-50%)
-rotateX(55deg)
-rotateZ(-38deg);
-will-change: transform;
+transform-style:preserve-3d;
+will-change:transform;
 }
 
 /* ── CARD ── */
 .card {
 position:absolute;
-width: var(–card-w);
-height: var(–card-h);
-transform-style: preserve-3d;
 cursor:pointer;
+transform-style:preserve-3d;
 }
 
 .card img {
 width:100%; height:100%;
 object-fit:cover;
 display:block;
-/* sin border-radius para que parezca más editorial */
+pointer-events:none;
 }
 
-/* sombra falsa debajo de la card (plano aplastado) */
+/* sombra debajo */
 .card::after {
 content:’’;
 position:absolute;
 inset:0;
-top:4px; left:4px;
-background:rgba(0,0,0,.22);
-transform: translateZ(-2px) scale(1.01);
-filter:blur(6px);
+background:rgba(0,0,0,.2);
+transform:translateZ(-1px) scale(1.02);
+filter:blur(8px);
 }
 
-/* ── PIE DE FOTO ── */
+/* ── LABEL ── */
 .card .label {
 position:absolute;
-bottom: -18px;
+bottom:-16px;
 left:0;
-font-size:8px;
+font-size:7.5px;
 letter-spacing:.18em;
 text-transform:uppercase;
-color:var(–fg);
 opacity:0;
-transition:opacity .35s;
+transition:opacity .3s;
 white-space:nowrap;
 pointer-events:none;
-/* contrarotamos para que el texto quede legible en pantalla */
-transform: rotateZ(38deg) rotateX(-55deg) translateY(-2px);
-transform-origin: left bottom;
+color:#111;
 }
+.card.active .label { opacity:.65; }
 
-.card.active .label { opacity:.7; }
-.card.active img { outline: 1px solid rgba(0,0,0,.25); }
+/* borde sutil en card activa */
+.card.active img {
+outline:1px solid rgba(0,0,0,.3);
+}
 
 /* ── HINT ── */
 .hint {
 position:fixed;
-bottom:28px; left:50%;
+bottom:24px; left:50%;
 transform:translateX(-50%);
 font-size:8px;
-letter-spacing:.22em;
+letter-spacing:.2em;
 text-transform:uppercase;
-opacity:.22;
+opacity:.2;
 pointer-events:none;
 z-index:30;
-}
-
-/* ── MOBILE ── */
-@media(max-width:768px){
-#scene, .hint { display:none; }
-html,body { overflow:auto; cursor:default; }
-
-.mobile-strip {
-display:flex;
-flex-direction:column;
-gap:0;
-padding-top:90px;
-}
-
-.m-card {
-position:relative;
-cursor:pointer;
-}
-
-.m-card img {
-width:100%;
-height:56vw;
-object-fit:cover;
-display:block;
-}
-
-.m-label {
-position:absolute;
-bottom:10px; left:14px;
-font-size:9px;
-letter-spacing:.16em;
-text-transform:uppercase;
-color:#fff;
-opacity:.85;
-text-shadow:0 1px 4px rgba(0,0,0,.5);
-}
-}
-@media(min-width:769px){
-.mobile-strip { display:none; }
 }
 </style>
 
@@ -165,7 +114,7 @@ text-shadow:0 1px 4px rgba(0,0,0,.5);
 <body>
 
 <header>
-  Edson Canales&nbsp;&nbsp;/&nbsp;&nbsp;Photographer<br>
+  Edson Canales&nbsp;/&nbsp;Photographer<br>
   Archive
 </header>
 
@@ -173,14 +122,10 @@ text-shadow:0 1px 4px rgba(0,0,0,.5);
   <div id="iso-plane"></div>
 </div>
 
-<div class="mobile-strip" id="mobile-strip"></div>
-
-<div class="hint">← drag · scroll →</div>
+<div class="hint">← arrastra →</div>
 
 <script>
-/* ─────────────────────────────────
-   DATOS
-───────────────────────────────── */
+/* ── DATOS ── */
 const BASE = [
   {src:'images/CAMPTION1.jpg',   text:'B&W Series'},
   {src:'images/CAMPTION1-1.jpg', text:'Industrial Silence'},
@@ -206,26 +151,31 @@ function shuffle(a){
 const photos = shuffle(BASE);
 const N      = photos.length;
 
-/* ─────────────────────────────────
-   LAYOUT EN EL PLANO ISOMÉTRICO
-   Las cards se colocan en una línea
-   sobre el eje X del plano 3D.
-   STEP = espacio entre cards.
-───────────────────────────────── */
-const CARD_W = 260;
-const CARD_H = 174;
-const STEP   = 280;   /* separación centro a centro */
-const COPIES = 9;     /* buffer para loop infinito  */
+/* ── RESPONSIVE: tamaños según pantalla ── */
+const isMobile = window.innerWidth <= 768;
+const CARD_W   = isMobile ? 160 : 260;
+const CARD_H   = isMobile ? 107 : 174;
+const STEP     = isMobile ? 175 : 280;
+
+/* ángulo isométrico — más suave en móvil */
+const ROT_X = isMobile ? 48 : 55;
+const ROT_Z = isMobile ? -35 : -38;
+
+/* buffer loop infinito */
+const COPIES = 9;
 const TOTAL  = N * COPIES;
 const CYCLE  = N * STEP;
 
 const plane    = document.getElementById('iso-plane');
 const allCards = [];
 
+/* ── CREAR CARDS ── */
 for(let i=0;i<TOTAL;i++){
-  const p   = photos[i % N];
-  const el  = document.createElement('div');
+  const p  = photos[i % N];
+  const el = document.createElement('div');
   el.className='card';
+  el.style.width  = CARD_W+'px';
+  el.style.height = CARD_H+'px';
 
   const img = document.createElement('img');
   img.src=p.src; img.alt=p.text;
@@ -240,123 +190,98 @@ for(let i=0;i<TOTAL;i++){
   plane.appendChild(el);
   allCards.push(el);
 
-  /* click → navegar si ya está activa */
   el.addEventListener('click',()=>{
     if(el.classList.contains('active'))
       window.location.href='CAMPTION.html';
   });
 }
 
-/* posición estática de cada card en el plano */
+/* posición fija en el plano */
 allCards.forEach((el,i)=>{
   el.style.left = (i*STEP - CARD_W/2)+'px';
   el.style.top  = (-CARD_H/2)+'px';
 });
 
-/* ─────────────────────────────────
-   SCROLL STATE
-───────────────────────────────── */
-/* empezar centrado en el card del medio */
+/* ── ESTADO ── */
 let offset   = Math.floor(TOTAL/2) * STEP;
 let velocity = 0;
 let dragging = false, drag0=0, off0=0;
 
-/* ─────────────────────────────────
-   RENDER
-───────────────────────────────── */
+/* sensibilidad del arrastre — en móvil necesita menos recorrido */
+const DRAG_FACTOR = isMobile ? 2.2 : 1.8;
+const VEL_FACTOR  = isMobile ? 0.12 : 0.09;
+
+/* ── RENDER ── */
 function render(){
   if(!dragging){
     velocity *= 0.91;
     offset   += velocity;
   }
 
-  /* loop sin salto — mantener offset en zona central del buffer */
+  /* loop infinito sin salto */
   if(offset < CYCLE*3) offset += CYCLE;
   if(offset > CYCLE*6) offset -= CYCLE;
 
-  /* trasladar el plano para centrar la card activa */
+  /* mover el plano */
   plane.style.transform =
     `translate(-50%,-50%)
-     rotateX(55deg)
-     rotateZ(-38deg)
+     rotateX(${ROT_X}deg)
+     rotateZ(${ROT_Z}deg)
      translateX(${-offset}px)`;
 
-  /* card activa = la que está en X=0 del plano (centro de pantalla) */
-  /* en coordenadas del plano, la card i está en x = i*STEP - offset
-     → activa cuando i*STEP ≈ offset                                  */
+  /* card activa */
   const activeIdx = Math.round(offset / STEP);
 
   allCards.forEach((el,i)=>{
-    const dx  = Math.abs(i - activeIdx);
-    const alpha = Math.max(0.08, 1 - dx*0.18);
-    el.style.opacity = alpha;
-    el.classList.toggle('active', i===activeIdx);
+    const dx    = Math.abs(i - activeIdx);
+    el.style.opacity = Math.max(0.08, 1 - dx * 0.17);
+    el.classList.toggle('active', i === activeIdx);
   });
 
   requestAnimationFrame(render);
 }
 render();
 
-/* ─────────────────────────────────
-   EVENTOS
-───────────────────────────────── */
+/* ── EVENTOS mouse ── */
 const scene = document.getElementById('scene');
 
-/* mouse drag */
 scene.addEventListener('mousedown',e=>{
   dragging=true; drag0=e.clientX; off0=offset; velocity=0;
 });
 window.addEventListener('mousemove',e=>{
   if(!dragging)return;
-  /* en el plano isométrico, el arrastre en X de pantalla
-     no corresponde 1:1 — ajustamos con un factor visual */
-  offset = off0 - (e.clientX - drag0)*1.8;
+  offset = off0 - (e.clientX - drag0) * DRAG_FACTOR;
 });
 window.addEventListener('mouseup',e=>{
   if(!dragging)return;
   dragging=false;
-  velocity = -(e.clientX - drag0)*0.09;
+  velocity = -(e.clientX - drag0) * VEL_FACTOR;
 });
 
-/* touch */
+/* ── EVENTOS touch ── */
 scene.addEventListener('touchstart',e=>{
-  dragging=true; drag0=e.touches[0].clientX; off0=offset; velocity=0;
+  dragging=true;
+  drag0=e.touches[0].clientX;
+  off0=offset;
+  velocity=0;
 },{passive:true});
+
 scene.addEventListener('touchmove',e=>{
   if(!dragging)return;
-  offset=off0-(e.touches[0].clientX-drag0)*1.8;
-},{passive:true});
-scene.addEventListener('touchend',e=>{
-  dragging=false;
-  velocity=-(e.changedTouches[0].clientX-drag0)*0.1;
-});
-
-/* rueda */
-scene.addEventListener('wheel',e=>{
+  offset = off0 - (e.touches[0].clientX - drag0) * DRAG_FACTOR;
   e.preventDefault();
-  velocity += (e.deltaY+e.deltaX)*1.1;
 },{passive:false});
 
-/* ─────────────────────────────────
-   MOBILE STRIP
-───────────────────────────────── */
-const strip = document.getElementById('mobile-strip');
-photos.forEach(p=>{
-  const div=document.createElement('div');
-  div.className='m-card';
-
-  const img=document.createElement('img');
-  img.src=p.src; img.alt=p.text;
-
-  const lbl=document.createElement('div');
-  lbl.className='m-label';
-  lbl.textContent=p.text;
-
-  div.appendChild(img);
-  div.appendChild(lbl);
-  strip.appendChild(div);
-  div.onclick=()=>window.location.href='CAMPTION.html';
+scene.addEventListener('touchend',e=>{
+  dragging=false;
+  velocity = -(e.changedTouches[0].clientX - drag0) * VEL_FACTOR;
 });
+
+/* ── RUEDA ── */
+scene.addEventListener('wheel',e=>{
+  e.preventDefault();
+  velocity += (e.deltaY + e.deltaX) * 1.1;
+},{passive:false});
 </script>
 
 </body>
