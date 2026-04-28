@@ -54,17 +54,47 @@ box-shadow: 0 4px 20px rgba(0,0,0,.25);
 }
 .card .label {
 position:absolute;
-bottom:-20px; left:0;
-font-size:8px;
+bottom:-22px; left:0;
+font-size:9px;
 letter-spacing:.16em;
 text-transform:uppercase;
 color:#111;
 opacity:0;
-transition:opacity .3s;
+transition:opacity .4s;
 white-space:nowrap;
 pointer-events:none;
 }
-.card.active .label { opacity:.55; }
+.card.active .label { opacity:.7; }
+
+/* info overlay en la card activa */
+.card .info {
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:flex-end;
+padding:12px;
+background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 60%);
+opacity:0;
+transition:opacity .4s;
+pointer-events:none;
+}
+.card.active .info { opacity:1; }
+
+.card .info .project {
+font-size:10px;
+letter-spacing:.18em;
+text-transform:uppercase;
+color:#fff;
+line-height:1.5;
+}
+.card .info .sub {
+font-size:8px;
+letter-spacing:.12em;
+text-transform:uppercase;
+color:rgba(255,255,255,.55);
+margin-top:2px;
+}
 
 .hint {
 position:fixed;
@@ -155,7 +185,20 @@ for(let i=0;i<TOTAL;i++){
   lbl.className='label';
   lbl.textContent=p.text;
 
+  /* info overlay dentro de la imagen */
+  const info = document.createElement('div');
+  info.className='info';
+  const proj = document.createElement('div');
+  proj.className='project';
+  proj.textContent=p.text;
+  const sub = document.createElement('div');
+  sub.className='sub';
+  sub.textContent='Edson Canales';
+  info.appendChild(proj);
+  info.appendChild(sub);
+
   el.appendChild(img);
+  el.appendChild(info);
   el.appendChild(lbl);
   canvas.appendChild(el);
   allCards.push(el);
@@ -192,16 +235,21 @@ function render(){
     const sx = cx + d * COS;
     const sy = cy + d * SIN;
 
+    const isActive = i === activeIdx;
+    const scale    = isActive ? 1.18 : 1;
+
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
        rotateX(${RX}deg)
        rotateY(${RY}deg)
-       rotateZ(${RZ}deg)`;
+       rotateZ(${RZ}deg)
+       scale(${scale})`;
 
-    el.style.zIndex  = i;
-    const absd = Math.abs(d);
-    el.style.opacity = Math.max(0.08, 1 - absd / (STEP * 8));
-    el.classList.toggle('active', i === activeIdx);
+    el.style.zIndex     = isActive ? 999 : i;
+    const absd          = Math.abs(d);
+    el.style.opacity    = isActive ? 1 : Math.max(0.08, 1 - absd / (STEP * 8));
+    el.style.transition = 'transform .35s cubic-bezier(.23,1,.32,1), opacity .35s';
+    el.classList.toggle('active', isActive);
   });
 
   requestAnimationFrame(render);
