@@ -266,8 +266,10 @@ function render(){
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
-       rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
-       scale(${isActive ? 1.1 : 1})`;
+       ${isActive
+         ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.1)'
+         : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`
+       }`;
 
     /* z-index: activa arriba, dentro de cada grupo la más cercana al centro queda encima */
     el.style.zIndex = isActive ? 9999
@@ -283,6 +285,13 @@ function render(){
 render();
 
 /* eventos */
+/* auto-avance cada 4 segundos */
+setInterval(()=>{
+  if(!dragging){
+    offset += STACK_STEP;
+  }
+}, 4000);
+
 canvas.addEventListener('mousedown',e=>{
   dragging=true; drag0=e.clientX; off0=offset; velocity=0;
 });
