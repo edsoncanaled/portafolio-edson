@@ -106,16 +106,40 @@ z-index:30;
 
 <script>
 const BASE = [
-  {src:'images/CAMPTION1.jpg',   text:'B&W Series'},
-  {src:'images/CAMPTION1-1.jpg', text:'Industrial Silence'},
-  {src:'images/CAMPTION1-2.jpg', text:'Concrete Frames'},
-  {src:'images/CAMPTION1-3.jpg', text:'Urban Shadows'},
-  {src:'images/MAR1.jpg',        text:'Coastal Light'},
-  {src:'images/MAR1-2.jpg',      text:'Salt & Wind'},
-  {src:'images/NATS1.jpg',       text:'Still Movement'},
-  {src:'images/NATS2.jpg',       text:'Natural Study'},
-  {src:'images/NATS3.jpg',       text:'Field Notes'},
-  {src:'images/NATS4.jpg',       text:'Soft Horizon'}
+  {src:'images/CAMPTION1.jpg',          text:'B&W Series'},
+  {src:'images/CAMPTION1-1.jpg',        text:'B&W Series'},
+  {src:'images/CAMPTION1-2.jpg',        text:'B&W Series'},
+  {src:'images/CAMPTION1-3.jpg',        text:'B&W Series'},
+  {src:'images/CAMPTION1-4.jpg',        text:'B&W Series'},
+  {src:'images/CAMPTION1-5.jpg',        text:'B&W Series'},
+  {src:'images/CAMPTION1-6.jpg',        text:'B&W Series'},
+  {src:'images/MAR1.jpg',               text:'Coastal Light'},
+  {src:'images/MAR1-2.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-3.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-4.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-7.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-8.jpg',             text:'Coastal Light'},
+  {src:'images/NATS1.jpg',              text:'Natural Study'},
+  {src:'images/NATS2.jpg',              text:'Natural Study'},
+  {src:'images/NATS3.jpg',              text:'Natural Study'},
+  {src:'images/NATS4.jpg',              text:'Natural Study'},
+  {src:'images/NATS5.png',              text:'Natural Study'},
+  {src:'images/foto1.jpg',              text:'Archive'},
+  {src:'images/foto2.jpg',              text:'Archive'},
+  {src:'images/foto3.jpg',              text:'Archive'},
+  {src:'images/foto4.jpg',              text:'Archive'},
+  {src:'images/foto5.jpg',              text:'Archive'},
+  {src:'images/foto6.jpg',              text:'Archive'},
+  {src:'cafeteria/images/foto1c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto2c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto3c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto4c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto5c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto6c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto7c.JPG',   text:'Abú Coffee'},
+  {src:'cafeteria/images/foto10c.JPG',  text:'Abú Coffee'},
+  {src:'cafeteria/images/foto11c.JPG',  text:'Abú Coffee'},
+  {src:'cafeteria/images/foto12c.JPG',  text:'Abú Coffee'},
 ];
 
 function shuffle(a){
@@ -246,9 +270,9 @@ function render(){
        scale(${isActive ? 1.1 : 1})`;
 
     /* z-index: activa arriba, dentro de cada grupo la más cercana al centro queda encima */
-    el.style.zIndex  = isActive ? 9999
-                     : rel > 0  ? 1000 - rel   /* derecha: más cerca = más arriba */
-                     :            1000 + rel;   /* izquierda: rel es negativo, más cerca = mayor valor */
+    el.style.zIndex = isActive ? 9999
+                    : rel > 0  ? 1000 - rel        /* derecha: rel=1 → 999, rel=2 → 998 */
+                    :            1000 + rel;        /* izquierda: rel=-1 → 999, rel=-2 → 998 */
 
     el.style.opacity = isActive ? 1 : Math.max(0.1, 1 - absRel*0.12);
     el.classList.toggle('active', isActive);
