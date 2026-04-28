@@ -262,8 +262,8 @@ function render(){
     }
 
     const sx = cx + d * COS;
-    /* inclinación del conjunto: las cards de la derecha suben, las de la izquierda bajan */
-    const TILT = 0.18; /* píxeles de subida por cada píxel de desplazamiento horizontal */
+    /* inclinación del conjunto: arriba-derecha a abajo-izquierda como en el GIF */
+    const TILT = 0.55;
     const sy = cy + d * SIN - d * TILT + liftY;
 
     el.style.transform =
