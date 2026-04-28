@@ -155,7 +155,7 @@ const CARD_H = Math.round(CARD_W * 5 / 7);
 const RX   = -37;
 const RY   = -44;
 const RZ   = -1;
-const STEP = Math.round(CARD_W * 0.10);  /* 10% solapamiento */
+const STEP = Math.round(CARD_W * 0.28);  /* 10% solapamiento */
 const PY   = 0.05;  /* 5% del viewport height */
 
 /* vector de dirección de la tira en pantalla (rotateZ ≈ 0) */
@@ -232,37 +232,32 @@ function render(){
   const cx       = vw / 2;
   const cy       = vh / 2 + vh * PY;
   const activeIdx = Math.round(offset / STEP);
-  const GAP       = CARD_W * 1.6; /* espacio a cada lado de la activa */
+  const SHOW = 8; /* cards visibles a cada lado */
 
   allCards.forEach((el, i)=>{
-    /* distancia en índices desde la card activa */
-    const rel    = i - activeIdx;
+    /* índice relativo al activo, normalizado para el loop */
+    let rel = i - activeIdx;
+
+    /* wrap para que rel esté siempre en [-N/2, N/2] */
+    while(rel >  N/2) rel -= N;
+    while(rel < -N/2) rel += N;
+
     const absRel = Math.abs(rel);
 
-    /* ocultar cards muy lejanas para performance */
-    if(absRel > 12){ el.style.opacity = 0; return; }
+    if(absRel > SHOW){ el.style.opacity = 0; return; }
 
     const isActive = rel === 0;
+    const sign     = rel > 0 ? 1 : rel < 0 ? -1 : 0;
+    const GAP      = CARD_W * 0.5;
 
-    /* posición en el eje de la tira:
-       activa → d=0 (centro exacto)
-       demás  → desplazadas por STEP + GAP extra a cada lado */
-    let d;
-    if(isActive){
-      d = 0;
-    } else {
-      const sign = rel > 0 ? 1 : -1;
-      d = rel * STEP + sign * GAP;
-    }
-
-    const sx    = cx + d * COS;
-    const sy    = cy + d * SIN;
-    const scale = isActive ? 1.15 : 1;
+    const d  = isActive ? 0 : rel * STEP + sign * GAP;
+    const sx = cx + d * COS;
+    const sy = cy + d * SIN;
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
        rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
-       scale(${scale})`;
+       scale(${isActive ? 1.15 : 1})`;
 
     el.style.zIndex  = isActive ? 999 : 500 - absRel;
     el.style.opacity = isActive ? 1 : Math.max(0.08, 1 - absRel * 0.15);
