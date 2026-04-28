@@ -13,15 +13,14 @@ html, body {
 width:100%; height:100%;
 overflow:hidden;
 background:#e8e5e0;
-color:#111;
 font-family:‘Courier Prime’, monospace;
 cursor:grab;
 user-select:none;
 -webkit-user-select:none;
+-webkit-tap-highlight-color:transparent;
 }
 body:active { cursor:grabbing; }
 
-/* ── HEADER ── */
 header {
 position:fixed;
 top:28px; left:28px;
@@ -29,82 +28,52 @@ font-size:10px;
 letter-spacing:.12em;
 text-transform:uppercase;
 line-height:1.8;
-opacity:.5;
+opacity:.45;
 z-index:30;
 pointer-events:none;
 }
 
-/* ── SCENE ── */
-#scene {
+#canvas {
 position:fixed;
 inset:0;
-perspective:1000px;
-perspective-origin:50% 44%;
 overflow:hidden;
+perspective: 2000px;
+perspective-origin: 50% 50%;
 }
 
-/* plano isométrico — mismo en desktop y mobile */
-#iso-plane {
-position:absolute;
-top:50%; left:50%;
-transform-style:preserve-3d;
-will-change:transform;
-}
-
-/* ── CARD ── */
 .card {
 position:absolute;
-cursor:pointer;
-transform-style:preserve-3d;
+transform-origin: center center;
 }
-
 .card img {
+display:block;
 width:100%; height:100%;
 object-fit:cover;
-display:block;
 pointer-events:none;
+box-shadow: 0 4px 20px rgba(0,0,0,.25);
 }
-
-/* sombra debajo */
-.card::after {
-content:’’;
-position:absolute;
-inset:0;
-background:rgba(0,0,0,.2);
-transform:translateZ(-1px) scale(1.02);
-filter:blur(8px);
-}
-
-/* ── LABEL ── */
 .card .label {
 position:absolute;
-bottom:-16px;
-left:0;
-font-size:7.5px;
-letter-spacing:.18em;
+bottom:-20px; left:0;
+font-size:8px;
+letter-spacing:.16em;
 text-transform:uppercase;
+color:#111;
 opacity:0;
 transition:opacity .3s;
 white-space:nowrap;
 pointer-events:none;
-color:#111;
 }
-.card.active .label { opacity:.65; }
+.card.active .label { opacity:.55; }
 
-/* borde sutil en card activa */
-.card.active img {
-outline:1px solid rgba(0,0,0,.3);
-}
-
-/* ── HINT ── */
 .hint {
 position:fixed;
-bottom:24px; left:50%;
+bottom:22px; left:50%;
 transform:translateX(-50%);
 font-size:8px;
 letter-spacing:.2em;
 text-transform:uppercase;
-opacity:.2;
+opacity:.18;
 pointer-events:none;
 z-index:30;
 }
@@ -118,14 +87,10 @@ z-index:30;
   Archive
 </header>
 
-<div id="scene">
-  <div id="iso-plane"></div>
-</div>
-
+<div id="canvas"></div>
 <div class="hint">← arrastra →</div>
 
 <script>
-/* ── DATOS ── */
 const BASE = [
   {src:'images/CAMPTION1.jpg',   text:'B&W Series'},
   {src:'images/CAMPTION1-1.jpg', text:'Industrial Silence'},
@@ -148,32 +113,37 @@ function shuffle(a){
   return r;
 }
 
-const photos = shuffle(BASE);
-const N      = photos.length;
-
-/* ── RESPONSIVE: tamaños según pantalla ── */
+const photos   = shuffle(BASE);
+const N        = photos.length;
 const isMobile = window.innerWidth <= 768;
-const CARD_W   = isMobile ? 160 : 260;
-const CARD_H   = isMobile ? 107 : 174;
-const STEP     = isMobile ? 175 : 280;
 
-/* ángulo isométrico — más suave en móvil */
-const ROT_X = isMobile ? 48 : 55;
-const ROT_Z = isMobile ? -35 : -38;
+/* tamaño 7:5 landscape */
+const CARD_W = isMobile ? 200 : 300;
+const CARD_H = Math.round(CARD_W * 5 / 7);
 
-/* buffer loop infinito */
-const COPIES = 9;
+/* valores exactos del playground */
+const RX   = -37;
+const RY   = -44;
+const RZ   = -1;
+const STEP = Math.round(CARD_W * 0.10);  /* 10% solapamiento */
+const PY   = 0.05;  /* 5% del viewport height */
+
+/* vector de dirección de la tira en pantalla (rotateZ ≈ 0) */
+const RAD = RZ * Math.PI / 180;
+const COS = Math.cos(RAD);
+const SIN = Math.sin(RAD);
+
+const COPIES = 11;
 const TOTAL  = N * COPIES;
 const CYCLE  = N * STEP;
 
-const plane    = document.getElementById('iso-plane');
+const canvas   = document.getElementById('canvas');
 const allCards = [];
 
-/* ── CREAR CARDS ── */
 for(let i=0;i<TOTAL;i++){
   const p  = photos[i % N];
   const el = document.createElement('div');
-  el.className='card';
+  el.className = 'card';
   el.style.width  = CARD_W+'px';
   el.style.height = CARD_H+'px';
 
@@ -187,7 +157,7 @@ for(let i=0;i<TOTAL;i++){
 
   el.appendChild(img);
   el.appendChild(lbl);
-  plane.appendChild(el);
+  canvas.appendChild(el);
   allCards.push(el);
 
   el.addEventListener('click',()=>{
@@ -196,45 +166,41 @@ for(let i=0;i<TOTAL;i++){
   });
 }
 
-/* posición fija en el plano */
-allCards.forEach((el,i)=>{
-  el.style.left = (i*STEP - CARD_W/2)+'px';
-  el.style.top  = (-CARD_H/2)+'px';
-});
-
 /* ── ESTADO ── */
 let offset   = Math.floor(TOTAL/2) * STEP;
 let velocity = 0;
 let dragging = false, drag0=0, off0=0;
 
-/* sensibilidad del arrastre — en móvil necesita menos recorrido */
-const DRAG_FACTOR = isMobile ? 2.2 : 1.8;
-const VEL_FACTOR  = isMobile ? 0.12 : 0.09;
-
-/* ── RENDER ── */
 function render(){
   if(!dragging){
     velocity *= 0.91;
     offset   += velocity;
   }
 
-  /* loop infinito sin salto */
   if(offset < CYCLE*3) offset += CYCLE;
-  if(offset > CYCLE*6) offset -= CYCLE;
+  if(offset > CYCLE*8) offset -= CYCLE;
 
-  /* mover el plano */
-  plane.style.transform =
-    `translate(-50%,-50%)
-     rotateX(${ROT_X}deg)
-     rotateZ(${ROT_Z}deg)
-     translateX(${-offset}px)`;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const cx = vw / 2;
+  const cy = vh / 2 + vh * PY;
 
-  /* card activa */
   const activeIdx = Math.round(offset / STEP);
 
   allCards.forEach((el,i)=>{
-    const dx    = Math.abs(i - activeIdx);
-    el.style.opacity = Math.max(0.08, 1 - dx * 0.17);
+    const d  = i * STEP - offset;
+    const sx = cx + d * COS;
+    const sy = cy + d * SIN;
+
+    el.style.transform =
+      `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
+       rotateX(${RX}deg)
+       rotateY(${RY}deg)
+       rotateZ(${RZ}deg)`;
+
+    el.style.zIndex  = i;
+    const absd = Math.abs(d);
+    el.style.opacity = Math.max(0.08, 1 - absd / (STEP * 8));
     el.classList.toggle('active', i === activeIdx);
   });
 
@@ -242,45 +208,36 @@ function render(){
 }
 render();
 
-/* ── EVENTOS mouse ── */
-const scene = document.getElementById('scene');
-
-scene.addEventListener('mousedown',e=>{
+/* ── EVENTOS ── */
+canvas.addEventListener('mousedown',e=>{
   dragging=true; drag0=e.clientX; off0=offset; velocity=0;
 });
 window.addEventListener('mousemove',e=>{
   if(!dragging)return;
-  offset = off0 - (e.clientX - drag0) * DRAG_FACTOR;
+  offset=off0-(e.clientX-drag0)*1.2;
 });
 window.addEventListener('mouseup',e=>{
   if(!dragging)return;
   dragging=false;
-  velocity = -(e.clientX - drag0) * VEL_FACTOR;
+  velocity=-(e.clientX-drag0)*0.07;
 });
 
-/* ── EVENTOS touch ── */
-scene.addEventListener('touchstart',e=>{
-  dragging=true;
-  drag0=e.touches[0].clientX;
-  off0=offset;
-  velocity=0;
+canvas.addEventListener('touchstart',e=>{
+  dragging=true; drag0=e.touches[0].clientX; off0=offset; velocity=0;
 },{passive:true});
-
-scene.addEventListener('touchmove',e=>{
+canvas.addEventListener('touchmove',e=>{
   if(!dragging)return;
-  offset = off0 - (e.touches[0].clientX - drag0) * DRAG_FACTOR;
+  offset=off0-(e.touches[0].clientX-drag0)*1.2;
   e.preventDefault();
 },{passive:false});
-
-scene.addEventListener('touchend',e=>{
+canvas.addEventListener('touchend',e=>{
   dragging=false;
-  velocity = -(e.changedTouches[0].clientX - drag0) * VEL_FACTOR;
+  velocity=-(e.changedTouches[0].clientX-drag0)*0.07;
 });
 
-/* ── RUEDA ── */
-scene.addEventListener('wheel',e=>{
+canvas.addEventListener('wheel',e=>{
   e.preventDefault();
-  velocity += (e.deltaY + e.deltaX) * 1.1;
+  velocity+=(e.deltaY+e.deltaX)*0.8;
 },{passive:false});
 </script>
 
