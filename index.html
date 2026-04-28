@@ -227,7 +227,7 @@ const N        = photos.length;
 const isMobile = window.innerWidth <= 768;
 
 /* card 7:5 landscape */
-const CARD_W = isMobile ? 130 : 340;
+const CARD_W = isMobile ? 130 : 260;
 const CARD_H = Math.round(CARD_W * 5/7);
 
 /* rotación del playground */
@@ -242,7 +242,7 @@ const SIN = Math.sin(RAD);
   - GAP: espacio entre el grupo izquierdo y la card activa,
           y entre la card activa y el grupo derecho
 */
-const STACK_STEP = Math.round(CARD_W * 0.07); /* muy solapadas */
+const STACK_STEP = Math.round(CARD_W * 0.05); /* muy solapadas */
 const GAP        = CARD_W * 1.2;              /* espacio a cada lado de la activa */
 
 const COPIES = 9;
@@ -339,10 +339,8 @@ function render(){
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
-       ${isActive
-         ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.1)'
-         : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`
-       }`;
+       rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
+       scale(${isActive ? 1.08 : 1})`;
 
     el.style.zIndex = isActive ? 9999
                     : rel > 0  ? 1000 - rel
