@@ -37,13 +37,13 @@ pointer-events:none;
 position:fixed;
 inset:0;
 overflow:hidden;
-perspective: 2000px;
-perspective-origin: 50% 50%;
+perspective:2000px;
+perspective-origin:50% 50%;
 }
 
 .card {
 position:absolute;
-transform-origin: center center;
+transform-origin:center center;
 }
 .card img {
 display:block;
@@ -51,47 +51,32 @@ width:100%; height:100%;
 object-fit:cover;
 pointer-events:none;
 }
-.card .label {
-position:absolute;
-bottom:-22px; left:0;
-font-size:9px;
-letter-spacing:.16em;
-text-transform:uppercase;
-color:#111;
-opacity:0;
-transition:opacity .4s;
-white-space:nowrap;
-pointer-events:none;
-}
-.card.active .label { opacity:.7; }
 
-/* info overlay en la card activa */
-.card .info {
+/* info overlay solo en card activa */
+.info {
 position:absolute;
 inset:0;
 display:flex;
 flex-direction:column;
 justify-content:flex-end;
-padding:12px;
-background: linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 60%);
+padding:10px 12px;
+background:linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 60%);
 opacity:0;
-transition:opacity .4s;
+transition:opacity .3s;
 pointer-events:none;
 }
 .card.active .info { opacity:1; }
-
-.card .info .project {
+.info .project {
 font-size:10px;
-letter-spacing:.18em;
+letter-spacing:.16em;
 text-transform:uppercase;
 color:#fff;
-line-height:1.5;
 }
-.card .info .sub {
+.info .sub {
 font-size:8px;
-letter-spacing:.12em;
+letter-spacing:.1em;
 text-transform:uppercase;
-color:rgba(255,255,255,.55);
+color:rgba(255,255,255,.5);
 margin-top:2px;
 }
 
@@ -146,25 +131,28 @@ const photos   = shuffle(BASE);
 const N        = photos.length;
 const isMobile = window.innerWidth <= 768;
 
-/* tamaño 7:5 landscape */
+/* card 7:5 landscape */
 const CARD_W = isMobile ? 200 : 300;
-const CARD_H = Math.round(CARD_W * 5 / 7);
+const CARD_H = Math.round(CARD_W * 5/7);
 
-/* valores exactos del playground */
-const RX   = -37;
-const RY   = -44;
-const RZ   = -1;
-const STEP = Math.round(CARD_W * 0.08);  /* 10% solapamiento */
-const PY   = 0.05;  /* 5% del viewport height */
-
-/* vector de dirección de la tira en pantalla (rotateZ ≈ 0) */
-const RAD = RZ * Math.PI / 180;
+/* rotación del playground */
+const RX = -37, RY = -44, RZ = -1;
+const RAD = RZ * Math.PI/180;
 const COS = Math.cos(RAD);
 const SIN = Math.sin(RAD);
 
-const COPIES = 11;
+/*
+  LAYOUT — igual que el GIF:
+  - STACK_STEP: paso entre cards dentro de cada grupo (muy pequeño = muy apiladas)
+  - GAP: espacio entre el grupo izquierdo y la card activa,
+          y entre la card activa y el grupo derecho
+*/
+const STACK_STEP = Math.round(CARD_W * 0.07); /* muy solapadas */
+const GAP        = CARD_W * 1.1;              /* espacio a cada lado de la activa */
+
+const COPIES = 9;
 const TOTAL  = N * COPIES;
-const CYCLE  = N * STEP;
+const CYCLE  = N * STACK_STEP;
 
 const canvas   = document.getElementById('canvas');
 const allCards = [];
@@ -172,7 +160,7 @@ const allCards = [];
 for(let i=0;i<TOTAL;i++){
   const p  = photos[i % N];
   const el = document.createElement('div');
-  el.className = 'card';
+  el.className='card';
   el.style.width  = CARD_W+'px';
   el.style.height = CARD_H+'px';
 
@@ -180,25 +168,16 @@ for(let i=0;i<TOTAL;i++){
   img.src=p.src; img.alt=p.text;
   img.draggable=false;
 
-  const lbl = document.createElement('div');
-  lbl.className='label';
-  lbl.textContent=p.text;
-
-  /* info overlay dentro de la imagen */
   const info = document.createElement('div');
   info.className='info';
   const proj = document.createElement('div');
-  proj.className='project';
-  proj.textContent=p.text;
-  const sub = document.createElement('div');
-  sub.className='sub';
-  sub.textContent='Edson Canales';
-  info.appendChild(proj);
-  info.appendChild(sub);
+  proj.className='project'; proj.textContent=p.text;
+  const sub  = document.createElement('div');
+  sub.className='sub'; sub.textContent='Edson Canales';
+  info.appendChild(proj); info.appendChild(sub);
 
   el.appendChild(img);
   el.appendChild(info);
-  el.appendChild(lbl);
   canvas.appendChild(el);
   allCards.push(el);
 
@@ -208,59 +187,70 @@ for(let i=0;i<TOTAL;i++){
   });
 }
 
-/* ── ESTADO ── */
-let offset   = Math.floor(TOTAL/2) * STEP;
+let offset   = Math.floor(TOTAL/2) * STACK_STEP;
 let velocity = 0;
 let dragging = false, drag0=0, off0=0;
 
 function render(){
   if(!dragging){
-    /* snap suave hacia la card más cercana */
-    const nearest = Math.round(offset / STEP) * STEP;
+    /* snap a la card más cercana */
+    const nearest = Math.round(offset / STACK_STEP) * STACK_STEP;
     velocity += (nearest - offset) * 0.06;
     velocity *= 0.75;
     offset   += velocity;
   }
 
-  /* loop infinito */
   if(offset < CYCLE*3) offset += CYCLE;
-  if(offset > CYCLE*8) offset -= CYCLE;
+  if(offset > CYCLE*6) offset -= CYCLE;
 
   const vw       = window.innerWidth;
   const vh       = window.innerHeight;
-  const cx       = vw / 2;
-  const cy       = vh / 2 + vh * PY;
-  const activeIdx = Math.round(offset / STEP);
-  const SHOW = 8; /* cards visibles a cada lado */
+  const cx       = vw/2;
+  const cy       = vh/2;
+  const activeIdx = Math.round(offset / STACK_STEP);
 
-  allCards.forEach((el, i)=>{
-    /* índice relativo al activo, normalizado para el loop */
+  allCards.forEach((el,i)=>{
+    /* índice relativo normalizado */
     let rel = i - activeIdx;
-
-    /* wrap para que rel esté siempre en [-N/2, N/2] */
     while(rel >  N/2) rel -= N;
     while(rel < -N/2) rel += N;
-
     const absRel = Math.abs(rel);
 
-    if(absRel > SHOW){ el.style.opacity = 0; return; }
+    /* ocultar lejanas */
+    if(absRel > N){ el.style.opacity=0; return; }
 
     const isActive = rel === 0;
-    const sign     = rel > 0 ? 1 : rel < 0 ? -1 : 0;
-    const d  = rel * STEP;
-    const LIFT = isActive ? -30 : 0;
-    const sx = cx + d * COS;
-    const sy = cy + d * SIN + LIFT;
 
-    const z = isActive ? 999 : rel > 0 ? 500 - absRel : absRel;
+    /*
+      Posición en el eje de la tira:
+      - activa: d = 0, levantada -LIFT en Y de pantalla
+      - grupo derecho (rel > 0): empieza en +GAP desde el centro
+      - grupo izquierdo (rel < 0): empieza en -GAP desde el centro
+    */
+    let d, liftY=0;
+    if(isActive){
+      d     = 0;
+      liftY = -28; /* sube un poco */
+    } else if(rel > 0){
+      d = GAP + (rel - 1) * STACK_STEP;
+    } else {
+      d = -GAP + (rel + 1) * STACK_STEP;
+    }
+
+    const sx = cx + d * COS;
+    const sy = cy + d * SIN + liftY;
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
        rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
-       scale(${isActive ? 1.15 : 1})`;
+       scale(${isActive ? 1.1 : 1})`;
 
-    el.style.zIndex  = z;
-    el.style.opacity = isActive ? 1 : Math.max(0.08, 1 - absRel * 0.15);
+    /* z-index: activa arriba, grupo derecho encima del izquierdo */
+    el.style.zIndex  = isActive ? 9999
+                     : rel > 0  ? 1000 - rel
+                     :            rel + 500;
+
+    el.style.opacity = isActive ? 1 : Math.max(0.1, 1 - absRel*0.12);
     el.classList.toggle('active', isActive);
   });
 
@@ -268,20 +258,18 @@ function render(){
 }
 render();
 
-/* ── EVENTOS ── */
+/* eventos */
 canvas.addEventListener('mousedown',e=>{
   dragging=true; drag0=e.clientX; off0=offset; velocity=0;
 });
 window.addEventListener('mousemove',e=>{
   if(!dragging)return;
-  offset=off0-(e.clientX-drag0)*1.2;
+  offset=off0-(e.clientX-drag0)*1.0;
 });
 window.addEventListener('mouseup',e=>{
   if(!dragging)return;
   dragging=false;
-  const vel = -(e.clientX-drag0)*0.07;
-  const nearest = Math.round((offset + vel * 8) / STEP) * STEP;
-  velocity = (nearest - offset) * 0.12;
+  velocity=-(e.clientX-drag0)*0.06;
 });
 
 canvas.addEventListener('touchstart',e=>{
@@ -289,15 +277,12 @@ canvas.addEventListener('touchstart',e=>{
 },{passive:true});
 canvas.addEventListener('touchmove',e=>{
   if(!dragging)return;
-  offset=off0-(e.touches[0].clientX-drag0)*1.2;
+  offset=off0-(e.touches[0].clientX-drag0)*1.0;
   e.preventDefault();
 },{passive:false});
 canvas.addEventListener('touchend',e=>{
   dragging=false;
-  const vel = -(e.changedTouches[0].clientX-drag0)*0.07;
-  /* snap a la card más cercana */
-  const nearest = Math.round((offset + vel * 8) / STEP) * STEP;
-  velocity = (nearest - offset) * 0.12;
+  velocity=-(e.changedTouches[0].clientX-drag0)*0.06;
 });
 
 canvas.addEventListener('wheel',e=>{
