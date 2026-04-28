@@ -39,22 +39,42 @@ header {
   opacity:.45;
 }
 
-/* botón menú */
+/* botón menú hamburguesa */
 .menu-btn {
-  font-size:10px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  opacity:.5;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
   cursor:pointer;
   pointer-events:all;
-  transition:opacity .2s;
   background:none;
   border:none;
-  font-family:'Courier Prime',monospace;
-  color:#111;
-  padding:0;
+  padding:4px 0;
 }
-.menu-btn:hover { opacity:1; }
+.menu-btn span {
+  display:block;
+  width:22px;
+  height:1.5px;
+  background:#111;
+  opacity:.5;
+  transition:opacity .2s;
+}
+.menu-btn:hover span { opacity:1; }
+
+/* links arriba */
+.top-links {
+  display:flex;
+  gap:16px;
+}
+.top-links a {
+  font-size:9px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#111;
+  text-decoration:none;
+  opacity:.35;
+  transition:opacity .2s;
+}
+.top-links a:hover { opacity:1; }
 
 /* overlay menú */
 #menu-overlay {
@@ -249,7 +269,16 @@ header {
 
 <header>
   <div class="nav-name">Edson Canales<br>Photographer</div>
-  <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">Menu</button>
+  <div class="header-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:all;">
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="top-links">
+      <a href="CAMPTION.html">Camption</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="food&drinks.html">Food&amp;Drinks</a>
+    </nav>
+  </div>
 </header>
 
 <div id="menu-overlay">
@@ -434,8 +463,10 @@ function render(){
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
-       rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
-       scale(${isActive ? 1.08 : 1})`;
+       ${isActive
+         ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.08)'
+         : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`
+       }`;
 
     el.style.zIndex = isActive ? 9999
                     : rel > 0  ? 1000 - rel
