@@ -273,10 +273,9 @@ function render(){
          : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`
        }`;
 
-    /* z-index: en ambos grupos la card más cercana al centro queda visualmente encima */
     el.style.zIndex = isActive ? 9999
-                    : rel > 0  ? 1000 - rel    /* derecha: más cerca al centro = encima */
-                    :            500 - absRel; /* izquierda: más lejos del centro = encima (efecto espejo) */
+                    : rel > 0  ? 1000 - rel
+                    :            500 + absRel;
 
     el.style.opacity = isActive ? 1 : Math.max(0.1, 1 - absRel*0.12);
     el.classList.toggle('active', isActive);
