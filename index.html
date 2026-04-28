@@ -217,7 +217,7 @@ function render(){
     const absRel = Math.abs(rel);
 
     /* ocultar lejanas */
-    if(absRel > N){ el.style.opacity=0; return; }
+    if(absRel > N*2){ el.style.opacity=0; return; }
 
     const isActive = rel === 0;
 
@@ -245,10 +245,10 @@ function render(){
        rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg)
        scale(${isActive ? 1.1 : 1})`;
 
-    /* z-index: activa arriba, grupo derecho encima del izquierdo */
+    /* z-index: activa arriba, dentro de cada grupo la más cercana al centro queda encima */
     el.style.zIndex  = isActive ? 9999
-                     : rel > 0  ? 1000 - rel
-                     :            rel + 500;
+                     : rel > 0  ? 1000 - rel   /* derecha: más cerca = más arriba */
+                     :            1000 + rel;   /* izquierda: rel es negativo, más cerca = mayor valor */
 
     el.style.opacity = isActive ? 1 : Math.max(0.1, 1 - absRel*0.12);
     el.classList.toggle('active', isActive);
