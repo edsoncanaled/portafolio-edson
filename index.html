@@ -262,7 +262,9 @@ function render(){
     }
 
     const sx = cx + d * COS;
-    const sy = cy + d * SIN + liftY;
+    /* inclinación del conjunto: las cards de la derecha suben, las de la izquierda bajan */
+    const TILT = 0.18; /* píxeles de subida por cada píxel de desplazamiento horizontal */
+    const sy = cy + d * SIN - d * TILT + liftY;
 
     el.style.transform =
       `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
