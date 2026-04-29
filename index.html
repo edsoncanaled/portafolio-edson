@@ -7,274 +7,135 @@
 <title>Edson Canales — Archive</title>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
-html, body {
-width:100%; height:100%;
+html,body{
+width:100%;height:100%;
 overflow:hidden;
 background:#e8e5e0;
-font-family:‘Courier Prime’, monospace;
+font-family:‘Courier Prime’,monospace;
 cursor:grab;
 user-select:none;
 -webkit-user-select:none;
 -webkit-tap-highlight-color:transparent;
 }
-body:active { cursor:grabbing; }
+body:active{cursor:grabbing;}
 
-header {
-position:fixed;
-top:0; left:0; right:0;
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
-padding:24px 28px;
-z-index:100;
-pointer-events:none;
+/* ── HEADER ── */
+header{
+position:fixed;top:0;left:0;right:0;
+display:flex;justify-content:space-between;align-items:flex-start;
+padding:24px 28px;z-index:100;pointer-events:none;
 }
+.nav-name{
+font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+line-height:1.8;opacity:.45;
+position:absolute;left:50%;transform:translateX(-50%);text-align:center;
+}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:all;}
+.menu-btn{display:flex;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px 0;}
+.menu-btn span{display:block;width:22px;height:1.5px;background:#111;opacity:.5;transition:opacity .2s;}
+.menu-btn:hover span{opacity:1;}
+.top-links{display:flex;gap:16px;}
+.top-links a{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#111;text-decoration:none;opacity:.35;transition:opacity .2s;}
+.top-links a:hover{opacity:1;}
 
-.nav-name {
-font-size:10px;
-letter-spacing:.12em;
-text-transform:uppercase;
-line-height:1.8;
-opacity:.45;
-position:absolute;
-left:50%;
-transform:translateX(-50%);
-text-align:center;
-pointer-events:none;
+/* ── MENU OVERLAY ── */
+#menu-overlay{
+position:fixed;inset:0;background:#e8e5e0;z-index:90;
+display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+padding-right:28px;opacity:0;pointer-events:none;transition:opacity .35s;
 }
+#menu-overlay.open{opacity:1;pointer-events:all;}
+#menu-overlay a{
+font-size:clamp(28px,7vw,52px);letter-spacing:.04em;text-transform:uppercase;
+color:#111;text-decoration:none;opacity:.18;line-height:1.4;
+transition:opacity .3s,transform .3s;transform:translateY(20px);
+}
+#menu-overlay.open a{opacity:.18;transform:translateY(0);}
+#menu-overlay a:hover{opacity:1;}
+#menu-overlay a:nth-child(1){transition-delay:.05s;}
+#menu-overlay a:nth-child(2){transition-delay:.10s;}
+#menu-overlay a:nth-child(3){transition-delay:.15s;}
 
-/* botón menú hamburguesa */
-.menu-btn {
-display:flex;
-flex-direction:column;
-gap:5px;
-cursor:pointer;
-pointer-events:all;
-background:none;
-border:none;
-padding:4px 0;
-}
-.menu-btn span {
-display:block;
-width:22px;
-height:1.5px;
-background:#111;
-opacity:.5;
-transition:opacity .2s;
-}
-.menu-btn:hover span { opacity:1; }
-
-/* links arriba */
-.top-links {
-display:flex;
-gap:16px;
-}
-.top-links a {
-font-size:9px;
-letter-spacing:.14em;
-text-transform:uppercase;
-color:#111;
-text-decoration:none;
-opacity:.35;
-transition:opacity .2s;
-}
-.top-links a:hover { opacity:1; }
-
-/* overlay menú */
-#menu-overlay {
-position:fixed;
-inset:0;
-background:#e8e5e0;
-z-index:90;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:flex-end;
-padding-right:28px;
-opacity:0;
-pointer-events:none;
-transition:opacity .35s;
-}
-#menu-overlay.open {
-opacity:1;
-pointer-events:all;
+/* ── CANVAS ── */
+#canvas{
+position:fixed;inset:0;overflow:hidden;
+perspective:2000px;perspective-origin:50% 50%;
 }
 
-#menu-overlay a {
-font-size:clamp(28px, 7vw, 52px);
-letter-spacing:.04em;
-text-transform:uppercase;
-color:#111;
-text-decoration:none;
-opacity:.18;
-line-height:1.4;
-transition:opacity .2s;
-transform:translateY(20px);
-transition:opacity .3s, transform .3s;
-}
-#menu-overlay.open a {
-opacity:.18;
-transform:translateY(0);
-}
-#menu-overlay a:hover { opacity:1; }
-
-/* stagger delay */
-#menu-overlay a:nth-child(1) { transition-delay:.05s; }
-#menu-overlay a:nth-child(2) { transition-delay:.10s; }
-#menu-overlay a:nth-child(3) { transition-delay:.15s; }
-
-#canvas {
-position:fixed;
-inset:0;
-overflow:hidden;
-perspective:2000px;
-perspective-origin:50% 50%;
-}
-
-.card {
+/* ── CARD ── */
+.card{
 position:absolute;
 transform-origin:center center;
-background:#d4d0c8; /* placeholder mientras carga */
+background:#d4d0c8;
+will-change:transform,opacity;
 }
-.card img {
-display:block;
-width:100%; height:100%;
-object-fit:cover;
-pointer-events:none;
-opacity:0;
-transition:opacity .4s ease;
+.card img{
+display:block;width:100%;height:100%;
+object-fit:cover;pointer-events:none;
+opacity:0;transition:opacity .4s ease;
 }
-.card img.loaded { opacity:1; }
+.card img.loaded{opacity:1;}
 
-/* info overlay solo en card activa */
-.info {
-position:absolute;
-inset:0;
-display:flex;
-flex-direction:column;
-justify-content:flex-end;
+.info{
+position:absolute;inset:0;
+display:flex;flex-direction:column;justify-content:flex-end;
 padding:10px 12px;
-background:linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 60%);
-opacity:0;
-transition:opacity .3s;
-pointer-events:none;
+background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);
+opacity:0;transition:opacity .3s;pointer-events:none;
 }
-.card.active .info { opacity:1; }
-.info .project {
-font-size:10px;
-letter-spacing:.16em;
-text-transform:uppercase;
-color:#fff;
-}
-.info .sub {
-font-size:8px;
-letter-spacing:.1em;
-text-transform:uppercase;
-color:rgba(255,255,255,.5);
-margin-top:2px;
+.card.active .info{opacity:1;}
+.info .project{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#fff;}
+.info .sub{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:2px;}
+
+/* ── HINT ── */
+.hint{
+position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+opacity:.18;pointer-events:none;z-index:30;
 }
 
-/* ── PAPEL ALBANENE INTRO ── */
-#intro {
-position:fixed;
-inset:0;
-z-index:200;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+/* ── INTRO PAPEL ALBANENE ── */
+#intro{
+position:fixed;inset:0;z-index:200;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
 cursor:pointer;
-/* velo lechoso translúcido — como papel albanene real */
-background: rgba(235, 230, 218, 0.88);
-backdrop-filter: blur(6px) brightness(1.05);
--webkit-backdrop-filter: blur(6px) brightness(1.05);
-transition: opacity 1s ease;
-box-shadow: inset 0 0 80px rgba(200,190,170,0.3);
+background:rgba(235,230,218,0.88);
+backdrop-filter:blur(6px) brightness(1.05);
+-webkit-backdrop-filter:blur(6px) brightness(1.05);
+transition:opacity 1s ease;
+box-shadow:inset 0 0 80px rgba(200,190,170,0.3);
 }
-
-#intro::before {
-content:’’;
-position:absolute;
-inset:0;
-pointer-events:none;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 512 512’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘g’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.82’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix type=‘saturate’ values=‘0’/%3E%3C/filter%3E%3Crect width=‘512’ height=‘512’ filter=‘url(%23g)’/%3E%3C/svg%3E”);
-background-size: 160px 160px;
-opacity: 0.10;
-mix-blend-mode: multiply;
+#intro::before{
+content:’’;position:absolute;inset:0;pointer-events:none;
+background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 512 512’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘g’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.82’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix type=‘saturate’ values=‘0’/%3E%3C/filter%3E%3Crect width=‘512’ height=‘512’ filter=‘url(%23g)’/%3E%3C/svg%3E”);
+background-size:160px 160px;opacity:.10;mix-blend-mode:multiply;
 }
+#intro.hide{opacity:0;pointer-events:none;}
+#intro .intro-content{
+text-align:center;width:100%;
+display:flex;flex-direction:column;align-items:center;
 }
-
-#intro.hide {
-opacity:0;
-pointer-events:none;
+#intro .intro-name{
+font-size:clamp(36px,9vw,80px);letter-spacing:.12em;text-transform:uppercase;
+color:#1a1a1a;opacity:.82;line-height:1.05;font-weight:700;
 }
-
-#intro .intro-content {
-text-align:center;
-width:100%;
-display:flex;
-flex-direction:column;
-align-items:center;
+#intro .intro-sub{
+font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+color:#1a1a1a;opacity:.38;margin-top:20px;
 }
-
-#intro .intro-name {
-font-size: clamp(36px, 9vw, 80px);
-letter-spacing: .12em;
-text-transform: uppercase;
-color: #1a1a1a;
-opacity: .82;
-line-height: 1.05;
-font-weight: 700;
+#intro .intro-bio{
+font-size:12px;line-height:1.8;letter-spacing:.04em;
+color:#1a1a1a;opacity:.55;margin-top:24px;
+max-width:320px;text-align:center;font-weight:400;
 }
-
-#intro .intro-sub {
-font-size: 10px;
-letter-spacing: .28em;
-text-transform: uppercase;
-color: #1a1a1a;
-opacity: .38;
-margin-top: 20px;
+#intro .intro-hint{
+position:absolute;bottom:36px;
+font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+color:#1a1a1a;opacity:.22;animation:blink 2.5s infinite;
 }
-
-#intro .intro-bio {
-font-size: 12px;
-line-height: 1.8;
-letter-spacing: .04em;
-color: #1a1a1a;
-opacity: .55;
-margin-top: 24px;
-max-width: 320px;
-text-align: center;
-font-weight: 400;
-}
-position: absolute;
-bottom: 36px;
-font-size: 9px;
-letter-spacing: .22em;
-text-transform: uppercase;
-color: #1a1a1a;
-opacity: .22;
-animation: blink 2.5s infinite;
-}
-
-@keyframes blink {
-0%,100% { opacity:.22; }
-50%      { opacity:.07; }
-}
-
-.hint {
-position:fixed;
-bottom:22px; left:50%;
-transform:translateX(-50%);
-font-size:8px;
-letter-spacing:.2em;
-text-transform:uppercase;
-opacity:.18;
-pointer-events:none;
-z-index:30;
-}
+@keyframes blink{0%,100%{opacity:.22;}50%{opacity:.07;}}
 </style>
 
 </head>
@@ -282,7 +143,7 @@ z-index:30;
 
 <header>
   <div class="nav-name">Edson Canales<br>Photographer</div>
-  <div class="header-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;pointer-events:all;">
+  <div class="header-right">
     <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
@@ -301,6 +162,8 @@ z-index:30;
 </div>
 
 <div id="canvas"></div>
+<div class="hint">← arrastra →</div>
+
 <div id="intro" onclick="dismissIntro()">
   <div class="intro-content">
     <div class="intro-name">Edson<br>Canales</div>
@@ -310,10 +173,9 @@ z-index:30;
   <div class="intro-hint">— toca para entrar —</div>
 </div>
 
-<div class="hint">← arrastra →</div>
-
 <script>
-const SINGLE = [
+/* ── DATOS ── */
+const PHOTOS = [
   {src:'images/CAMPTION1.jpg',          text:'B&W Series'},
   {src:'images/CAMPTION1-1.jpg',        text:'B&W Series'},
   {src:'images/CAMPTION1-2.jpg',        text:'B&W Series'},
@@ -349,9 +211,8 @@ const SINGLE = [
   {src:'images/cafeteria/foto11c.JPG',  text:'Abú Coffee'},
   {src:'images/cafeteria/foto12c.JPG',  text:'Abú Coffee'},
 ];
-const BASE = [...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE];
-const COPIES = 7;
-const STACK_STEP = Math.round(CARD_W * 0.07);
+
+/* Fisher-Yates shuffle */
 function shuffle(a){
   const r=[...a];
   for(let i=r.length-1;i>0;i--){
@@ -360,69 +221,51 @@ function shuffle(a){
   }
   return r;
 }
+const photos = shuffle(PHOTOS);
+const N = photos.length;
 
-const photos   = shuffle(BASE);
-const N        = photos.length;
+/* ── CONFIG ── */
 const isMobile = window.innerWidth <= 768;
+const CARD_W   = isMobile ? 130 : 260;
+const CARD_H   = Math.round(CARD_W * 5/7);
+const STEP     = Math.round(CARD_W * 0.07); /* solapamiento */
+const GAP      = CARD_W * 0.8;             /* espacio alrededor de la activa */
+const RX=-37, RY=-44, RZ=-1;
 
-/* card 7:5 landscape */
-const CARD_W = isMobile ? 130 : 260;
-const CARD_H = Math.round(CARD_W * 5/7);
+/* ángulo de la tira en pantalla */
+const ANGLE = -30 * Math.PI / 180;
+const COS   = Math.cos(ANGLE);
+const SIN   = Math.sin(ANGLE);
 
-/* rotación del playground */
-const RX = -37, RY = -44, RZ = -1;
+/* ── VIRTUAL DOM: solo 60 cards ── */
+const POOL = 60; /* cards en el DOM — se reciclan */
+const canvas = document.getElementById('canvas');
+const pool   = [];
 
-/*
-  Ángulo real de la tira en pantalla — independiente de RZ.
-  -30deg da la diagonal arriba-derecha a abajo-izquierda del GIF.
-*/
-const STRIP_ANGLE = -30 * Math.PI / 180;
-const COS = Math.cos(STRIP_ANGLE);
-const SIN = Math.sin(STRIP_ANGLE);
-
-/*
-  LAYOUT — igual que el GIF:
-  - STACK_STEP: paso entre cards dentro de cada grupo (muy pequeño = muy apiladas)
-  - GAP: espacio entre el grupo izquierdo y la card activa,
-          y entre la card activa y el grupo derecho
-*/
-const STACK_STEP = Math.round(CARD_W * 0.07);
-const GAP        = CARD_W * 0.8;
-
-const COPIES = 7;
-const TOTAL  = N * COPIES;
-const CYCLE  = N * STACK_STEP;
-
-const canvas   = document.getElementById('canvas');
-const allCards = [];
-
-for(let i=0;i<TOTAL;i++){
-  const p  = photos[i % N];
-  const el = document.createElement('div');
+for(let i=0;i<POOL;i++){
+  const el  = document.createElement('div');
   el.className='card';
   el.style.width  = CARD_W+'px';
   el.style.height = CARD_H+'px';
 
   const img = document.createElement('img');
-  img.alt=p.text;
-  img.draggable=false;
   img.decoding='async';
-  /* no asignar src todavía — carga diferida manual */
-  img.dataset.src = p.src;
-  img.onload = () => img.classList.add('loaded');
+  img.onload = ()=> img.classList.add('loaded');
 
   const info = document.createElement('div');
   info.className='info';
   const proj = document.createElement('div');
-  proj.className='project'; proj.textContent=p.text;
+  proj.className='project';
   const sub  = document.createElement('div');
-  sub.className='sub'; sub.textContent='Edson Canales';
-  info.appendChild(proj); info.appendChild(sub);
+  sub.className='sub';
+  sub.textContent='Edson Canales';
+  info.appendChild(proj);
+  info.appendChild(sub);
 
   el.appendChild(img);
   el.appendChild(info);
   canvas.appendChild(el);
-  allCards.push(el);
+  pool.push({el, img, proj});
 
   el.addEventListener('click',()=>{
     if(el.classList.contains('active'))
@@ -430,98 +273,86 @@ for(let i=0;i<TOTAL;i++){
   });
 }
 
-let offset   = Math.floor(TOTAL/2) * STACK_STEP;
+/* ── ESTADO ── */
+let offset   = 0;
 let velocity = 0;
 let dragging = false, drag0=0, off0=0;
+let lastActive = -1;
 
+/* caché de imágenes ya cargadas */
+const loaded = new Set();
+
+/* ── RENDER ── */
 function render(){
   if(!dragging){
-    /* snap a la card más cercana */
-    const nearest = Math.round(offset / STACK_STEP) * STACK_STEP;
-    velocity += (nearest - offset) * 0.06;
+    const nearest = Math.round(offset/STEP)*STEP;
+    velocity += (nearest-offset)*0.06;
     velocity *= 0.75;
     offset   += velocity;
   }
 
-  if(offset < CYCLE*3) offset += CYCLE;
-  if(offset > CYCLE*6) offset -= CYCLE;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const cx = vw/2, cy = vh/2;
 
-  const vw       = window.innerWidth;
-  const vh       = window.innerHeight;
-  const cx       = vw/2;
-  const cy       = vh/2;
-  const activeIdx = Math.round(offset / STACK_STEP);
+  /* cuántas cards caben en pantalla a cada lado */
+  const screenDiag = Math.hypot(vw, vh);
+  const visRange   = Math.ceil(screenDiag / STEP) + 4;
 
-  allCards.forEach((el,i)=>{
-    /* índice relativo normalizado */
-    let rel = i - activeIdx;
-    while(rel >  N/2) rel -= N;
-    while(rel < -N/2) rel += N;
-    const absRel = Math.abs(rel);
+  const activeIdx = Math.round(offset/STEP);
 
-    /* ocultar lejanas */
-    if(absRel > N*3){ el.style.opacity=0; return; }
+  /* asignar pool a posiciones visibles */
+  let poolIdx = 0;
+  for(let rel = -visRange; rel <= visRange && poolIdx < POOL; rel++){
+    const i = ((activeIdx + rel) % N + N) % N; /* foto real */
+    const p = photos[i];
+    const {el, img, proj} = pool[poolIdx++];
 
     const isActive = rel === 0;
+    const absRel   = Math.abs(rel);
+    const sign     = rel > 0 ? 1 : rel < 0 ? -1 : 0;
 
-    /*
-      Posición en el eje de la tira:
-      - activa: d = 0, levantada -LIFT en Y de pantalla
-      - grupo derecho (rel > 0): empieza en +GAP desde el centro
-      - grupo izquierdo (rel < 0): empieza en -GAP desde el centro
-    */
-    let d, liftY=0;
-    if(isActive){
-      d     = 0;
-      liftY = -28; /* sube un poco */
-    } else if(rel > 0){
-      d = GAP + (rel - 1) * STACK_STEP;
-    } else {
-      d = -GAP + (rel + 1) * STACK_STEP;
-    }
+    /* posición en la tira */
+    const d  = isActive ? 0 : rel*STEP + sign*GAP;
+    const sx = cx + d*COS;
+    const sy = cy + d*SIN + (isActive ? -28 : 0);
 
-    const sx = cx + d * COS;
-    const sy = cy + d * SIN + liftY;
+    el.style.transform = `translate(${sx-CARD_W/2}px,${sy-CARD_H/2}px) `+
+      (isActive
+        ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.08)'
+        : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`);
 
-    el.style.transform =
-      `translate(${sx - CARD_W/2}px, ${sy - CARD_H/2}px)
-       ${isActive
-         ? 'rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.08)'
-         : `rotateX(${RX}deg) rotateY(${RY}deg) rotateZ(${RZ}deg) scale(1)`
-       }`;
-
-    el.style.zIndex = isActive ? 9999
-                    : rel > 0  ? 1000 - rel
-                    :            500 + absRel;
-
-    el.style.opacity = isActive ? 1 : Math.max(0.08, 1 - absRel*0.06);
+    el.style.opacity = isActive ? 1 : Math.max(0.08, 1-absRel*0.06);
+    el.style.zIndex  = isActive ? 9999 : rel>0 ? 1000-absRel : 500+absRel;
+    el.style.display = 'block';
     el.classList.toggle('active', isActive);
 
-    /* cargar imagen solo cuando la card está cerca del centro */
-    const img = el.querySelector('img');
-    if(img && !img.src && absRel <= N*2 && img.dataset.src){
-      img.src = img.dataset.src;
+    /* lazy load — solo cargar si es nueva */
+    if(img.dataset.src !== p.src){
+      img.dataset.src = p.src;
+      img.classList.remove('loaded');
+      if(loaded.has(p.src)){
+        img.src = p.src;
+      } else if(absRel <= 12){
+        img.src = p.src;
+        loaded.add(p.src);
+      }
     }
-  });
+    proj.textContent = p.text;
+  }
+
+  /* ocultar cards del pool no usadas */
+  for(let i=poolIdx; i<POOL; i++){
+    pool[i].el.style.display='none';
+  }
 
   requestAnimationFrame(render);
 }
 render();
 
-/* eventos */
-/* ── INTRO ── */
-function dismissIntro(){
-  document.getElementById('intro').classList.add('hide');
-  setTimeout(()=> document.getElementById('intro').remove(), 900);
-}
-setInterval(()=>{
-  if(!dragging){
-    offset += STACK_STEP;
-  }
-}, 4000);
-
+/* ── EVENTOS ── */
 canvas.addEventListener('mousedown',e=>{
-  dragging=true; drag0=e.clientX; off0=offset; velocity=0;
+  dragging=true;drag0=e.clientX;off0=offset;velocity=0;
 });
 window.addEventListener('mousemove',e=>{
   if(!dragging)return;
@@ -532,9 +363,8 @@ window.addEventListener('mouseup',e=>{
   dragging=false;
   velocity=-(e.clientX-drag0)*0.06;
 });
-
 canvas.addEventListener('touchstart',e=>{
-  dragging=true; drag0=e.touches[0].clientX; off0=offset; velocity=0;
+  dragging=true;drag0=e.touches[0].clientX;off0=offset;velocity=0;
 },{passive:true});
 canvas.addEventListener('touchmove',e=>{
   if(!dragging)return;
@@ -545,19 +375,26 @@ canvas.addEventListener('touchend',e=>{
   dragging=false;
   velocity=-(e.changedTouches[0].clientX-drag0)*0.06;
 });
-
 canvas.addEventListener('wheel',e=>{
   e.preventDefault();
   velocity+=(e.deltaY+e.deltaX)*0.8;
 },{passive:false});
-</script>
 
-<script>
+/* auto-avance */
+setInterval(()=>{if(!dragging)offset+=STEP;},4000);
+
+/* ── MENU ── */
 function toggleMenu(){
-  const overlay = document.getElementById('menu-overlay');
-  const btn     = document.getElementById('menu-btn');
-  const isOpen  = overlay.classList.toggle('open');
-  btn.textContent = isOpen ? 'Close' : 'Menu';
+  const o=document.getElementById('menu-overlay');
+  const b=document.getElementById('menu-btn');
+  const open=o.classList.toggle('open');
+  b.style.opacity=open?'1':'';
+}
+
+/* ── INTRO ── */
+function dismissIntro(){
+  document.getElementById('intro').classList.add('hide');
+  setTimeout(()=>document.getElementById('intro').remove(),900);
 }
 </script>
 
