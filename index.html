@@ -327,16 +327,12 @@ function render(){
     el.style.display = 'block';
     el.classList.toggle('active', isActive);
 
-    /* lazy load — solo cargar si es nueva */
+    /* cargar imagen siempre que esté en el rango visible */
     if(img.dataset.src !== p.src){
       img.dataset.src = p.src;
       img.classList.remove('loaded');
-      if(loaded.has(p.src)){
-        img.src = p.src;
-      } else if(absRel <= 12){
-        img.src = p.src;
-        loaded.add(p.src);
-      }
+      img.src = p.src;
+      loaded.add(p.src);
     }
     proj.textContent = p.text;
   }
