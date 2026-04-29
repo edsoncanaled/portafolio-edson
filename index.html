@@ -349,9 +349,9 @@ const SINGLE = [
   {src:'images/cafeteria/foto11c.JPG',  text:'Abú Coffee'},
   {src:'images/cafeteria/foto12c.JPG',  text:'Abú Coffee'},
 ];
-/* fotos únicas shuffleadas — el loop infinito las repite */
-const BASE = [...SINGLE];
-
+const BASE = [...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE, ...SINGLE];
+const COPIES = 7;
+const STACK_STEP = Math.round(CARD_W * 0.07);
 function shuffle(a){
   const r=[...a];
   for(let i=r.length-1;i>0;i--){
@@ -386,10 +386,10 @@ const SIN = Math.sin(STRIP_ANGLE);
   - GAP: espacio entre el grupo izquierdo y la card activa,
           y entre la card activa y el grupo derecho
 */
-const STACK_STEP = Math.round(CARD_W * 0.05);
-const GAP        = CARD_W * 1.2;
+const STACK_STEP = Math.round(CARD_W * 0.07);
+const GAP        = CARD_W * 0.8;
 
-const COPIES = 9;
+const COPIES = 7;
 const TOTAL  = N * COPIES;
 const CYCLE  = N * STACK_STEP;
 
