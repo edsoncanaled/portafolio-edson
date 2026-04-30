@@ -180,13 +180,13 @@ const PHOTOS = [
   {src:'images/CAMPTION1-4.jpg',        text:'B&W Series'},
   {src:'images/CAMPTION1-5.jpg',        text:'B&W Series'},
   {src:'images/CAMPTION1-6.jpg',        text:'B&W Series'},
-  {src:'images/MAR1.jpg',               text:'MaR'},
-  {src:'images/MAR1-2.jpg',             text:'MaR'},
-  {src:'images/MAR1-3.jpg',             text:'MaR'},
-  {src:'images/MAR1-4.jpg',             text:'MaR'},
-  {src:'images/MAR1-7.jpg',             text:'MaR'},
-  {src:'images/MAR1-8.jpg',             text:'MaR'},
-  {src:'images/NATS1.jpg',              text:'NaTsTY'},
+  {src:'images/MAR1.jpg',               text:'Coastal Light'},
+  {src:'images/MAR1-2.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-3.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-4.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-7.jpg',             text:'Coastal Light'},
+  {src:'images/MAR1-8.jpg',             text:'Coastal Light'},
+  {src:'images/NATS1.jpg',              text:'Natural Study'},
   {src:'images/NATS2.jpg',              text:'Natural Study'},
   {src:'images/NATS3.jpg',              text:'Natural Study'},
   {src:'images/NATS4.jpg',              text:'Natural Study'},
@@ -265,8 +265,14 @@ for(let i=0;i<POOL;i++){
   pool.push({el, img, proj});
 
   el.addEventListener('click',()=>{
-    if(el.classList.contains('active'))
-      window.location.href='CAMPTION.html';
+    if(el.classList.contains('active')){
+      const text = el.querySelector('.project')?.textContent;
+      if(text === 'Abú Coffee'){
+        window.location.href='food&drinks.html';
+      } else {
+        window.location.href='CAMPTION.html';
+      }
+    }
   });
 }
 
