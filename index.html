@@ -295,16 +295,16 @@ function render(){
   const vh = window.innerHeight;
   const cx = vw/2, cy = vh/2;
 
-  /* cuántas cards caben en pantalla a cada lado */
-  const screenDiag = Math.hypot(vw, vh);
-  const visRange   = Math.ceil(screenDiag / STEP) + 4;
+  /* cuántas cards caben — limitado al pool disponible */
+  const visRange = Math.min(Math.floor(POOL/2) - 1, Math.ceil(Math.hypot(vw,vh)/STEP) + 2);
 
   const activeIdx = Math.round(offset/STEP);
 
   /* asignar pool a posiciones visibles */
   let poolIdx = 0;
-  for(let rel = -visRange; rel <= visRange && poolIdx < POOL; rel++){
-    const i = ((activeIdx + rel) % N + N) % N; /* foto real */
+  for(let rel = -visRange; rel <= visRange; rel++){
+    if(poolIdx >= POOL) break;
+    const i = ((activeIdx + rel) % N + N) % N;
     const p = photos[i];
     const {el, img, proj} = pool[poolIdx++];
 
@@ -312,7 +312,6 @@ function render(){
     const absRel   = Math.abs(rel);
     const sign     = rel > 0 ? 1 : rel < 0 ? -1 : 0;
 
-    /* posición en la tira */
     const d  = isActive ? 0 : rel*STEP + sign*GAP;
     const sx = cx + d*COS;
     const sy = cy + d*SIN + (isActive ? -28 : 0);
@@ -327,12 +326,10 @@ function render(){
     el.style.display = 'block';
     el.classList.toggle('active', isActive);
 
-    /* cargar imagen siempre que esté en el rango visible */
     if(img.dataset.src !== p.src){
       img.dataset.src = p.src;
       img.classList.remove('loaded');
       img.src = p.src;
-      loaded.add(p.src);
     }
     proj.textContent = p.text;
   }
