@@ -24,21 +24,21 @@ body:active{cursor:grabbing;}
 /* ── HEADER ── */
 header{
 position:fixed;top:0;left:0;right:0;
-display:flex;justify-content:space-between;align-items:flex-start;
-padding:24px 28px;z-index:100;pointer-events:none;
+display:flex;justify-content:space-between;align-items:center;
+padding:22px 28px;z-index:100;pointer-events:none;
 }
 .nav-name{
 font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-line-height:1.8;opacity:.45;
-position:absolute;left:50%;transform:translateX(-50%);text-align:center;
+line-height:1.6;opacity:.45;pointer-events:none;
 }
-.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:all;}
-.menu-btn{display:flex;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px 0;}
-.menu-btn span{display:block;width:22px;height:1.5px;background:#111;opacity:.5;transition:opacity .2s;}
-.menu-btn:hover span{opacity:1;}
-.top-links{display:flex;gap:16px;}
-.top-links a{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#111;text-decoration:none;opacity:.35;transition:opacity .2s;}
-.top-links a:hover{opacity:1;}
+.nav-links{
+display:flex;gap:20px;pointer-events:all;
+}
+.nav-links a{
+font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+color:#111;text-decoration:none;opacity:.35;transition:opacity .2s;
+}
+.nav-links a:hover{opacity:1;}
 
 /* ── MENU OVERLAY ── */
 #menu-overlay{
@@ -101,7 +101,7 @@ opacity:.18;pointer-events:none;z-index:30;
 position:fixed;inset:0;z-index:200;
 display:flex;flex-direction:column;justify-content:center;align-items:center;
 cursor:pointer;
-background:rgba(235,230,218,0.88);
+background:rgba(252, 250, 247, 0.92);
 backdrop-filter:blur(6px) brightness(1.05);
 -webkit-backdrop-filter:blur(6px) brightness(1.05);
 transition:opacity 1s ease;
@@ -143,16 +143,11 @@ color:#1a1a1a;opacity:.22;animation:blink 2.5s infinite;
 
 <header>
   <div class="nav-name">Edson Canales<br>Photographer</div>
-  <div class="header-right">
-    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-    <nav class="top-links">
-      <a href="CAMPTION.html">Camption</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="food&drinks.html">Food&amp;Drinks</a>
-    </nav>
-  </div>
+  <nav class="nav-links">
+    <a href="CAMPTION.html">Camption</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="food&drinks.html">Food&amp;Drinks</a>
+  </nav>
 </header>
 
 <div id="menu-overlay">
