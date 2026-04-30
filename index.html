@@ -186,11 +186,11 @@ const PHOTOS = [
   {src:'images/MAR1-4.jpg',             text:'Coastal Light'},
   {src:'images/MAR1-7.jpg',             text:'Coastal Light'},
   {src:'images/MAR1-8.jpg',             text:'Coastal Light'},
-  {src:'images/NATS1.jpg',              text:'Natural Study'},
-  {src:'images/NATS2.jpg',              text:'Natural Study'},
-  {src:'images/NATS3.jpg',              text:'Natural Study'},
-  {src:'images/NATS4.jpg',              text:'Natural Study'},
-  {src:'images/NATS5.png',              text:'Natural Study'},
+  {src:'images/NATS1.jpg',              text:'NaTsTY'},
+  {src:'images/NATS2.jpg',              text:'NaTsTY'},
+  {src:'images/NATS3.jpg',              text:'NaTsTY'},
+  {src:'images/NATS4.jpg',              text:'NaTsTY'},
+  {src:'images/NATS5.png',              text:'NaTsTY'},
   {src:'images/foto1.jpg',              text:'Archive'},
   {src:'images/foto2.jpg',              text:'Archive'},
   {src:'images/foto3.jpg',              text:'Archive'},
@@ -266,8 +266,8 @@ for(let i=0;i<POOL;i++){
 
   el.addEventListener('click',()=>{
     if(el.classList.contains('active')){
-      const text = el.querySelector('.project')?.textContent;
-      if(text === 'Abú Coffee'){
+      const text = el.querySelector('.project')?.textContent || '';
+      if(text.toLowerCase().includes('coff') || text.toLowerCase().includes('ab')){
         window.location.href='food&drinks.html';
       } else {
         window.location.href='CAMPTION.html';
