@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edson Canales — Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -371,7 +373,22 @@ canvas.addEventListener('wheel',e=>{
 /* auto-avance */
 setInterval(()=>{if(!dragging)offset+=STEP;},4000);
 
-/* ── MENU ── */
+/* ── PRECARGA mientras se ve el intro ── */
+function preload(){
+  /* precargar las primeras 10 fotos inmediatamente */
+  photos.slice(0, 10).forEach(p => {
+    const img = new Image();
+    img.src = p.src;
+  });
+  /* las siguientes 10 con un pequeño delay */
+  setTimeout(()=>{
+    photos.slice(10, 20).forEach(p => {
+      const img = new Image();
+      img.src = p.src;
+    });
+  }, 1000);
+}
+preload();
 function toggleMenu(){
   const o=document.getElementById('menu-overlay');
   const b=document.getElementById('menu-btn');
