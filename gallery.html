@@ -1,267 +1,239 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Works | Edson Canales</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works | Edson Canales</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --font-main: 'JetBrains Mono', monospace;
+        }
 
-<style>
-:root {
-    --bg: #ffffff;
-    --text: #000000;
-    --font-main: 'JetBrains Mono', monospace;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body, html { 
+            height: 100vh; 
+            overflow: hidden; 
+            background: var(--bg); 
+            font-family: var(--font-main);
+            color: var(--text);
+        }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+        nav {
+            position: fixed; top: 0; width: 100%; display: flex;
+            justify-content: space-between; padding: 30px 40px;
+            font-size: 11px; z-index: 100; text-transform: uppercase;
+            background: linear-gradient(to bottom, white 50%, transparent);
+        }
+        nav a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        nav a:hover { opacity: 0.5; }
 
-body, html {
-    height: 100vh;
-    overflow: hidden;
-    background: var(--bg);
-    font-family: var(--font-main);
-    color: var(--text);
-}
+        .ui-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: space-between; align-items: center;
+            padding: 110px 0 80px 0;
+            pointer-events: none; z-index: 10;
+        }
+        .text-wrapper { width: 260px; text-align: left; }
+        #project-id { font-size: 10px; color: #999; display: block; margin-bottom: 5px; }
+        #project-client { font-size: 13px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
+        #project-title { font-size: 12px; font-weight: 400; margin-bottom: 4px; display: block; line-height: 1.3; }
+        #project-type { font-size: 11px; color: #666; display: block; }
 
-/* NAV */
-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 30px 40px;
-    font-size: 11px;
-    z-index: 100;
-    text-transform: uppercase;
-    background: linear-gradient(to bottom, white 50%, transparent);
-}
+        .gallery-viewport {
+            height: 100vh;
+            display: flex; align-items: center;
+            overflow-x: auto; scrollbar-width: none;
+            padding: 0 calc(50vw - 130px);
+            cursor: grab;
+        }
+        .gallery-viewport::-webkit-scrollbar { display: none; }
+        .work-card {
+            flex: 0 0 260px; margin: 0 20px;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+            transform: scale(0.95); opacity: 0.5; cursor: pointer;
+        }
+        .work-card img { width: 100%; height: 350px; object-fit: cover; pointer-events: none; }
+        .work-card.active { transform: scale(1.05); opacity: 1; }
 
-nav a { text-decoration: none; color: inherit; }
+        #project-detail-view {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: white; z-index: 200;
+            overflow-y: auto; display: none; opacity: 0;
+        }
+        .detail-nav {
+            position: sticky; top: 0; padding: 30px 40px;
+            z-index: 210; background: rgba(255,255,255,0.9);
+        }
+        .back-btn-top { cursor: pointer; font-size: 11px; border-bottom: 1px solid black; display: inline-block; }
+        .detail-content { padding: 40px 20vw 100px 20vw; display: flex; flex-direction: column; gap: 60px; }
+        
+        .detail-image { 
+            width: 100%; height: auto; 
+            opacity: 0; transform: translateY(50px); 
+            will-change: transform, opacity;
+        }
 
-/* UI */
-.ui-overlay {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 110px 0 80px 0;
-    pointer-events: none;
-}
+        .project-footer { text-align: center; padding: 50px 0; border-top: 1px solid #eee; }
+        .back-index-btn { 
+            padding: 10px 25px; border: 1px solid #000; text-transform: uppercase; 
+            font-size: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .back-index-btn:hover { background: black; color: white; }
 
-.text-wrapper { width: 260px; }
-
-#project-id { font-size: 10px; color: #999; }
-#project-client { font-size: 13px; font-weight: 700; }
-#project-title { font-size: 12px; }
-#project-type { font-size: 11px; color: #666; }
-
-/* CAROUSEL */
-.gallery-viewport {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 0 calc(50vw - 130px);
-}
-
-.gallery-viewport::-webkit-scrollbar { display: none; }
-
-.work-card {
-    flex: 0 0 260px;
-    margin: 0 20px;
-    transform: scale(0.95);
-    opacity: 0.5;
-    transition: 0.5s;
-    cursor: pointer;
-}
-
-.work-card img {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-}
-
-.work-card.active {
-    transform: scale(1.05);
-    opacity: 1;
-}
-
-/* DETAIL */
-#project-detail-view {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    background: white;
-    display: none;
-    opacity: 0;
-    overflow-y: auto;
-}
-
-.detail-content {
-    padding: 40px 20vw;
-}
-
-.detail-image {
-    width: 100%;
-    margin-bottom: 40px;
-    opacity: 0;
-    transform: translateY(50px);
-}
-
-.back-btn-top {
-    padding: 30px;
-    cursor: pointer;
-}
-</style>
+        @media (max-width: 768px) {
+            .detail-content { padding: 40px 20px; }
+        }
+    </style>
 </head>
-
 <body>
 
-<nav>
-<div><a href="index.html">← BACK</a></div>
-<div>M2. WORKS</div>
-<div>M3. CONTACT</div>
-</nav>
+    <nav id="main-nav">
+        <div style="width: 200px;"><a href="index.html">← BACK</a></div>
+        <div style="width: 200px; text-align: center;">M2. WORKS</div>
+        <div style="width: 200px; text-align: right;">M3. CONTACT</div>
+    </nav>
 
-<div class="ui-overlay">
-<div class="text-wrapper">
-<span id="project-id"></span>
-<div id="project-client"></div>
-</div>
-<div class="text-wrapper">
-<span id="project-title"></span>
-<span id="project-type"></span>
-</div>
-</div>
+    <div class="ui-overlay" id="carousel-ui">
+        <div class="text-wrapper"><span id="project-id">---</span><div id="project-client">SELECT WORK</div></div>
+        <div class="text-wrapper"><span id="project-title">---</span><span id="project-type">---</span></div>
+    </div>
 
-<main class="gallery-viewport" id="slider"></main>
+    <main class="gallery-viewport" id="slider"></main>
 
-<div id="project-detail-view">
-<div class="back-btn-top" onclick="closeProject()">← BACK</div>
-<div class="detail-content" id="detail-container"></div>
-</div>
+    <div id="project-detail-view">
+        <div class="detail-nav"><div class="back-btn-top" onclick="closeProject()">← BACK </div></div>
+        <div class="detail-content" id="detail-container"></div>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
-<script>
-const projectsData = [
-{
-    id: "2024",
-    client: "B&W SERIES",
-    title: "Shoot 01",
-    type: "35mm Film",
-    cover: "images/foto1.jpg",
-    images: [
-        "images/foto1.jpg",
-        "images/foto2.jpg",
-        "images/foto3.jpg",
-        "images/foto4.jpg",
-        "images/foto5.jpg",
-        "images/foto6.jpg"
-    ]
-}
-];
-
-const slider = document.getElementById('slider');
-const detailView = document.getElementById('project-detail-view');
-const detailContainer = document.getElementById('detail-container');
-
-/* CREAR CARDS */
-projectsData.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'work-card';
-    div.dataset.id = p.id;
-    div.innerHTML = `<img src="${p.cover}">`;
-    slider.appendChild(div);
-});
-
-/* CLONES (para infinito) */
-const original = Array.from(slider.children);
-original.forEach(c => slider.appendChild(c.cloneNode(true)));
-original.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
-
-const cards = document.querySelectorAll('.work-card');
-slider.scrollLeft = 300;
-
-/* CENTRO */
-function checkCenter() {
-    let center = window.innerWidth / 2;
-    let closest = null;
-    let min = Infinity;
-
-    cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const dist = Math.abs(center - (rect.left + rect.width/2));
-        if(dist < min) {
-            min = dist;
-            closest = card;
-        }
-    });
-
-    cards.forEach(c => c.classList.remove('active'));
-    if(closest) {
-        closest.classList.add('active');
-        const data = projectsData[0];
-        document.getElementById('project-id').innerText = data.id;
-        document.getElementById('project-client').innerText = data.client;
-        document.getElementById('project-title').innerText = data.title;
-        document.getElementById('project-type').innerText = data.type;
-    }
-}
-
-slider.addEventListener('scroll', checkCenter);
-
-/* CLICK */
-slider.addEventListener('click', (e) => {
-    const card = e.target.closest('.work-card');
-    if(card) openProject();
-});
-
-/* OPEN */
-function openProject() {
-    const data = projectsData[0];
-
-    detailContainer.innerHTML = data.images.map(img =>
-        `<img src="${img}" class="detail-image">`
-    ).join('');
-
-    detailView.style.display = 'block';
-
-    gsap.to(detailView, { opacity: 1 });
-
-    gsap.utils.toArray(".detail-image").forEach(img => {
-        gsap.to(img, {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            scrollTrigger: {
-                trigger: img,
-                start: "top 80%"
+    <script>
+        const projectsData = [
+            { 
+                id: "2024", 
+                client: "B&W SERIES", 
+                title: "Film 35mm", 
+                type: "Arista 400", 
+                cover: "images/foto1.jpg", 
+                images: [
+                    "images/foto1.jpg",
+                    "images/foto2.jpg",
+                    "images/foto3.jpg",
+                    "images/foto4.jpg",
+                    "images/foto5.jpg",
+                    "images/foto6.jpg"
+                ] 
             }
+        ];
+
+        const slider = document.getElementById('slider');
+        const detailView = document.getElementById('project-detail-view');
+        const detailContainer = document.getElementById('detail-container');
+
+        projectsData.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'work-card';
+            div.dataset.id = p.id;
+            div.innerHTML = `<img src="${p.cover}">`;
+            slider.appendChild(div);
         });
-    });
-}
 
-/* CLOSE */
-function closeProject() {
-    ScrollTrigger.getAll().forEach(t => t.kill());
-    gsap.to(detailView, {
-        opacity: 0,
-        onComplete: () => detailView.style.display = 'none'
-    });
-}
+        const originalCards = Array.from(slider.children);
+        originalCards.forEach(c => slider.appendChild(c.cloneNode(true)));
+        originalCards.reverse().forEach(c => slider.prepend(c.cloneNode(true)));
 
-window.onload = checkCenter;
-</script>
+        const allCards = document.querySelectorAll('.work-card');
+        slider.scrollLeft = projectsData.length * 300;
+
+        function checkCenter() {
+            let center = window.innerWidth / 2;
+            let closest = null;
+            let minD = Infinity;
+
+            allCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const d = Math.abs(center - (rect.left + rect.width/2));
+                if (d < minD) { minD = d; closest = card; }
+            });
+
+            allCards.forEach(c => c.classList.remove('active'));
+            if (closest) {
+                closest.classList.add('active');
+                const data = projectsData[0];
+                document.getElementById('project-id').innerText = data.id;
+                document.getElementById('project-client').innerText = data.client;
+                document.getElementById('project-title').innerText = data.title;
+                document.getElementById('project-type').innerText = data.type;
+            }
+        }
+
+        slider.addEventListener('scroll', () => {
+            const cardWidth = allCards[0].offsetWidth + 40;
+            const loopWidth = projectsData.length * cardWidth;
+            if (slider.scrollLeft >= loopWidth * 2) slider.scrollLeft -= loopWidth;
+            else if (slider.scrollLeft <= 0) slider.scrollLeft += loopWidth;
+            checkCenter();
+        });
+
+        slider.addEventListener('wheel', e => { e.preventDefault(); slider.scrollLeft += e.deltaY; });
+
+        slider.addEventListener('click', () => {
+            openProject();
+        });
+
+        function openProject() {
+            const data = projectsData[0];
+            let imgsHtml = data.images.map(img => `<img src="${img}" class="detail-image">`).join('');
+            
+            detailContainer.innerHTML = `
+                <div class="header-anim" style="text-align:center; margin-bottom:40px; opacity:0;">
+                    <h1 style="font-size:24px;">${data.client}</h1>
+                    <p style="color:#666; margin-top:10px; font-size:12px;">${data.title} — ${data.type}</p>
+                </div>
+                ${imgsHtml}
+                <div class="project-footer"><div class="back-index-btn" onclick="closeProject()">Back to Works</div></div>
+            `;
+
+            detailView.style.display = 'block';
+            
+            gsap.to(detailView, { opacity: 1, duration: 0.5 });
+            gsap.to(".header-anim", { opacity: 1, y: 0, duration: 0.8, delay: 0.2 });
+
+            gsap.utils.toArray(".detail-image").forEach((img) => {
+                gsap.to(img, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: img,
+                        scroller: "#project-detail-view",
+                        start: "top 85%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            });
+        }
+
+        function closeProject() {
+            ScrollTrigger.getAll().forEach(t => t.kill());
+            
+            gsap.to(detailView, { opacity: 0, duration: 0.3, onComplete: () => {
+                detailView.style.display = 'none';
+                detailView.scrollTop = 0;
+            }});
+        }
+
+        window.onload = checkCenter;
+    </script>
 
 </body>
 </html>
