@@ -129,7 +129,8 @@ nav.hidden {
 
 <nav id="main-nav">
 <div><a href="index.html">← BACK</a></div>
-<div>GALLERY</div>
+<div>M2. WORKS</div>
+<div>M3. CONTACT</div>
 </nav>
 
 <div class="ui-overlay">
@@ -154,20 +155,22 @@ nav.hidden {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
+const base = "/portafolio-edson/"; // 🔥 CLAVE PARA GITHUB
+
 const projectsData = [
 {
-    id: "2025",
+    id: "2024",
     client: "B&W SERIES",
     title: "Film 35mm",
     type: "Arista 400",
-    cover: "images/foto1.jpg",
+    cover: base + "images/foto1.jpg",
     images: [
-        "images/foto1.jpg",
-        "images/foto2.jpg",
-        "images/foto3.jpg",
-        "images/foto4.jpg",
-        "images/foto5.jpg",
-        "images/foto6.jpg"
+        base + "images/foto1.jpg",
+        base + "images/foto2.jpg",
+        base + "images/foto3.jpg",
+        base + "images/foto4.jpg",
+        base + "images/foto5.jpg",
+        base + "images/foto6.jpg"
     ]
 }
 ];
@@ -212,7 +215,7 @@ function checkCenter() {
 
     if(closest) {
         closest.classList.add('active');
-        const data = projectsData.find(p => p.id === closest.dataset.id);
+        const data = projectsData[0];
 
         document.getElementById('project-id').innerText = data.id;
         document.getElementById('project-client').innerText = data.client;
@@ -223,17 +226,14 @@ function checkCenter() {
 
 slider.addEventListener('scroll', checkCenter);
 
-/* CLICK CORREGIDO */
-slider.addEventListener('click', (e) => {
-    const card = e.target.closest('.work-card');
-    if(!card) return;
-
-    openProject(card.dataset.id); // 👈 CLAVE
+/* CLICK */
+slider.addEventListener('click', () => {
+    openProject();
 });
 
-/* OPEN CORREGIDO */
-function openProject(id) {
-    const data = projectsData.find(p => p.id === id);
+/* OPEN */
+function openProject() {
+    const data = projectsData[0];
 
     document.getElementById('main-nav').classList.add('hidden');
 
