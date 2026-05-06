@@ -129,8 +129,7 @@ nav.hidden {
 
 <nav id="main-nav">
 <div><a href="index.html">← BACK</a></div>
-<div>M2. WORKS</div>
-<div>M3. CONTACT</div>
+<div>GALLERY</div>
 </nav>
 
 <div class="ui-overlay">
@@ -155,22 +154,20 @@ nav.hidden {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script>
-const base = "/portafolio-edson/"; // 🔥 CLAVE PARA GITHUB
-
 const projectsData = [
 {
     id: "2024",
     client: "B&W SERIES",
     title: "Film 35mm",
     type: "Arista 400",
-    cover: base + "images/foto1.jpg",
+    cover: "images/foto1.jpg",
     images: [
-        base + "images/foto1.jpg",
-        base + "images/foto2.jpg",
-        base + "images/foto3.jpg",
-        base + "images/foto4.jpg",
-        base + "images/foto5.jpg",
-        base + "images/foto6.jpg"
+        "images/foto1.jpg",
+        "images/foto2.jpg",
+        "images/foto3.jpg",
+        "images/foto4.jpg",
+        "images/foto5.jpg",
+        "images/foto6.jpg"
     ]
 }
 ];
@@ -179,7 +176,7 @@ const slider = document.getElementById('slider');
 const detailView = document.getElementById('project-detail-view');
 const detailContainer = document.getElementById('detail-container');
 
-/* CREAR CARDS */
+/* CREAR CARD */
 projectsData.forEach(p => {
     const div = document.createElement('div');
     div.className = 'work-card';
