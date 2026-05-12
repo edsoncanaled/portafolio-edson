@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -12,47 +11,47 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
 html,body{
-width:100%;height:100%;
-overflow:hidden;
-background:#e8e5e0;
-font-family:‘Courier Prime’,monospace;
-cursor:grab;
-user-select:none;
--webkit-user-select:none;
--webkit-tap-highlight-color:transparent;
+  width:100%;height:100%;
+  overflow:hidden;
+  background:#e8e5e0;
+  font-family:'Courier Prime',monospace;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
 body:active{cursor:grabbing;}
 
 /* ── HEADER ── */
 header{
-position:fixed;top:0;left:0;right:0;
-display:flex;justify-content:space-between;align-items:center;
-padding:22px 28px;z-index:100;pointer-events:none;
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 28px;z-index:100;pointer-events:none;
 }
 .nav-name{
-font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-line-height:1.6;opacity:.45;pointer-events:none;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  line-height:1.6;opacity:.45;pointer-events:none;
 }
 .nav-links{
-display:flex;gap:20px;pointer-events:all;
+  display:flex;gap:20px;pointer-events:all;
 }
 .nav-links a{
-font-size:10px;letter-spacing:.12em;text-transform:uppercase;
-color:#111;text-decoration:none;opacity:.35;transition:opacity .2s;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:#111;text-decoration:none;opacity:.35;transition:opacity .2s;
 }
 .nav-links a:hover{opacity:1;}
 
 /* ── MENU OVERLAY ── */
 #menu-overlay{
-position:fixed;inset:0;background:#e8e5e0;z-index:90;
-display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
-padding-right:28px;opacity:0;pointer-events:none;transition:opacity .35s;
+  position:fixed;inset:0;background:#e8e5e0;z-index:90;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  padding-right:28px;opacity:0;pointer-events:none;transition:opacity .35s;
 }
 #menu-overlay.open{opacity:1;pointer-events:all;}
 #menu-overlay a{
-font-size:clamp(28px,7vw,52px);letter-spacing:.04em;text-transform:uppercase;
-color:#111;text-decoration:none;opacity:.18;line-height:1.4;
-transition:opacity .3s,transform .3s;transform:translateY(20px);
+  font-size:clamp(28px,7vw,52px);letter-spacing:.04em;text-transform:uppercase;
+  color:#111;text-decoration:none;opacity:.18;line-height:1.4;
+  transition:opacity .3s,transform .3s;transform:translateY(20px);
 }
 #menu-overlay.open a{opacity:.18;transform:translateY(0);}
 #menu-overlay a:hover{opacity:1;}
@@ -62,30 +61,30 @@ transition:opacity .3s,transform .3s;transform:translateY(20px);
 
 /* ── CANVAS ── */
 #canvas{
-position:fixed;inset:0;overflow:hidden;
-perspective:2000px;perspective-origin:50% 50%;
+  position:fixed;inset:0;overflow:hidden;
+  perspective:2000px;perspective-origin:50% 50%;
 }
 
 /* ── CARD ── */
 .card{
-position:absolute;
-transform-origin:center center;
-background:#d4d0c8;
-will-change:transform,opacity;
+  position:absolute;
+  transform-origin:center center;
+  background:#d4d0c8;
+  will-change:transform,opacity;
 }
 .card img{
-display:block;width:100%;height:100%;
-object-fit:cover;pointer-events:none;
-opacity:0;transition:opacity .4s ease;
+  display:block;width:100%;height:100%;
+  object-fit:cover;pointer-events:none;
+  opacity:0;transition:opacity .4s ease;
 }
 .card img.loaded{opacity:1;}
 
 .info{
-position:absolute;inset:0;
-display:flex;flex-direction:column;justify-content:flex-end;
-padding:10px 12px;
-background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);
-opacity:0;transition:opacity .3s;pointer-events:none;
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:10px 12px;
+  background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
 }
 .card.active .info{opacity:1;}
 .info .project{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#fff;}
@@ -93,53 +92,52 @@ opacity:0;transition:opacity .3s;pointer-events:none;
 
 /* ── HINT ── */
 .hint{
-position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-font-size:8px;letter-spacing:.2em;text-transform:uppercase;
-opacity:.18;pointer-events:none;z-index:30;
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  opacity:.18;pointer-events:none;z-index:30;
 }
 
 /* ── INTRO PAPEL ALBANENE ── */
 #intro{
-position:fixed;inset:0;z-index:200;
-display:flex;flex-direction:column;justify-content:center;align-items:center;
-cursor:pointer;
-background:rgba(252, 250, 247, 0.72);
-backdrop-filter:blur(6px) brightness(1.05);
--webkit-backdrop-filter:blur(6px) brightness(1.05);
-transition:opacity 1s ease;
-box-shadow:inset 0 0 80px rgba(200,190,170,0.3);
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  cursor:pointer;
+  background:rgba(252, 250, 247, 0.72);
+  backdrop-filter:blur(6px) brightness(1.05);
+  -webkit-backdrop-filter:blur(6px) brightness(1.05);
+  transition:opacity 1s ease;
+  box-shadow:inset 0 0 80px rgba(200,190,170,0.3);
 }
 #intro::before{
-content:’’;position:absolute;inset:0;pointer-events:none;
-background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 512 512’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘g’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.82’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix type=‘saturate’ values=‘0’/%3E%3C/filter%3E%3Crect width=‘512’ height=‘512’ filter=‘url(%23g)’/%3E%3C/svg%3E”);
-background-size:160px 160px;opacity:.10;mix-blend-mode:multiply;
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size:160px 160px;opacity:.10;mix-blend-mode:multiply;
 }
 #intro.hide{opacity:0;pointer-events:none;}
 #intro .intro-content{
-text-align:center;width:100%;
-display:flex;flex-direction:column;align-items:center;
+  text-align:center;width:100%;
+  display:flex;flex-direction:column;align-items:center;
 }
 #intro .intro-name{
-font-size:clamp(36px,9vw,80px);letter-spacing:.12em;text-transform:uppercase;
-color:#1a1a1a;opacity:.82;line-height:1.05;font-weight:700;
+  font-size:clamp(36px,9vw,80px);letter-spacing:.12em;text-transform:uppercase;
+  color:#1a1a1a;opacity:.82;line-height:1.05;font-weight:700;
 }
 #intro .intro-sub{
-font-size:10px;letter-spacing:.28em;text-transform:uppercase;
-color:#1a1a1a;opacity:.38;margin-top:20px;
+  font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:#1a1a1a;opacity:.38;margin-top:20px;
 }
 #intro .intro-bio{
-font-size:12px;line-height:1.8;letter-spacing:.04em;
-color:#1a1a1a;opacity:.55;margin-top:24px;
-max-width:320px;text-align:center;font-weight:400;
+  font-size:12px;line-height:1.8;letter-spacing:.04em;
+  color:#1a1a1a;opacity:.55;margin-top:24px;
+  max-width:320px;text-align:center;font-weight:400;
 }
 #intro .intro-hint{
-position:absolute;bottom:36px;
-font-size:9px;letter-spacing:.22em;text-transform:uppercase;
-color:#1a1a1a;opacity:.22;animation:blink 2.5s infinite;
+  position:absolute;bottom:36px;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:#1a1a1a;opacity:.22;animation:blink 2.5s infinite;
 }
 @keyframes blink{0%,100%{opacity:.22;}50%{opacity:.07;}}
 </style>
-
 </head>
 <body>
 
@@ -235,7 +233,7 @@ const COS   = Math.cos(ANGLE);
 const SIN   = Math.sin(ANGLE);
 
 /* ── VIRTUAL DOM: solo 60 cards ── */
-const POOL = 60; /* cards en el DOM — se reciclan */
+const POOL = 80; /* cards en el DOM — se reciclan */
 const canvas = document.getElementById('canvas');
 const pool   = [];
 
@@ -293,8 +291,8 @@ const loaded = new Set();
 function render(){
   if(!dragging){
     const nearest = Math.round(offset/STEP)*STEP;
-    velocity += (nearest-offset)*0.06;
-    velocity *= 0.75;
+    velocity += (nearest-offset)*0.03;
+    velocity *= 0.82;
     offset   += velocity;
   }
 
@@ -330,7 +328,7 @@ function render(){
 
     el.style.opacity = isActive ? 1 : Math.max(0.08, 1-absRel*0.06);
     el.style.zIndex  = isActive ? 9999 : rel>0 ? 1000-absRel : 500+absRel;
-    el.style.display = 'block';
+    el.style.pointerEvents = isActive ? 'all' : 'none';
     el.classList.toggle('active', isActive);
 
     if(img.dataset.src !== p.src){
@@ -341,9 +339,10 @@ function render(){
     proj.textContent = p.text;
   }
 
-  /* ocultar cards del pool no usadas */
+  /* ocultar cards del pool no usadas con opacity para evitar reflow */
   for(let i=poolIdx; i<POOL; i++){
-    pool[i].el.style.display='none';
+    pool[i].el.style.opacity='0';
+    pool[i].el.style.pointerEvents='none';
   }
 
   requestAnimationFrame(render);
@@ -412,6 +411,5 @@ function dismissIntro(){
   setTimeout(()=>document.getElementById('intro').remove(),900);
 }
 </script>
-
 </body>
 </html>
